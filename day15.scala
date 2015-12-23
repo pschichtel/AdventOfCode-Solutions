@@ -41,7 +41,6 @@ def scoreTaste(t: Taste): Int = {
 }
 
 def ingredientDistributions(n: Int, r: Int = 100): Stream[Seq[Int]] = {
-    
     val range = List.range(0, r + 1)
 
     (1 until n).foldLeft(range.toStream.map(List(_))) {(s, i) =>
@@ -53,7 +52,6 @@ def ingredientDistributions(n: Int, r: Int = 100): Stream[Seq[Int]] = {
 def mixtures(ingredients: Seq[Ingredient]) = {
     ingredientDistributions(ingredients.length).map {dist =>
         val plan = ingredients.zip(dist)
-        //println(plan)
         sum(plan.map {
             case ((_, t), amount) => t(amount)
         })
