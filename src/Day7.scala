@@ -1,5 +1,3 @@
-import scala.io.Source
-import scala.math._
 
 object Day7 extends AoCApp {
     println("Day  7")
@@ -52,10 +50,10 @@ object Day7 extends AoCApp {
         if (num(s)) Const(s.toInt)
         else Dyn(s)
 
-    val wire = raw"(\w+) -> (\w+)".r
-    val and = raw"(\w+) AND (\w+) -> (\w+)".r
-    val or = raw"(\w+) OR (\w+) -> (\w+)".r
-    val not = raw"NOT (\w+) -> (\w+)".r
+    val wire   = raw"(\w+) -> (\w+)".r
+    val and    = raw"(\w+) AND (\w+) -> (\w+)".r
+    val or     = raw"(\w+) OR (\w+) -> (\w+)".r
+    val not    = raw"NOT (\w+) -> (\w+)".r
     val lshift = raw"(\w+) LSHIFT (\d+) -> (\w+)".r
     val rshift = raw"(\w+) RSHIFT (\d+) -> (\w+)".r
 

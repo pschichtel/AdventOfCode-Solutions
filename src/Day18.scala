@@ -1,4 +1,3 @@
-import scala.io.Source
 import scala.math._
 
 object Day18 extends AoCApp {
@@ -56,7 +55,7 @@ object Day18 extends AoCApp {
                 x <- 0 until dim
             } yield {
                 val s = at(x, y)
-                val n = atNeighbours(x, y).filter(identity).length
+                val n = atNeighbours(x, y).count(identity)
                 rule(this, x, y, s, n)
             }
 
@@ -66,7 +65,7 @@ object Day18 extends AoCApp {
         def lines = states.grouped(dim)
 
         val animation: Stream[Grid] = {
-            this #:: animation.map(_.step)
+            this #:: animation.map(_.step())
         }
     }
 
@@ -75,9 +74,9 @@ object Day18 extends AoCApp {
     }
 
     val afterNSteps1 = Grid(states, step1rule).animation.drop(steps).head
-    println("Step 1: " + afterNSteps1.states.filter(identity).length)
+    println("Step 1: " + afterNSteps1.states.count(identity))
 
     val afterNSteps2 = Grid(states, step2rule).animation.drop(steps).head
-    println("Step 2: " + afterNSteps2.states.filter(identity).length)
+    println("Step 2: " + afterNSteps2.states.count(identity))
 
 }

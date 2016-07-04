@@ -1,6 +1,3 @@
-import scala.io.Source
-import scala.math._
-import scala.annotation.tailrec
 
 object Day14 extends AoCApp {
     println("Day 14")
@@ -19,7 +16,7 @@ object Day14 extends AoCApp {
 
     def simulate(deers: Set[Deer], duration: Int = RaceDuration): Seq[DeerState] = {
 
-        val startStates = deers.toSeq.map(d => (d, false, 0, 0, 0)).toSeq
+        val startStates = deers.toSeq.map(d => (d, false, 0, 0, 0))
 
         (1 to duration).foldLeft(startStates) { (states, i) =>
 

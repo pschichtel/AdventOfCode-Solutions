@@ -1,5 +1,3 @@
-import scala.io.Source
-import scala.math._
 import scala.annotation.tailrec
 
 object Day19 extends AoCApp {

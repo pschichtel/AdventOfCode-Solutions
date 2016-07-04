@@ -1,4 +1,3 @@
-import scala.io.Source
 import scala.math._
 
 object Day2 extends AoCApp {

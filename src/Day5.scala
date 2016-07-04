@@ -1,4 +1,3 @@
-import scala.io.Source
 import scala.math._
 
 object Day5 extends AoCApp {
@@ -29,7 +28,7 @@ object Day5 extends AoCApp {
             case (i, w) if s.substring(0, i).contains(w) || s.substring(i + 2).contains(w) => Some(w)
         }
 
-        var triple = s.sliding(3).filter(w => w(0) == w(2)).toList.size
+        val triple = s.sliding(3).filter(w => w(0) == w(2)).toList.size
         reoccuringSlides.nonEmpty && triple >= 1
     }
 

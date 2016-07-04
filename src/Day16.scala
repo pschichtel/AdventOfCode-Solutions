@@ -1,5 +1,3 @@
-import scala.io.Source
-import scala.math._
 
 object Day16 extends AoCApp {
     println("Day 16")
@@ -29,7 +27,7 @@ object Day16 extends AoCApp {
 
     def lt(a: Int, b: Int) = a < b
 
-    val MFCSAM = Map(
+    val MFCSAM = Map[String, (Int, (Int, Int) => Boolean)](
         ("children", (3, eq _)),
         ("cats", (7, gt _)),
         ("samoyeds", (2, eq _)),

@@ -1,5 +1,3 @@
-import scala.io.Source
-import scala.math._
 
 object Day13 extends AoCApp {
     println("Day 13")
@@ -16,7 +14,7 @@ object Day13 extends AoCApp {
     }.toSet
 
 
-    def peopleFrom(relations: Set[Relation]): Set[String] = relations.map(_._1).toSet
+    def peopleFrom(relations: Set[Relation]): Set[String] = relations.map(_._1)
 
     def optimalSeating(relations: Set[Relation]): (Seq[String], Int) = {
 
@@ -24,7 +22,7 @@ object Day13 extends AoCApp {
 
         val people = peopleFrom(relations)
 
-        var plans = people.toSeq.permutations.map { plan =>
+        val plans = people.toSeq.permutations.map { plan =>
             val pairs = plan.sliding(2).toSeq :+ Seq(plan.head, plan.last)
             val change = pairs.map(_.toList).map {
                 case l :: r :: _ => happynessByPair((l, r)) + happynessByPair((r, l))

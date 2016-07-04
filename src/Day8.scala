@@ -1,5 +1,3 @@
-import scala.io.Source
-import scala.math._
 import scala.annotation.tailrec
 
 object Day8 extends AoCApp {
@@ -36,7 +34,7 @@ object Day8 extends AoCApp {
 
     def sizes(strings: Seq[(String, String)]) =
         strings.map { case (ext, int) => (ext.length, int.length) }
-            .foldLeft((0, 0)) { case ((aext, aint), (ext, int)) => (aext + ext, aint + int) }
+            .foldLeft((0, 0)) { case ((aext, aint), (bext, bint)) => (aext + bext, aint + bint) }
 
     val parsedStrings = input.map(s => (s, parse(s)))
     val (ext, int) = sizes(parsedStrings)

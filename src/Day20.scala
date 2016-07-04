@@ -1,5 +1,4 @@
 import scala.math._
-import scala.annotation.tailrec
 
 object Day20 extends AoCApp {
     val input = 34000000
@@ -16,14 +15,14 @@ object Day20 extends AoCApp {
     }
 
     val (house, _) = N.take(input / 10).map(house => (house, numberOfPresentsFor(house)))
-        .filter {case (house, presents) => presents >= input}
+        .filter {case (_, presents) => presents >= input}
         .head
 
     println(s"Day 1: $house")
 
 
     val (houseLimited, _) = N.take(input / 10).map(house => (house, numberOfPresentsFor(house, 11, _ / _ < 50)))
-        .filter {case (house, presents) => presents >= input}
+        .filter {case (_, presents) => presents >= input}
         .head
 
     println(s"Day 2: $houseLimited")

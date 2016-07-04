@@ -10,6 +10,7 @@ object Day10 extends AoCApp {
     private def toC(i: Int) = ('0' + i).toChar
 
     type VString = Vector[Char]
+
     @inline
     private def vstr(s: String): VString = Vector(s:_*)
 
@@ -27,7 +28,7 @@ object Day10 extends AoCApp {
     def transformer(input: VString, it: Int) = lookAndSay(input)
 
     // warmup
-    // (0 until iterations._2).foldLeft(input)(transformer)
+    (0 until iterations._2).foldLeft(input)(transformer)
 
     val start = System.currentTimeMillis()
     val transformed = (0 until iterations._1).foldLeft(input)(transformer)

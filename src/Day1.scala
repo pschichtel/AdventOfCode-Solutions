@@ -1,4 +1,3 @@
-import scala.io.Source
 
 object Day1 extends AoCApp {
     println("Day  1")

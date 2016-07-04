@@ -1,7 +1,3 @@
-import scala.io.Source
-import scala.math._
-import scala.annotation.tailrec
-import scala.util.matching.Regex
 import scala.util.parsing.json._
 
 object Day12 extends AoCApp {
