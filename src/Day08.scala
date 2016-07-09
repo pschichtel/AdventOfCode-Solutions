@@ -3,7 +3,7 @@ import scala.annotation.tailrec
 object Day08 extends AoCApp {
     println("Day  8")
 
-    val input = sourceFromCP("day08.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
 
     def parse(s: String): String = parseChars(s.iterator)
 

@@ -2,7 +2,7 @@
 object Day17 extends AoCApp {
     println("Day 17")
 
-    val input = sourceFromCP("day17.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
 
     case class Container(size: Int, number: Int)
 

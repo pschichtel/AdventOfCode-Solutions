@@ -2,7 +2,7 @@
 object Day13 extends AoCApp {
     println("Day 13")
 
-    val input = sourceFromCP("day13.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
 
 
     type Relation = (String, String, Int)

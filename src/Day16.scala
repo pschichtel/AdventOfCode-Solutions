@@ -2,7 +2,7 @@
 object Day16 extends AoCApp {
     println("Day 16")
 
-    val input = sourceFromCP("day16.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
 
     val entry = raw"Sue (\d+): (.+)".r
     val property = raw"(\w+): (\d+)".r

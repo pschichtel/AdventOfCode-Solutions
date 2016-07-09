@@ -3,7 +3,7 @@ import scala.math._
 object Day05 extends AoCApp {
     println("Day  5")
 
-    val input = sourceFromCP("day05.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
 
     val vowels = Set('a', 'e', 'i', 'o', 'u')
     val forbiddenWindows = Set("ab", "cd", "pq", "xy")

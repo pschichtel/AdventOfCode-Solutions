@@ -2,7 +2,7 @@
 object Day07 extends AoCApp {
     println("Day  7")
 
-    val input = sourceFromCP("day07.txt").mkString.trim.split('\n').map(_.trim).toList
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toList
     val RelevantWire = "a"
     val ReplaceWire = "b"
 

@@ -3,7 +3,7 @@ import scala.util.parsing.json._ // scala-parser-combinators artifact
 object Day12 extends AoCApp {
     println("Day 12")
 
-    val input = sourceFromCP("day12.txt").mkString.trim
+    val input = inputSource.mkString.trim
 
     JSON.parseFull(input).foreach { tree =>
 

@@ -3,7 +3,7 @@ import scala.math._
 object Day18 extends AoCApp {
     println("Day 18")
 
-    val input = sourceFromCP("day18.txt").mkString.replaceAll("\\s", "")
+    val input = inputSource.mkString.replaceAll("\\s", "")
     val steps = 100
 
     val states = input.map {

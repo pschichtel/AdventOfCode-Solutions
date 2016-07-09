@@ -2,7 +2,7 @@
 object Day03 extends AoCApp {
     println("Day  3")
 
-    val input = sourceFromCP("day03.txt").mkString.trim
+    val input = inputSource.mkString.trim
     val directions = input map {
         case '^' => (0, 1)
         case '>' => (1, 0)

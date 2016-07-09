@@ -3,7 +3,7 @@ import scala.math._
 object Day15 extends AoCApp {
     println("Day 15")
 
-    val input = sourceFromCP("day15.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
 
     val ingredient = raw"(\w+): capacity (\-?\d+), durability (\-?\d+), flavor (\-?\d+), texture (\-?\d+), calories (\-?\d+)".r
 

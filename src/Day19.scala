@@ -3,7 +3,7 @@ import scala.annotation.tailrec
 object Day19 extends AoCApp {
     println("Day 19")
 
-    val input = sourceFromCP("day19.txt").mkString.trim.split('\n').map(_.trim).filter(_.nonEmpty).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).filter(_.nonEmpty).toSeq
 
     val subst = raw"(\w+) => (\w+)".r
     val substitutions = input.collect {

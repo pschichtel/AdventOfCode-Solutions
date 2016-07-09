@@ -2,7 +2,7 @@
 object Day14 extends AoCApp {
     println("Day 14")
 
-    val input = sourceFromCP("day14.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = inputSource.mkString.trim.split('\n').map(_.trim).toSeq
     val RaceDuration = 2503
 
     val deer = raw"(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.".r
