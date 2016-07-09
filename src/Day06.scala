@@ -1,12 +1,12 @@
 import scala.io.Source
 import scala.math._
 
-object Day6 extends AoCApp {
+object Day06 extends AoCApp {
 
     println("Day  6")
 
     val Command = raw"(turn off|turn on|toggle) (\d+),(\d+) through (\d+),(\d+)".r
-    val input = Source.fromFile("day6.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = Source.fromFile("day06.txt").mkString.trim.split('\n').map(_.trim).toSeq
 
     def toCommands[T](inputs: Seq[String])(cm: String => (T => T)) = input.map {
         case Command(command, x1, y1, x2, y2) =>

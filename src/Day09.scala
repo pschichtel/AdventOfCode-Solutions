@@ -1,8 +1,8 @@
 
-object Day9 extends AoCApp {
+object Day09 extends AoCApp {
     println("Day  9")
 
-    val input = sourceFromCP("day9.txt").mkString.trim.split('\n').map(_.trim).toSeq
+    val input = sourceFromCP("day09.txt").mkString.trim.split('\n').map(_.trim).toSeq
 
     val edge = raw"(\w+) to (\w+) = (\d+)".r
 

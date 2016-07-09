@@ -1,8 +1,8 @@
 
-object Day3 extends AoCApp {
+object Day03 extends AoCApp {
     println("Day  3")
 
-    val input = sourceFromCP("day3.txt").mkString.trim
+    val input = sourceFromCP("day03.txt").mkString.trim
     val directions = input map {
         case '^' => (0, 1)
         case '>' => (1, 0)

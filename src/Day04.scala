@@ -1,6 +1,6 @@
 import java.security.MessageDigest
 
-object Day4 extends AoCApp {
+object Day04 extends AoCApp {
     println("Day  4")
 
     val input = "iwrupvqb"

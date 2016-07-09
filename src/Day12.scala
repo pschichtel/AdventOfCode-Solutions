@@ -1,4 +1,4 @@
-import scala.util.parsing.json._
+import scala.util.parsing.json._ // scala-parser-combinators artifact
 
 object Day12 extends AoCApp {
     println("Day 12")
