@@ -3,7 +3,7 @@ import scala.math._
 
 object Day6 extends AoCApp {
 
-    println("Day  7")
+    println("Day  6")
 
     val Command = raw"(turn off|turn on|toggle) (\d+),(\d+) through (\d+),(\d+)".r
     val input = Source.fromFile("day6.txt").mkString.trim.split('\n').map(_.trim).toSeq
