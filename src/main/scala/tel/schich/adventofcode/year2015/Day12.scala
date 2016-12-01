@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 import scala.util.parsing.json._ // scala-parser-combinators artifact
 
 object Day12 extends AoCApp {

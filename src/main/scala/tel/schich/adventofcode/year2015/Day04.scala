@@ -1,4 +1,8 @@
+package tel.schich.adventofcode.year2015
+
 import java.security.MessageDigest
+
+import tel.schich.adventofcode.AoCApp
 
 object Day04 extends AoCApp {
     println("Day  4")

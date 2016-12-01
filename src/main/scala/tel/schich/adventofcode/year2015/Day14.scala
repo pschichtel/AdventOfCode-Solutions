@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 
 object Day14 extends AoCApp {
     println("Day 14")
@@ -5,7 +9,7 @@ object Day14 extends AoCApp {
     val input = inputLines
     val RaceDuration = 2503
 
-    val deer = raw"(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.".r
+    val deer = "(\\w+) can fly (\\d+) km/s for (\\d+) seconds, but then must rest for (\\d+) seconds.".r
     val deers = input.map {
         case deer(n, v, t, r) => (n, v.toInt, t.toInt, r.toInt)
     }.toSet

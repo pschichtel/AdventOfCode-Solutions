@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 import scala.annotation.tailrec
 
 object Day19 extends AoCApp {
@@ -5,7 +9,7 @@ object Day19 extends AoCApp {
 
     val input = inputLines.toSeq
 
-    val subst = raw"(\w+) => (\w+)".r
+    val subst = "(\\w+) => (\\w+)".r
     val substitutions = input.collect {
         case subst(from, to) => (from, to)
     }

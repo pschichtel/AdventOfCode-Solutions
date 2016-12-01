@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 import scala.annotation.tailrec
 
 object Day10 extends AoCApp {

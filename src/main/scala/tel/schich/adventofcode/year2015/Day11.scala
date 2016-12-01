@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 import scala.annotation.tailrec
 import scala.util.matching.Regex
 

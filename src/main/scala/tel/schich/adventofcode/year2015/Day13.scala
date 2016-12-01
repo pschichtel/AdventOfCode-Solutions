@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 
 object Day13 extends AoCApp {
     println("Day 13")
@@ -7,7 +11,7 @@ object Day13 extends AoCApp {
 
     type Relation = (String, String, Int)
 
-    val relation = raw"(\w+) would (lose|gain) (\d+) happiness units by sitting next to (\w+).".r
+    val relation = "(\\w+) would (lose|gain) (\\d+) happiness units by sitting next to (\\w+).".r
     val relations: Set[Relation] = input.map {
         case relation(s, "lose", h, o) => (s, o, -h.toInt)
         case relation(s, "gain", h, o) => (s, o, h.toInt)

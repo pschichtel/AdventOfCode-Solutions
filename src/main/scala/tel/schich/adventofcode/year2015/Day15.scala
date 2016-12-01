@@ -1,3 +1,7 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 import scala.math._
 
 object Day15 extends AoCApp {
@@ -5,7 +9,7 @@ object Day15 extends AoCApp {
 
     val input = inputLines
 
-    val ingredient = raw"(\w+): capacity (\-?\d+), durability (\-?\d+), flavor (\-?\d+), texture (\-?\d+), calories (\-?\d+)".r
+    val ingredient = "(\\w+): capacity (\\-?\\d+), durability (\\-?\\d+), flavor (\\-?\\d+), texture (\\-?\\d+), calories (\\-?\\d+)".r
 
     type Taste = (Int, Int, Int, Int, Int)
     type Ingredient = (String, (Int) => Taste)

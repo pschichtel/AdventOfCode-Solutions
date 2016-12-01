@@ -1,11 +1,14 @@
-import scala.io.Source
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 import scala.math._
 
 object Day06 extends AoCApp {
 
     println("Day  6")
 
-    val Command = raw"(turn off|turn on|toggle) (\d+),(\d+) through (\d+),(\d+)".r
+    val Command = "(turn off|turn on|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)".r
     val input = inputLines
 
     def toCommands[T](inputs: Seq[String])(cm: String => (T => T)) = input.map {

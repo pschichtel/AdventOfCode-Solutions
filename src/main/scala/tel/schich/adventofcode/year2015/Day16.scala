@@ -1,11 +1,15 @@
+package tel.schich.adventofcode.year2015
+
+import tel.schich.adventofcode.AoCApp
+
 
 object Day16 extends AoCApp {
     println("Day 16")
 
     val input = inputLines.map(_.trim).toSeq
 
-    val entry = raw"Sue (\d+): (.+)".r
-    val property = raw"(\w+): (\d+)".r
+    val entry = "Sue (\\d+): (.+)".r
+    val property = "(\\w+): (\\d+)".r
 
     type Sue = (Int, Map[String, Int])
 
