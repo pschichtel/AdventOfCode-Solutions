@@ -12,4 +12,9 @@ trait AoCApp extends App {
     def part(n: Int, value: Any): Unit = {
         println(s"Part $n: $value")
     }
+
+    def notImplementedYet(): Unit = {
+        println("Not implemented yet!")
+        System.exit(1)
+    }
 }
