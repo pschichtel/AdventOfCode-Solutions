@@ -11,12 +11,12 @@ object Day06 extends AoCApp {
     val Command = "(turn off|turn on|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)".r
     val input = inputLines
 
-    def toCommands[T](inputs: Seq[String])(cm: String => (T => T)) = input.map {
+    def toCommands[T](inputs: Seq[String])(cm: String => (T => T)): Seq[((T) => T, (Int, Int), (Int, Int))] = input.map {
         case Command(command, x1, y1, x2, y2) =>
             (cm(command), (x1.toInt, y1.toInt), (x2.toInt, y2.toInt))
     }
 
-    def applyCommands[T](grid: Array[T], size: Int, commands: Seq[(T => T, (Int, Int), (Int, Int))]) = {
+    def applyCommands[T](grid: Array[T], size: Int, commands: Seq[(T => T, (Int, Int), (Int, Int))]): Seq[T] = {
         commands.foldLeft(grid) {
             case (field, (command, (x1, y1), (x2, y2))) =>
                 for (x <- x1 to x2) {
@@ -37,7 +37,7 @@ object Day06 extends AoCApp {
 
     val field1 = applyCommands(Array.ofDim(1000 * 1000), 1000, commands1)
 
-    println("Part 1: " + field1.count(_ == true))
+    part(1, field1.count(_ == true))
 
 
     val commands2 = toCommands(input) {
@@ -48,6 +48,6 @@ object Day06 extends AoCApp {
 
     val field2 = applyCommands(Array.ofDim(1000 * 1000), 1000, commands2)
 
-    println("Part 2: " + field2.sum)
+    part(2, field2.sum)
 
 }

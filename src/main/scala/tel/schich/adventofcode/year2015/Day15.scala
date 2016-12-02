@@ -52,7 +52,7 @@ object Day15 extends AoCApp {
 
     }
 
-    def mixtures(ingredients: Seq[Ingredient]) = {
+    def mixtures(ingredients: Seq[Ingredient]): Stream[(Int, Int, Int, Int, Int)] = {
         ingredientDistributions(ingredients.length).map { dist =>
             val plan = ingredients.zip(dist)
             sum(plan.map {
@@ -62,9 +62,9 @@ object Day15 extends AoCApp {
     }
 
     val bestScore = mixtures(ingredients).map(scoreTaste).max
-    println(s"Part 1: $bestScore")
+    part(1, bestScore)
 
     val bestScoreWithNCalories = mixtures(ingredients).filter(_._5 == 500).map(scoreTaste).max
-    println(s"Part 2: $bestScoreWithNCalories")
+    part(2, bestScoreWithNCalories)
 
 }

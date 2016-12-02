@@ -6,7 +6,7 @@ import tel.schich.adventofcode.AoCApp
 object Day17 extends AoCApp {
     println("Day 17")
 
-    val input = inputLines.toSeq
+    val input = inputLines
 
     case class Container(size: Int, number: Int)
 
@@ -19,10 +19,10 @@ object Day17 extends AoCApp {
     }
 
     val possibleCombinations = combinationStream(containers, 1, containers.length).map(_.map(_.size)).filter(_.sum == eggnogAmount)
-    println(s"Part 1: ${possibleCombinations.size}")
+    part(1, possibleCombinations.size)
 
     val shortestCombinationLength = possibleCombinations.map(_.length).min
     val shortestCombinations = possibleCombinations.filter(_.length == shortestCombinationLength)
-    println(s"Part 2: ${shortestCombinations.size}")
+    part(2, shortestCombinations.size)
 
 }

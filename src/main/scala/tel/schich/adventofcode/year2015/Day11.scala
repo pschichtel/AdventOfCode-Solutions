@@ -22,32 +22,32 @@ object Day11 extends AoCApp {
 
     def streamIncrements(s: String): Stream[String] = s #:: streamIncrements(increment(s))
 
-    def hasIncreasing(s: String, n: Int = 3) = {
+    def hasIncreasing(s: String, n: Int = 3): Boolean = {
         s.sliding(n).exists(_.sliding(2).forall { w =>
             w(0) + 1 == w(1).toInt
         })
     }
 
-    def containsForbidden(s: String, forbidden: Set[Char] = Set('i', 'o', 'l')) = {
+    def containsForbidden(s: String, forbidden: Set[Char] = Set('i', 'o', 'l')): Boolean = {
         s.exists(forbidden.contains)
     }
 
     val LetterPair = raw"(.)\1".r
 
-    def containsLetterPairs(s: String, r: Regex = LetterPair, n: Int = 2) = {
+    def containsLetterPairs(s: String, r: Regex = LetterPair, n: Int = 2): Boolean = {
         r.findAllIn(s).size >= n
     }
 
-    def stepOneCond(s: String) = {
+    def stepOneCond(s: String): Boolean = {
         hasIncreasing(s) && !containsForbidden(s) && containsLetterPairs(s)
     }
 
     val stream = streamIncrements(input).filter(stepOneCond)
 
     val firstPass = stream.head
-    println(s"Part 1: $firstPass")
+    part(1, firstPass)
 
     val secondPass = stream.drop(1).head
-    println(s"Part 2: $secondPass")
+    part(2, secondPass)
 
 }

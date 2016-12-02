@@ -51,9 +51,9 @@ object Day14 extends AoCApp {
     }
 
     val (_, _, _, distance, _) = simulate(deers).maxBy(_._4)
-    println(s"Part 1: $distance")
+    part(1, distance)
 
 
     val (_, _, _, _, score) = simulate(deers).maxBy(_._5)
-    println(s"Part 2: $score")
+    part(2, score)
 }

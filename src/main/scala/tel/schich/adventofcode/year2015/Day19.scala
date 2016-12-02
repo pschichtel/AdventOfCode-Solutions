@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 object Day19 extends AoCApp {
     println("Day 19")
 
-    val input = inputLines.toSeq
+    val input = inputLines
 
     val subst = "(\\w+) => (\\w+)".r
     val substitutions = input.collect {
@@ -39,7 +39,7 @@ object Day19 extends AoCApp {
     }.toSet
 
 
-    println(s"Part 1: ${replacements.size}")
+    part(1, replacements.size)
 
     @tailrec
     def tokenize(s: String, tokens: Seq[String] = Nil): Seq[String] = {
@@ -55,5 +55,5 @@ object Day19 extends AoCApp {
     //                                  (             )
     val paran = tokens.count(t => t == "Rn" || t == "Ar")
     val stepsRequiredToReduce = tokens.length - paran - 2 * comma - 1
-    println(s"Step 2: $stepsRequiredToReduce")
+    part(2, stepsRequiredToReduce)
 }

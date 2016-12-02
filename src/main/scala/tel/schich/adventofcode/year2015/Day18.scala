@@ -35,7 +35,7 @@ object Day18 extends AoCApp {
     }
 
     case class Grid(states: Seq[Boolean], rule: (Grid, Int, Int, Boolean, Int) => Boolean) {
-        val dim = sqrt(states.length).toInt
+        val dim: Int = sqrt(states.length).toInt
 
         val neighbours = Seq(
             (-1, -1), (0, -1), (1, -1),
@@ -66,21 +66,21 @@ object Day18 extends AoCApp {
             Grid(next, rule)
         }
 
-        def lines = states.grouped(dim)
+        def lines: Iterator[Seq[Boolean]] = states.grouped(dim)
 
         val animation: Stream[Grid] = {
             this #:: animation.map(_.step())
         }
     }
 
-    def print(g: Grid) = {
+    def print(g: Grid): Unit = {
         println(g.lines.map(_.map(if (_) '#' else '.').mkString).mkString("\n") + "\n")
     }
 
     val afterNSteps1 = Grid(states, step1rule).animation.drop(steps).head
-    println("Step 1: " + afterNSteps1.states.count(identity))
+    part(1, afterNSteps1.states.count(identity))
 
     val afterNSteps2 = Grid(states, step2rule).animation.drop(steps).head
-    println("Step 2: " + afterNSteps2.states.count(identity))
+    part(2,  afterNSteps2.states.count(identity))
 
 }

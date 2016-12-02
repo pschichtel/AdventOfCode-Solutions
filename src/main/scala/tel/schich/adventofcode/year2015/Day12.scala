@@ -35,10 +35,10 @@ object Day12 extends AoCApp {
 
 
         val sumOfNumbers = findNumbers(tree).map(_.intValue).sum
-        println(s"Part 1: $sumOfNumbers")
+        part(1, sumOfNumbers)
 
         val sumOfNonRedNumbers = findNumbers(removeObjectsWith(tree, "red")).map(_.intValue).sum
-        println(s"Part 2: $sumOfNonRedNumbers")
+        part(2, sumOfNonRedNumbers)
 
     }
 }

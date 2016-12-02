@@ -39,9 +39,9 @@ object Day13 extends AoCApp {
     }
 
     val (_, maxWithoutMe) = optimalSeating(relations)
-    println(s"Part 1: $maxWithoutMe")
+    part(1, maxWithoutMe)
 
     val relationsWithMe = relations ++ peopleFrom(relations).flatMap(p => Set((p, "me", 0), ("me", p, 0)))
     val (_, maxWithMe) = optimalSeating(relationsWithMe)
-    println(s"Part 2: $maxWithMe")
+    part(2, maxWithMe)
 }

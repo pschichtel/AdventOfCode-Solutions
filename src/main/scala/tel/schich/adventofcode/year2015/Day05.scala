@@ -22,9 +22,9 @@ object Day05 extends AoCApp {
         vowelCount >= 3 && doubleWindowCount >= 1 && forbiddenWindowCount == 0
     }
 
-    println(s"Part 1: ${nice.length}")
+    part(1, nice.length)
 
-    def sliding(s: String, n: Int = 2) =
+    def sliding(s: String, n: Int = 2): Seq[(Int, String)] =
         s.zipWithIndex.map { case (c, i) => (i, s.substring(i, min(s.length, i + n))) }.filter { case (_, s) => s.length == n }
 
     val nicer = input.filter { s =>
@@ -36,6 +36,6 @@ object Day05 extends AoCApp {
         reoccuringSlides.nonEmpty && triple >= 1
     }
 
-    println(s"Part 2: ${nicer.length}")
+    part(2, nicer.length)
 
 }

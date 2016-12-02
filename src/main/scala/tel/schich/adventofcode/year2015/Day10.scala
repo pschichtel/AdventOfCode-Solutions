@@ -29,15 +29,15 @@ object Day10 extends AoCApp {
         }
     }
 
-    def transformer(input: VString, it: Int) = lookAndSay(input)
+    def transformer(input: VString, it: Int): VString = lookAndSay(input)
 
     // warmup
     (0 until iterations._2).foldLeft(input)(transformer)
 
     val start = System.currentTimeMillis()
     val transformed = (0 until iterations._1).foldLeft(input)(transformer)
-    println(s"Part 1: ${transformed.length} ${System.currentTimeMillis() - start}ms")
+    part(1, "${transformed.length} ${System.currentTimeMillis() - start}ms")
 
     val transformedMore = (iterations._1 until iterations._2).foldLeft(transformed)(transformer)
-    println(s"Part 2: ${transformedMore.length} ${System.currentTimeMillis() - start}ms")
+    part(2, "${transformedMore.length} ${System.currentTimeMillis() - start}ms")
 }

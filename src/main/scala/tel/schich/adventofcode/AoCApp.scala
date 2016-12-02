@@ -8,4 +8,8 @@ trait AoCApp extends App {
     lazy val inputSource = sourceFromCP("/" + this.getClass.getName.replace("$", "").replaceAll("\\.", "/") + ".txt")
     def inputText: String = inputSource.mkString.trim
     def inputLines: Seq[String] = inputSource.getLines().map(_.trim).filter(_.nonEmpty).toSeq
+
+    def part(n: Int, value: Any): Unit = {
+        println(s"Part $n: $value")
+    }
 }

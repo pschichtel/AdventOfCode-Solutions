@@ -11,7 +11,7 @@ object Day04 extends AoCApp {
 
     lazy val hasher = MessageDigest.getInstance("MD5")
 
-    def md5(s: String) = hasher.digest(s.getBytes).map("%02X".format(_)).mkString
+    def md5(s: String): String = hasher.digest(s.getBytes).map("%02X".format(_)).mkString
 
     def startsWith(prefix: String): PartialFunction[(Int, String), Boolean] = {
         {

@@ -22,12 +22,12 @@ object Day20 extends AoCApp {
         .filter {case (_, presents) => presents >= input}
         .head
 
-    println(s"Day 1: $house")
+    part(1, house)
 
 
     val (houseLimited, _) = N.take(input / 10).map(house => (house, numberOfPresentsFor(house, 11, _ / _ < 50)))
         .filter {case (_, presents) => presents >= input}
         .head
 
-    println(s"Day 2: $houseLimited")
+    part(2, houseLimited)
 }

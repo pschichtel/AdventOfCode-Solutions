@@ -17,7 +17,7 @@ object Day16 extends AoCApp {
         case entry(n, properties) => (n.toInt, property.findAllIn(properties).map { case property(n, v) => (n, v.toInt) }.toMap)
     }
 
-    def suesWith(sues: Seq[Sue], name: String, value: Int, cmp: (Int, Int) => Boolean) = {
+    def suesWith(sues: Seq[Sue], name: String, value: Int, cmp: (Int, Int) => Boolean): Seq[(Int, Map[String, Int])] = {
         sues.filter {
             case (_, p) if p.contains(name) => cmp(p(name), value)
             case _ => true
@@ -25,23 +25,23 @@ object Day16 extends AoCApp {
     }
 
 
-    def eq(a: Int, b: Int) = a == b
+    def eq(a: Int, b: Int): Boolean = a == b
 
-    def gt(a: Int, b: Int) = a > b
+    def gt(a: Int, b: Int): Boolean = a > b
 
-    def lt(a: Int, b: Int) = a < b
+    def lt(a: Int, b: Int): Boolean = a < b
 
     val MFCSAM = Map[String, (Int, (Int, Int) => Boolean)](
-        ("children", (3, eq _)),
-        ("cats", (7, gt _)),
-        ("samoyeds", (2, eq _)),
-        ("pomeranians", (3, lt _)),
-        ("akitas", (0, eq _)),
-        ("vizslas", (0, eq _)),
-        ("goldfish", (5, lt _)),
-        ("trees", (3, gt _)),
-        ("cars", (2, eq _)),
-        ("perfumes", (1, eq _))
+        ("children", (3, eq)),
+        ("cats", (7, gt)),
+        ("samoyeds", (2, eq)),
+        ("pomeranians", (3, lt)),
+        ("akitas", (0, eq)),
+        ("vizslas", (0, eq)),
+        ("goldfish", (5, lt)),
+        ("trees", (3, gt)),
+        ("cars", (2, eq)),
+        ("perfumes", (1, eq))
     )
 
 
@@ -49,17 +49,17 @@ object Day16 extends AoCApp {
         case (s, (n, (v, _))) => suesWith(s, n, v, eq)
     }
 
-    println("Part 1: " + (possibleSues.headOption match {
+    part(1, possibleSues.headOption match {
         case Some((n, _)) => n + ""
         case None => "n/a"
-    }))
+    })
 
     val correctPossibleSues = MFCSAM.foldLeft(sues) {
         case (s, (n, (v, c))) => suesWith(s, n, v, c)
     }
 
-    println("Part 2: " + (correctPossibleSues.headOption match {
+    part(2, correctPossibleSues.headOption match {
         case Some((n, _)) => n + ""
         case None => "n/a"
-    }))
+    })
 }

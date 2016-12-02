@@ -39,9 +39,9 @@ object Day09 extends AoCApp {
     val pathsWithLength = paths.map(p => (p, pathLength(p)))
 
     val (shortestPath, minLength) = pathsWithLength.minBy(_._2)
-    println(s"Part 1: $minLength")
+    part(1, minLength)
 
     val (longestPath, maxLength) = pathsWithLength.maxBy(_._2)
-    println(s"Part 2: $maxLength")
+    part(2, maxLength)
 
 }

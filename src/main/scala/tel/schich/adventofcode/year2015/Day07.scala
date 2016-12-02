@@ -48,18 +48,18 @@ object Day07 extends AoCApp {
 
     case class RShift(input: Input, by: Int, output: String) extends Unary
 
-    def num(s: String) = s.forall(Character.isDigit)
+    def num(s: String): Boolean = s.forall(Character.isDigit)
 
     def input(s: String): Input =
         if (num(s)) Const(s.toInt)
         else Dyn(s)
 
-    val wire   = raw"(\w+) -> (\w+)".r
-    val and    = raw"(\w+) AND (\w+) -> (\w+)".r
-    val or     = raw"(\w+) OR (\w+) -> (\w+)".r
-    val not    = raw"NOT (\w+) -> (\w+)".r
-    val lshift = raw"(\w+) LSHIFT (\d+) -> (\w+)".r
-    val rshift = raw"(\w+) RSHIFT (\d+) -> (\w+)".r
+    val wire   = "(\\w+) -> (\\w+)".r
+    val and    = "(\\w+) AND (\\w+) -> (\\w+)".r
+    val or     = "(\\w+) OR (\\w+) -> (\\w+)".r
+    val not    = "NOT (\\w+) -> (\\w+)".r
+    val lshift = "(\\w+) LSHIFT (\\d+) -> (\\w+)".r
+    val rshift = "(\\w+) RSHIFT (\\d+) -> (\\w+)".r
 
     val ICs: Seq[IC] = input.map {
         case wire(i, o) => Wire(input(i), o)
@@ -130,7 +130,7 @@ object Day07 extends AoCApp {
 
     val relevantValue1 = evaluate(ICs)(RelevantWire)
 
-    println(s"Part 1: $relevantValue1")
+    part(1, relevantValue1)
 
     val newICs = ICs.map {
         case Wire(_, ReplaceWire) => Wire(Const(relevantValue1), ReplaceWire)
@@ -139,6 +139,6 @@ object Day07 extends AoCApp {
 
     val relevantValue2 = evaluate(newICs)(RelevantWire)
 
-    println(s"Part 2: $relevantValue2")
+    part(2, relevantValue2)
 
 }

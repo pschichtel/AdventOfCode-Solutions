@@ -35,17 +35,17 @@ object Day08 extends AoCApp {
         }
     }
 
-    def sizes(strings: Seq[(String, String)]) =
+    def sizes(strings: Seq[(String, String)]): (Int, Int) =
         strings.map { case (ext, int) => (ext.length, int.length) }
             .foldLeft((0, 0)) { case ((aext, aint), (bext, bint)) => (aext + bext, aint + bint) }
 
     val parsedStrings = input.map(s => (s, parse(s)))
     val (ext, int) = sizes(parsedStrings)
 
-    println(s"Part 1: ${ext - int}")
+    part(1, ext - int)
 
 
-    def encode(s: String) = {
+    def encode(s: String): String = {
 
         '"' + s.flatMap {
             case '"' => "\\\""
@@ -58,6 +58,6 @@ object Day08 extends AoCApp {
     val encodedStrings = input.map(s => (s, encode(s)))
     val (normal, encoded) = sizes(encodedStrings)
 
-    println(s"Part 2: ${encoded - normal}")
+    part(2, encoded - normal)
 
 }

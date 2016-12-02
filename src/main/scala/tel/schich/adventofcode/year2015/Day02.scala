@@ -12,7 +12,7 @@ object Day02 extends AoCApp {
 
     val area = values.map { case (x, y, z) => 2 * x * y + 2 * y * z + 2 * x * z + min(x * y, min(y * z, x * z)) }.sum
 
-    println("Part 1: " + area)
+    part(1, area)
 
 
     def mid(x: Int, y: Int, z: Int) = {
@@ -23,5 +23,5 @@ object Day02 extends AoCApp {
 
     val ribbon = values.map { case (x, y, z) => 2 * min(x, min(y, z)) + 2 * mid(x, y, z) + x * y * z }.sum
 
-    println("Part 2: " + ribbon)
+    part(2, ribbon)
 }
