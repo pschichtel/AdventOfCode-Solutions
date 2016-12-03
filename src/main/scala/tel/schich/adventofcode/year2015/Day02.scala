@@ -15,7 +15,7 @@ object Day02 extends AoCApp {
     part(1, area)
 
 
-    def mid(x: Int, y: Int, z: Int) = {
+    def mid(x: Int, y: Int, z: Int): Int = {
         if (x == y && y == z || x == y || x == z) x
         else if (y == z) y
         else (x + y + z) - min(x, min(y, z)) - max(x, max(y, z))
