@@ -1,9 +1,17 @@
 package tel.schich.adventofcode
 
+import java.io.FileNotFoundException
+
 import scala.io.Source
 
 trait AoCApp extends App {
-    def sourceFromCP(path: String): Source = Source.fromInputStream(getClass.getResourceAsStream(path))
+    def sourceFromCP(path: String): Source = {
+        val resourceStream = getClass.getResourceAsStream(path)
+        if (resourceStream == null) {
+            throw new FileNotFoundException(s"File not found in classpath: $path")
+        }
+        Source.fromInputStream(resourceStream)
+    }
 
     lazy val inputSource = sourceFromCP("/" + this.getClass.getName.replace("$", "").replaceAll("\\.", "/") + ".txt")
     def inputText: String = inputSource.mkString.trim
