@@ -33,7 +33,7 @@ object Day09 extends AoCApp {
         else toVisit.flatMap((visit) => buildPaths(visit, next))
     }
 
-    def pathLength(p: Path) = p.sliding(2).map(w => distanceBetween((w.head, w(1)))).sum
+    def pathLength(p: Path): Int = p.sliding(2).map(w => distanceBetween((w.head, w(1)))).sum
 
     val paths = nodes.flatMap(buildPaths(_)).filter(p => p.size == nodes.size)
     val pathsWithLength = paths.map(p => (p, pathLength(p)))
