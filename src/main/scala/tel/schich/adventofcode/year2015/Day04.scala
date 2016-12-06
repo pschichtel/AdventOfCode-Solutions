@@ -15,7 +15,7 @@ object Day04 extends AoCApp {
 
     def startsWith(prefix: String): PartialFunction[(Int, String), Boolean] = {
         {
-            case (n, s: String) => s.startsWith(prefix)
+            case (_, s: String) => s.startsWith(prefix)
         }
     }
 
