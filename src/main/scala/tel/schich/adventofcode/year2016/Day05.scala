@@ -2,6 +2,7 @@ package tel.schich.adventofcode.year2016
 
 import tel.schich.adventofcode.AoCApp
 import tel.schich.adventofcode.year2015.Day04.md5
+import tel.schich.adventofcode.year2015.Day04.startsWithNZeros
 
 import scala.annotation.tailrec
 
@@ -9,7 +10,7 @@ object Day05 extends AoCApp {
 
     val input = "cxdnnyjw"
 
-    def findPassword[A](input: String, acc: A, fold: (A, String) => A, done: A => Boolean): A = {
+    def findPassword[A](input: String, acc: A, fold: (A, Array[Byte]) => A, done: A => Boolean): A = {
 
         @tailrec
         def recurse(out: A, i: Int): A = {
@@ -20,11 +21,21 @@ object Day05 extends AoCApp {
         recurse(acc, 0)
     }
 
-    def interesting(hash: String): Boolean = hash.startsWith("00000")
+    def binaryToHex(bin: Seq[Byte]): Seq[Char] = {
+        bin.flatMap("%02X".format(_))
+    }
+
+    val interesting = startsWithNZeros(5)
+    //def interesting(hash: Array[Byte]): Boolean = hash.startsWith("00000")
 
     val firstDoorPassword: String = findPassword(
         input, "",
-        (pass: String, s: String) => if (interesting(s)) pass + s(5) else pass,
+        (pass: String, binHash: Array[Byte]) => {
+            if (interesting(binHash)) {
+                val hex = binaryToHex(binHash)
+                pass + hex(5)
+            } else pass
+        },
         (s: String) => s.length == 8
     )
 
@@ -34,13 +45,16 @@ object Day05 extends AoCApp {
 
     val secondDoorPassword: String = findPassword(
         input, "________",
-        (pass: String, s: String) => {
-            if (interesting(s) && isCodePosition(s(5))) {
-                val pos = s(5) - '0'
-                if (pass(pos) == '_') {
-                    val newPass = pass.updated(pos, s(6))
-                    println(s"$s -> $newPass")
-                    newPass
+        (pass: String, bin: Array[Byte]) => {
+            if (interesting(bin)) {
+                val hex = binaryToHex(bin)
+                if (isCodePosition(hex(5))) {
+                    val pos = hex(5) - '0'
+                    if (pass(pos) == '_') {
+                        val newPass = pass.updated(pos, hex(6))
+                        println(s"${hex.mkString} -> $newPass")
+                        newPass
+                    } else pass
                 } else pass
             } else pass
         },
