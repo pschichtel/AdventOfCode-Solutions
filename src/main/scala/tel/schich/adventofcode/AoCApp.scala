@@ -1,7 +1,9 @@
 package tel.schich.adventofcode
 
 import java.io.FileNotFoundException
+import java.util.concurrent.TimeUnit
 
+import scala.concurrent.duration.TimeUnit
 import scala.io.Source
 
 trait AoCApp extends App {
@@ -24,5 +26,12 @@ trait AoCApp extends App {
     def notImplementedYet(): Unit = {
         println("Not implemented yet!")
         System.exit(1)
+    }
+
+    def timed[U](unit: TimeUnit)(value: => U): U = {
+        val start = System.currentTimeMillis()
+        val delta = unit.convert(System.currentTimeMillis() - start, TimeUnit.MILLISECONDS)
+        println(s"Time: $delta ms")
+        value
     }
 }

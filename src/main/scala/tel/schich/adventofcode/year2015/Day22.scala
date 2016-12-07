@@ -1,59 +1,65 @@
 package tel.schich.adventofcode.year2015
 
-import java.util.concurrent.atomic.AtomicInteger
-
 import tel.schich.adventofcode.AoCApp
 import tel.schich.adventofcode.year2015.Day21.extractNumber
 
 import scala.annotation.tailrec
-import scala.collection.parallel.ParSeq
 
 object Day22 extends AoCApp {
 
-    sealed trait Result {
-        def terminal = false
-    }
-
-    val Debug = false
-    @inline
-    def println(s: => Any = ""): Unit = {
-        if (Debug) Predef.println(s)
-    }
-
-    case class Success(manaUsed: Int) extends Result
+    sealed trait Result
+    case class Success(state: SimulationState) extends Result
+    case object CastedActiveEffect extends Result
     case object Defeated extends Result
     case object OutOfMana extends Result
-    case class SimulationState(player: Player, enemy: Enemy, effects: Set[Spell]) extends Result
-    case object CastedActiveEffect extends Result
+    case class SimulationState(playerHealth: Int, playerArmor: Int, playerMana: Int, enemyHealth: Int,
+                               enemyDamage: Int, manaUsed: Int = 0, effects: Vector[Spell] = Vector.empty,
+                               usedSpells: Vector[Spell] = Vector.empty) extends Result {
+
+        def applySpell(spell: Spell): Result = {
+            val cost = spell.cost
+            val nowUsedSpells = usedSpells :+ spell
+            if (cost > playerMana) OutOfMana
+            else {
+                if (spell.duration > 0) {
+                    if (effects.exists(_.name == spell.name)) CastedActiveEffect
+                    else copy(playerMana = playerMana - cost, manaUsed = manaUsed + cost, effects = effects :+ spell, usedSpells = nowUsedSpells)
+                } else {
+                    copy(playerHealth + spell.heal, playerArmor, playerMana - cost, enemyHealth - spell.damage, enemyDamage, manaUsed + cost, effects, nowUsedSpells)
+                }
+            }
+        }
+
+        def damagePlayer(): SimulationState = {
+            copy(playerHealth = playerHealth - Math.max(enemyDamage - playerArmor, 1))
+        }
+
+        def applyHardMode(applyHardMode: Boolean): SimulationState = {
+            if (applyHardMode) copy(playerHealth - 1)
+            else this
+        }
+
+        def applyEffects(): SimulationState = {
+            def wontRunOut(spell: Spell): Boolean = spell.duration > 1
+
+            if (effects.isEmpty) {
+                // player armor can only be set via shield spell, so without spells the armor must be reset to 0
+                if (playerArmor > 0) copy(playerArmor = 0)
+                else this
+            }
+            else {
+                val merge = effects.reduce(_.add(_))
+
+                copy(playerHealth + merge.heal, merge.armor, playerMana + merge.mana, enemyHealth - merge.damage, enemyDamage, manaUsed, effects.filter(wontRunOut).map(_.decreasedDuration))
+            }
+        }
+    }
 
     case class Spell(name: String, cost: Int, damage: Int = 0, heal: Int = 0, armor: Int = 0, mana: Int = 0, duration: Int = 0) {
         def decreasedDuration: Spell = copy(duration = duration - 1)
         def add(o: Spell): Spell = copy("Merge", cost + o.cost, damage + o.damage, heal + o.heal, armor + o.armor, mana + o.mana, 0)
     }
 
-    case class Player(health: Int, armor: Int, mana: Int, manaUsed: Int = 0) {
-        def applySpell(spell: Spell): Player = {
-            copy(health = health + spell.heal, armor = spell.armor, mana = mana + spell.mana)
-        }
-
-        def useSpell(spell: Spell): Player = {
-            val cost = spell.cost
-            copy(mana = mana - cost, manaUsed = manaUsed + cost)
-        }
-
-    }
-
-    case class Enemy(health: Int, damage: Int) {
-        def applySpell(spell: Spell): Enemy = copy(health = health - spell.damage)
-
-        def damage(player: Player): Player = {
-            player.copy(health = player.health - Math.max(damage - player.armor, 1))
-        }
-    }
-
-    val Seq(hpLine, damageLine) = inputLines
-
-    val enemy = Enemy(extractNumber(hpLine), extractNumber(damageLine))
 
     val MagicMissile = Spell("Magic Missle", cost = 53, damage = 4)
     val Drain = Spell("Drain", cost = 73, damage = 2, heal = 2)
@@ -62,133 +68,94 @@ object Day22 extends AoCApp {
     val Recharge = Spell("Recharge", cost = 229, mana = 101, duration = 5)
     val Spells = Vector(MagicMissile, Drain, Shield, Poison, Recharge)
 
-    def simulateRound(simulationState: SimulationState, spell: Spell, hardMode: Boolean = false): Result = {
+    def simulateRound(simulationState: SimulationState, spell: Spell, hardMode: Boolean): Result = {
 
-        @inline
-        def applyHardMode(player: Player) = {
-            if (hardMode) player.copy(health = player.health - 1)
-            else player
-        }
-
-        def wontRunOut(spell: Spell): Boolean = spell.duration > 1
-
-        @inline
-        def applyEffects(player: Player, enemy: Enemy, effects: Set[Spell]): (Player, Enemy, Set[Spell]) = {
-            if (effects.isEmpty) (player, enemy, effects)
+        def playerTurn(state: SimulationState, spell: Spell): Result = {
+            val hardModeState = state.applyHardMode(hardMode)
+            if (hardModeState.playerHealth <= 0) Defeated
             else {
-                val merge = effects.reduce(_.add(_))
-                (player.applySpell(merge), enemy.applySpell(merge), effects.filter(wontRunOut).map(_.decreasedDuration))
-            }
-        }
+                val affectedState = hardModeState.applyEffects()
 
-        def playerTurn(player: Player, enemy: Enemy, spell: Spell, effects: Set[Spell]): Result = {
-            println()
-            println(s"-- Player turn --")
-            println(s"- Player has ${player.health} hit points, ${player.armor} armor, ${player.mana} mana")
-            println(s"- Boss has ${enemy.health} hit points")
-            val (affectedPlayer, affectedEnemy, activeEffects) = applyEffects(applyHardMode(player), enemy, effects)
-
-            if (affectedPlayer.health <= 0) Defeated
-            else if (affectedEnemy.health <= 0) Success(affectedPlayer.manaUsed)
-            else {
-                if (spell.cost > affectedPlayer.mana) OutOfMana
+                if (affectedState.playerHealth <= 0) Defeated
+                else if (affectedState.enemyHealth <= 0) Success(affectedState)
                 else {
-                    val spellCastingPlayer = affectedPlayer.useSpell(spell)
-                    println(s"Player casts ${spell.name}.")
-                    if (spell.duration > 0) {
-                        if (activeEffects.contains(spell)) CastedActiveEffect
-                        else enemyTurn(spellCastingPlayer, affectedEnemy, activeEffects + spell)
-                    } else {
-                        val finalEnemy = affectedEnemy.applySpell(spell)
-                        val finalPlayer = spellCastingPlayer.applySpell(spell)
-                        if (finalEnemy.health <= 0) Success(finalPlayer.manaUsed)
-                        else enemyTurn(finalPlayer, finalEnemy, activeEffects)
+                    affectedState.applySpell(spell) match {
+                        case spellCastedState: SimulationState =>
+                            if (spellCastedState.enemyHealth <= 0) Success(spellCastedState)
+                            else enemyTurn(spellCastedState)
+                        case result => result
+
                     }
                 }
             }
         }
 
         @inline
-        def enemyTurn(player: Player, enemy: Enemy, effects: Set[Spell]): Result = {
-            println()
-            println(s"-- Boss turn --")
-            println(s"- Player has ${player.health} hit points, ${player.armor} armor, ${player.mana} mana")
-            println(s"- Boss has ${enemy.health} hit points")
-            val (affectedPlayer, affectedEnemy, activeEffects) = applyEffects(player, enemy, effects)
+        def enemyTurn(state: SimulationState): Result = {
+            val affectedState = state.applyEffects()
 
-            if (affectedEnemy.health <= 0) Success(affectedPlayer.manaUsed)
+            if (affectedState.enemyHealth <= 0) Success(affectedState)
             else {
-                val damagedPlayer = affectedEnemy.damage(affectedPlayer)
-                if (damagedPlayer.health <= 0) Defeated
-                else SimulationState(damagedPlayer, affectedEnemy, activeEffects)
+                val damagedState = affectedState.damagePlayer()
+                if (damagedState.playerHealth <= 0) Defeated
+                else damagedState
             }
         }
 
-        playerTurn(simulationState.player, simulationState.enemy, spell, simulationState.effects)
+        playerTurn(simulationState, spell)
     }
 
-    def genAndSimFights(simulationState: SimulationState, spells: ParSeq[Spell], hardMode: Boolean): ParSeq[Result] = {
-
-        def recurse(spell: Spell) = {
-            simulateRound(simulationState, spell, hardMode) match {
-                case continue: SimulationState => genAndSimFights(continue, spells, hardMode)
-                case result =>  List(result)
-            }
-        }
-
-        spells.flatMap(recurse)
-    }
-
-    def generateAndSimulateFights(simulationState: SimulationState, spells: Seq[Spell], hardMode: Boolean): Unit = {
-
-        val allSpells = spells.toList
-
-        val i = new AtomicInteger(1)
-
-        @tailrec
-        def recurse(simulationState: List[SimulationState], spellStack: List[List[Spell]], results: List[Result]): List[Result] = {
-            if (simulationState.isEmpty) results
-            else {
-                spellStack match {
-                    case Nil => results
-                    case Nil:: previousSpells => recurse(simulationState.tail, previousSpells, results)
-                    case (spell :: otherSpells) :: previousSpells =>
-                        simulateRound(simulationState.head, spell, hardMode) match {
-                            case continue: SimulationState => recurse(continue :: simulationState, allSpells :: otherSpells :: previousSpells, results)
-                            case result =>
-                                if (i.getAndIncrement() % 10000000 == 0) Predef.println(i)
-                                recurse(simulationState, otherSpells :: previousSpells, result :: results)
-                        }
-                }
-            }
-        }
-
-        spells.par.flatMap(spell => recurse(List(simulationState), List(List(spell)), Nil))
-
-    }
-
-    def simulateFight(player: Player, enemy: Enemy, spells: Seq[Spell], hardMode: Boolean): Result = {
-        spells.foldLeft[Result](SimulationState(player, enemy, Set.empty)) {
+    def simulateFight(state: SimulationState, spells: Seq[Spell], hardMode: Boolean): Result = {
+        spells.foldLeft[Result](state) {
             case (s: SimulationState, spell) => simulateRound(s, spell, hardMode)
             case (r, _) => r
         }
     }
 
-    val results = generateAndSimulateFights(SimulationState(Player(50, 0, 500), enemy, Set.empty), Spells, hardMode = false)
-//    val results = genAndSimFights(SimulationState(Player(50, 0, 500), enemy, Set.empty), Spells.par, hardMode = false)
-//    val results = generateAndSimulateFights(SimulationState(Player(10, 0, 250), Enemy(14, 8), Set.empty), Spells, hardMode = false)
-//    val successfulResults = results.filter {
-//        case _: Success => true
-//        case _ => false
-//    }
-//    println(successfulResults.length)
+    def findCheapestFight(startState: SimulationState, availableSpells: List[Spell], hardMode: Boolean = false): Option[SimulationState] = {
 
-//    val spells = Vector(
-////        Poison, Recharge, Shield, Poison, MagicMissile, MagicMissile, MagicMissile, MagicMissile
-////        Poison, Recharge, Shield, Poison, Recharge, Drain, Poison, MagicMissile
-//        Recharge, Shield, Drain, Poison, MagicMissile
-//    )
-////    println(simulateFight(Player(50, 0, 500), Enemy(51, 9), spells, hardMode = true))
-//    println(simulateFight(Player(10, 0, 250), Enemy(14, 8), spells, hardMode = false))
+        @tailrec
+        def recurse(stateStack: List[SimulationState], spellStack: List[List[Spell]], currentBest: Option[SimulationState]): Option[SimulationState] = {
+            if (stateStack.isEmpty) currentBest
+            else {
+                spellStack match {
+                    case Nil => currentBest
+                    case Nil :: previousSpells => recurse(stateStack.tail, previousSpells, currentBest)
+                    case (spell :: otherSpells) :: previousSpells =>
+                        simulateRound(stateStack.head, spell, hardMode) match {
+                            case continue: SimulationState =>
+                                currentBest match {
+                                    case Some(bestState) if continue.manaUsed >= bestState.manaUsed =>
+                                        recurse(stateStack.tail, previousSpells, currentBest)
+                                    case _ =>
+                                        recurse(continue :: stateStack, availableSpells :: otherSpells :: previousSpells, currentBest)
+                                }
+                            case Success(finalState) =>
+                                val newBest = currentBest match {
+                                    case Some(bestState) =>
+                                        if (finalState.manaUsed < bestState.manaUsed) Some(finalState)
+                                        else currentBest
+                                    case _ => Some(finalState)
+                                }
+                                recurse(stateStack, otherSpells :: previousSpells, newBest)
+                            case _ =>
+                                recurse(stateStack, otherSpells :: previousSpells, currentBest)
+                        }
+                }
+            }
+        }
+
+        recurse(List(startState), List(availableSpells), None)
+
+    }
+
+    val Seq(hpLine, damageLine) = inputLines
+    val startState = SimulationState(50, 0, 500, extractNumber(hpLine), extractNumber(damageLine))
+
+    val Some(cheapestEasyFight) = findCheapestFight(startState, Spells.toList)
+    part(1, cheapestEasyFight.manaUsed)
+
+    val Some(cheapestHardFight) = findCheapestFight(startState, Spells.toList, hardMode = true)
+    part(2, cheapestHardFight.manaUsed)
 
 }
