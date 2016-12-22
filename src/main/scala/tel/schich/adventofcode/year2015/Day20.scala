@@ -7,7 +7,7 @@ import scala.math._
 object Day20 extends AoCApp {
     val input = 34000000
 
-    val N: Stream[Int] = 1 #:: N.map(_ + 1)
+    def N: Stream[Int] = 1 #:: N.map(_ + 1)
 
     def numberOfPresentsFor(house: Int, factor: Int = 10, f: (Int, Int) => Boolean = (a, b) => true): Int = {
         val divisors = N.take(sqrt(house).toInt).filter(house % _ == 0).map {d =>
