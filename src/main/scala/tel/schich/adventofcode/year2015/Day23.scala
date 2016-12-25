@@ -8,14 +8,14 @@ object Day23 extends AoCApp {
 
     sealed trait Instruction
 
-    case class Mutation(r: String, f: Int => Int) extends Instruction
+    case class Mutation(r: String, f: (Processor, Int) => Int) extends Instruction
     case class Jump(condition: Processor => Boolean, offset: Int) extends Instruction
 
     case class Processor(registers: Map[String, Int], pc: Int) {
         def isRegister(r: String, f: Int => Boolean): Boolean = f(registers.getOrElse(r, 0))
         def registerValue(r: String): Int = registers.getOrElse(r, 0)
-        def applyToRegister(r: String, f: Int => Int): Processor = {
-            copy(registers = registers.updated(r, f(registerValue(r))))
+        def applyToRegister(r: String, f: (Processor, Int) => Int): Processor = {
+            copy(registers = registers.updated(r, f(this, registerValue(r))))
         }
 
         def goto(to: Int): Processor = copy(pc = pc + to)
@@ -29,7 +29,8 @@ object Day23 extends AoCApp {
             val instruction = program(cpu.pc)
 
             instruction match {
-                case Mutation(r, f) => execute(cpu.applyToRegister(r, f).nextInstruction, program)
+                case Mutation(r, f) =>
+                    execute(cpu.applyToRegister(r, f).nextInstruction, program)
                 case Jump(condition, to) =>
                     if (condition(cpu)) execute(cpu.goto(to), program)
                     else execute(cpu.nextInstruction, program)
@@ -47,9 +48,9 @@ object Day23 extends AoCApp {
         val jio = "jio (\\w+), ([+-]\\d+)".r
 
         rawInstructions.map {
-            case hlf(r) => Mutation(r, _ / 2)
-            case tpl(r) => Mutation(r, _ * 3)
-            case inc(r) => Mutation(r, _ + 1)
+            case hlf(r) => Mutation(r, (_, r) => r / 2)
+            case tpl(r) => Mutation(r, (_, r) => r * 3)
+            case inc(r) => Mutation(r, (_, r) => r + 1)
             case jmp(offset) => Jump(_ => true, offset.toInt)
             case jie(r, offset) => Jump(_.registerValue(r) % 2 == 0, offset.toInt)
             case jio(r, offset) => Jump(_.registerValue(r) == 1, offset.toInt)
