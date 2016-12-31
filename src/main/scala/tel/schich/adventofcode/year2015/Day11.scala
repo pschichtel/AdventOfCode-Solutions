@@ -7,8 +7,6 @@ import scala.util.matching.Regex
 
 object Day11 extends AoCApp {
 
-    val input = "cqjxjnds"
-
     @tailrec
     private def increment(s: String, suffix: String = ""): String = {
 
@@ -41,7 +39,7 @@ object Day11 extends AoCApp {
         hasIncreasing(s) && !containsForbidden(s) && containsLetterPairs(s)
     }
 
-    val stream = streamIncrements(input).filter(stepOneCond)
+    val stream = streamIncrements(inputText).filter(stepOneCond)
 
     val firstPass = stream.head
     part(1, firstPass)

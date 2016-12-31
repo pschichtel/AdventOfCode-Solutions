@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 
 object Day10 extends AoCApp {
 
-    val input: VString = vstr("1113122113")
+    val input: VString = vstr(inputText)
     val iterations = (40, 50)
 
     @inline
@@ -31,12 +31,12 @@ object Day10 extends AoCApp {
     def transformer(input: VString, it: Int): VString = lookAndSay(input)
 
     // warmup
-    (0 until iterations._2).foldLeft(input)(transformer)
+    // (0 until iterations._2).foldLeft(input)(transformer)
 
     val start = System.currentTimeMillis()
     val transformed = (0 until iterations._1).foldLeft(input)(transformer)
-    part(1, "${transformed.length} ${System.currentTimeMillis() - start}ms")
+    part(1, s"${transformed.length} ${System.currentTimeMillis() - start}ms")
 
     val transformedMore = (iterations._1 until iterations._2).foldLeft(transformed)(transformer)
-    part(2, "${transformedMore.length} ${System.currentTimeMillis() - start}ms")
+    part(2, s"${transformedMore.length} ${System.currentTimeMillis() - start}ms")
 }

@@ -6,11 +6,8 @@ import tel.schich.adventofcode.AoCApp
 
 object Day04 extends AoCApp {
 
-    val input = "iwrupvqb"
-
-    lazy val hasher = MessageDigest.getInstance("MD5")
-
-    def md5(s: String): Array[Byte] = hasher.digest(s.getBytes)
+    def hash(hashFunciton: MessageDigest, s: String): Array[Byte] = hashFunciton.digest(s.getBytes)
+    val md5 = hash(MessageDigest.getInstance("MD5"), _: String)
 
     def startsWithNZeros(n: Int): Array[Byte] => Boolean = {
         val fullBytes = n / 2
@@ -22,6 +19,8 @@ object Day04 extends AoCApp {
     }
 
     def hashStream(input: String, number: Int = 0): Stream[(Int, Array[Byte])] = (number, md5(input + number)) #:: hashStream(input, number + 1)
+
+    val input = inputText
 
     private val startsWith5Zeros = startsWithNZeros(5)
     var (n1, _) = hashStream(input).filter(p => startsWith5Zeros(p._2)).head
