@@ -6,8 +6,12 @@ import tel.schich.adventofcode.AoCApp
 
 object Day04 extends AoCApp {
 
-    def hash(hashFunciton: MessageDigest, s: String): Array[Byte] = hashFunciton.digest(s.getBytes)
-    val md5 = hash(MessageDigest.getInstance("MD5"), _: String)
+    def hash(function: String): String => Array[Byte] = {
+        val hashFunction = MessageDigest.getInstance(function)
+        (s: String) => hashFunction.digest(s.getBytes)
+    }
+
+    val md5 = hash("MD5")
 
     def startsWithNZeros(n: Int): Array[Byte] => Boolean = {
         val fullBytes = n / 2

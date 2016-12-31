@@ -1,7 +1,5 @@
 package tel.schich.adventofcode.year2016
 
-import java.security.MessageDigest
-
 import tel.schich.adventofcode.AoCApp
 import tel.schich.adventofcode.year2015.Day04.hash
 import tel.schich.adventofcode.year2015.Day04.startsWithNZeros
@@ -10,9 +8,9 @@ import scala.annotation.tailrec
 
 object Day05 extends AoCApp {
 
-    val md5 = hash(MessageDigest.getInstance("MD5"), _: String)
-
     def findPassword[A](input: String, acc: A, fold: (A, Array[Byte]) => A, done: A => Boolean): A = {
+
+        val md5 = hash("MD5")
 
         @tailrec
         def recurse(out: A, i: Int): A = {
