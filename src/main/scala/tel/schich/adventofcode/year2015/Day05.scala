@@ -5,7 +5,6 @@ import tel.schich.adventofcode.AoCApp
 import scala.math._
 
 object Day05 extends AoCApp {
-    println("Day  5")
 
     val input = inputLines
 

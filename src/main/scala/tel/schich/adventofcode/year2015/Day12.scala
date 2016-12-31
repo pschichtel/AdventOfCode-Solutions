@@ -5,11 +5,8 @@ import tel.schich.adventofcode.AoCApp
 import scala.util.parsing.json._ // scala-parser-combinators artifact
 
 object Day12 extends AoCApp {
-    println("Day 12")
 
-    val input = inputSource.mkString.trim
-
-    JSON.parseFull(input).foreach { tree =>
+    JSON.parseFull(inputText).foreach { tree =>
 
         def findNumbers(o: Any): Seq[Number] = {
             o match {

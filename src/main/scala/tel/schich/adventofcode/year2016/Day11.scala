@@ -20,4 +20,6 @@ object Day11 extends AoCApp {
     val startFloor = 0
 
     floors.foreach(println)
+
+    notImplementedYet()
 }

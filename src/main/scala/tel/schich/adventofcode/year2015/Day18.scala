@@ -5,7 +5,6 @@ import tel.schich.adventofcode.AoCApp
 import scala.math._
 
 object Day18 extends AoCApp {
-    println("Day 18")
 
     val input = inputSource.mkString.replaceAll("\\s", "")
     val steps = 100

@@ -3,6 +3,7 @@ package tel.schich.adventofcode.year2015
 import tel.schich.adventofcode.AoCApp
 
 object Day24 extends AoCApp {
+
     val packageWeights = inputLines.map(_.toInt)
 
     def findMinimumQuantumEntanglement(weights: Seq[Int], compartments: Int): Long = {

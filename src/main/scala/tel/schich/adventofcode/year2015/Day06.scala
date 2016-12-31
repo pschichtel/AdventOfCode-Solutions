@@ -6,8 +6,6 @@ import scala.math._
 
 object Day06 extends AoCApp {
 
-    println("Day  6")
-
     val Command = "(turn off|turn on|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)".r
     val input = inputLines
 

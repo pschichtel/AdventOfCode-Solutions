@@ -6,8 +6,6 @@ import scala.math._
 
 object Day02 extends AoCApp {
 
-    println("Day  2")
-
     val values = inputLines.map(_.split('x')).map(x => (x(0).toInt, x(1).toInt, x(2).toInt))
 
     val area = values.map { case (x, y, z) => 2 * x * y + 2 * y * z + 2 * x * z + min(x * y, min(y * z, x * z)) }.sum

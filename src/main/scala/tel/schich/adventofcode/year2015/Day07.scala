@@ -2,9 +2,7 @@ package tel.schich.adventofcode.year2015
 
 import tel.schich.adventofcode.AoCApp
 
-
 object Day07 extends AoCApp {
-    println("Day  7")
 
     val input = inputLines.toList
     val RelevantWire = "a"

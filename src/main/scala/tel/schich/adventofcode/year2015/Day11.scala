@@ -6,7 +6,6 @@ import scala.annotation.tailrec
 import scala.util.matching.Regex
 
 object Day11 extends AoCApp {
-    println("Day 11")
 
     val input = "cqjxjnds"
 

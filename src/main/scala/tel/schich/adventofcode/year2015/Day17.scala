@@ -4,7 +4,6 @@ import tel.schich.adventofcode.AoCApp
 
 
 object Day17 extends AoCApp {
-    println("Day 17")
 
     val input = inputLines
 

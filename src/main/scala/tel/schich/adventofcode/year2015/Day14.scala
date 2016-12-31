@@ -2,9 +2,7 @@ package tel.schich.adventofcode.year2015
 
 import tel.schich.adventofcode.AoCApp
 
-
 object Day14 extends AoCApp {
-    println("Day 14")
 
     val input = inputLines
     val RaceDuration = 2503

@@ -9,7 +9,7 @@ object Day20 extends AoCApp {
 
     def N: Stream[Int] = 1 #:: N.map(_ + 1)
 
-    def numberOfPresentsFor(house: Int, factor: Int = 10, f: (Int, Int) => Boolean = (a, b) => true): Int = {
+    def numberOfPresentsFor(house: Int, factor: Int = 10, f: (Int, Int) => Boolean = (_, _) => true): Int = {
         val divisors = N.take(sqrt(house).toInt).filter(house % _ == 0).map {d =>
             val base = if (f(house, d)) d else 0
             val second = house / d

@@ -4,7 +4,6 @@ import tel.schich.adventofcode.AoCApp
 
 import scala.annotation.tailrec
 
-
 object Day01 extends AoCApp {
 
     val dirs = Vector('N', 'O', 'S', 'W')

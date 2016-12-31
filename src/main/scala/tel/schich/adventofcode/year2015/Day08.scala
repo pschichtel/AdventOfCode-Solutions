@@ -5,7 +5,6 @@ import tel.schich.adventofcode.AoCApp
 import scala.annotation.tailrec
 
 object Day08 extends AoCApp {
-    println("Day  8")
 
     val input = inputLines
 

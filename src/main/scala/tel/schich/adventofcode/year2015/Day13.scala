@@ -2,12 +2,9 @@ package tel.schich.adventofcode.year2015
 
 import tel.schich.adventofcode.AoCApp
 
-
 object Day13 extends AoCApp {
-    println("Day 13")
 
     val input = inputLines
-
 
     type Relation = (String, String, Int)
 

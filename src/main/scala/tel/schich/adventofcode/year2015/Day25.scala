@@ -1,9 +1,6 @@
 package tel.schich.adventofcode.year2015
 
-import java.util.concurrent.atomic.AtomicInteger
-
 import tel.schich.adventofcode.AoCApp
-import tel.schich.adventofcode.year2015.Day20.N
 
 import scala.annotation.tailrec
 

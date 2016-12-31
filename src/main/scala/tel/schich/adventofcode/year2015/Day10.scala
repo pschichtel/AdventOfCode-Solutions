@@ -5,7 +5,6 @@ import tel.schich.adventofcode.AoCApp
 import scala.annotation.tailrec
 
 object Day10 extends AoCApp {
-    println("Day 10")
 
     val input: VString = vstr("1113122113")
     val iterations = (40, 50)
