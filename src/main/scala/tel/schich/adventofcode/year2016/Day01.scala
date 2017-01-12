@@ -6,30 +6,23 @@ import scala.annotation.tailrec
 
 object Day01 extends AoCApp {
 
-    val dirs = Vector('N', 'O', 'S', 'W')
-    def rotate(dir: Char, rot: Char): Char = {
-        val rotation = if (rot == 'R') 1 else -1
-        dirs((dirs.indexOf(dir) + rotation + dirs.length) % dirs.length)
+    val instructions: Seq[(Rotation, Int)] = inputText.split(',').map(_.trim.splitAt(1)).map {
+        case ("R", steps) => ((rotateRight _).tupled, steps.toInt)
+        case ("L", steps) => ((rotateLeft _).tupled, steps.toInt)
     }
 
-    val instructions: Seq[(Char, Int)] = inputText.split(',').map(_.trim.splitAt(1)).map {
-        case (rot, steps) => (rot.head, steps.toInt)
-    }
+    type Rotation = ((Int, Int)) => (Int, Int)
+    def add(l: (Int, Int), r: (Int, Int)): (Int, Int) = (l._1 + r._1, l._2 + r._2)
+    def scale(pos: (Int, Int), scale: Int): (Int, Int) = (pos._1 * scale, pos._2 * scale)
+    def rotateLeft(x: Int, y: Int): (Int, Int) = (-y, x)
+    def rotateRight(x: Int, y: Int): (Int, Int) = (y, -x)
 
 
-    val (_, locations) = instructions.foldLeft(('N', Vector((0, 0)))) {
-        case ((lastDir, instr), (rot, steps)) =>
-            val (lastX, lastY) = instr.last
-            val newDir = rotate(lastDir, rot)
+    val (_, locations) = instructions.foldLeft(((0, 1), Vector((0, 0)))) {
+        case ((direction, corners), (rot, steps)) =>
+            val newDir = rot(direction)
 
-            val newLoc = newDir match {
-                case 'N' => (lastX, lastY + steps)
-                case 'O' => (lastX + steps, lastY)
-                case 'S' => (lastX, lastY - steps)
-                case 'W' => (lastX - steps, lastY)
-            }
-
-            (newDir, instr :+ newLoc)
+            (newDir, corners :+ add(corners.last, scale(newDir, steps)))
     }
 
     def manhattenDistance(from: (Int, Int) = (0, 0), to: (Int, Int)): Int = {
