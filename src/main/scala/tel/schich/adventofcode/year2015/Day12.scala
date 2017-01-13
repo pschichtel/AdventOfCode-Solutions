@@ -4,6 +4,16 @@ import tel.schich.adventofcode.AoCApp
 
 import scala.util.parsing.json._ // scala-parser-combinators artifact
 
+sealed trait JsonValue
+sealed trait JsonNumber[T] extends JsonValue {
+    def value: T
+}
+case class JsonObject(children: Map[String, JsonValue]) extends JsonValue
+case class JsonArray(children: Seq[JsonValue]) extends JsonValue
+case class JsonString(string: String)
+case class JsonFloat(value: Double) extends JsonNumber[Double]
+case class JsonInt(value: Long) extends JsonNumber[Long]
+
 object Day12 extends AoCApp {
 
     JSON.parseFull(inputText).foreach { tree =>
