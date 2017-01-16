@@ -9,6 +9,7 @@ object Day01 extends AoCApp {
     val instructions: Seq[(Rotation, Int)] = inputText.split(',').map(_.trim.splitAt(1)).map {
         case ("R", steps) => ((rotateRight _).tupled, steps.toInt)
         case ("L", steps) => ((rotateLeft _).tupled, steps.toInt)
+        case _ => throw new Exception("Unknown instruction!")
     }
 
     type Rotation = ((Int, Int)) => (Int, Int)
