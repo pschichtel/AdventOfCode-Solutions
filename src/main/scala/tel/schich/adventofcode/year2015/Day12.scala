@@ -48,8 +48,8 @@ object Day12 extends AoCApp {
                         case ':' =>
                             val (value, rest) = parseJsonValue(afterName.tail)
                             parseEntries(rest, children + (name -> value))
-                        case c =>
-                            throw new UnexpectedToken(c)
+                        case nc =>
+                            throw new UnexpectedToken(nc)
                     }
                 case '}' =>
                     (children, input.tail)
@@ -119,7 +119,6 @@ object Day12 extends AoCApp {
         def parse(input: Seq[Char], acc: String, float: Boolean): (JsonNumber, Seq[Char]) = {
             if (input.isEmpty) (toObj(acc, float), input)
             else input.head match {
-                // should also check for first character --v
                 case c if input == startInput && (c == '-' || c == '+') =>
                     parse(input.tail, acc + c, float)
                 case c @ '.' =>
