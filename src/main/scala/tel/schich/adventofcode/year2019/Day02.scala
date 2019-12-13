@@ -12,9 +12,11 @@ object Day02 extends AoCApp {
     type Instruction = (Program, Int) => (Program, Int)
     type InstructionSet = Map[Int, Instruction]
 
+    def deRef(mem: Program, pointerPointer: Int): Int = mem(mem(pointerPointer))
+
     def binaryOp(op: (Int, Int) => Int)(mem: Program, pc: Int): (Program, Int) = {
-        val a = mem(mem(pc + 1))
-        val b = mem(mem(pc + 2))
+        val a = deRef(mem, pc + 1)
+        val b = deRef(mem, pc + 2)
         (mem.updated(mem(pc + 3), op(a, b)), pc + 4)
     }
 
