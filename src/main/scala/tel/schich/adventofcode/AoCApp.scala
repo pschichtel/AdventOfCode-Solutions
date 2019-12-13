@@ -33,8 +33,9 @@ trait AoCApp extends App {
 
     def timed[U](unit: TimeUnit)(value: => U): U = {
         val start = System.currentTimeMillis()
+        val result = value
         val delta = unit.convert(System.currentTimeMillis() - start, TimeUnit.MILLISECONDS)
         println(s"Time: $delta ms")
-        value
+        result
     }
 }
