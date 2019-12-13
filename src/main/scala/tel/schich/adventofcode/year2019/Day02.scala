@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import tel.schich.adventofcode.AoCApp
 
+import scala.annotation.tailrec
 import scala.collection.immutable.ArraySeq
 
 object Day02 extends AoCApp {
@@ -20,9 +21,13 @@ object Day02 extends AoCApp {
         (mem.updated(mem(pc + 3), op(a, b)), pc + 4)
     }
 
-    def interpret(instructions: InstructionSet)(mem: Program, pc: Int): Program = {
+    @tailrec
+    def interpret(instructions: InstructionSet, mem: Program, pc: Int): Program = {
         if (pc == ExitPosition) mem
-        else (interpret(instructions) _).tupled(instructions(mem(pc))(mem, pc))
+        else {
+            val (newMem, newPc) = instructions(mem(pc))(mem, pc)
+            interpret(instructions, newMem, newPc)
+        }
     }
 
     def patch(mem: Program, patches: (Int, Int)*): Program =
@@ -41,7 +46,7 @@ object Day02 extends AoCApp {
 
     val program: Program = splitInput(',').map(_.toInt)
 
-    val invoke = (a: Int, b: Int) => interpret(instructions)(patch(program, 1 -> a, 2 -> b), 0)(0)
+    val invoke = (a: Int, b: Int) => interpret(instructions, patch(program, 1 -> a, 2 -> b), 0)(0)
 
     part(1, invoke(12, 2))
 
