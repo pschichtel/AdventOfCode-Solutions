@@ -33,19 +33,15 @@ object Day02 extends AoCApp {
     def patch(mem: Program, patches: (Int, Int)*): Program =
         patches.foldLeft(mem)((c, p) => c.updated(p._1, p._2))
 
-
-    val opAdd = binaryOp(_ + _) _
-    val opMul = binaryOp(_ * _) _
-    val opExit = (mem: Program, _: Int) => (mem, ExitPosition)
+    def exit(mem: Program, pc: Int): (Program, Int) = (mem, ExitPosition)
 
     val instructions: Map[Int, Instruction] = Map(
-        1 -> opAdd,
-        2 -> opMul,
-        99 -> opExit
+        1 -> binaryOp(_ + _),
+        2 -> binaryOp(_ * _),
+        99 -> exit
     )
 
     val program: Program = splitInput(',').map(_.toInt)
-
     val invoke = (a: Int, b: Int) => interpret(instructions, patch(program, 1 -> a, 2 -> b), 0)(0)
 
     part(1, invoke(12, 2))
