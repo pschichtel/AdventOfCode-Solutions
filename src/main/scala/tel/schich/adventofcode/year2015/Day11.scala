@@ -11,16 +11,16 @@ object Day11 extends AoCApp {
     private def increment(s: String, suffix: String = ""): String = {
 
         s.last match {
-            case 'z' => increment(s.dropRight(1), 'a' + suffix)
+            case 'z' => increment(s.dropRight(1), s"a$suffix")
             case c => s.dropRight(1) + (c + 1).toChar + suffix
         }
 
     }
 
-    def streamIncrements(s: String): Stream[String] = s #:: streamIncrements(increment(s))
+    def streamIncrements(s: String): LazyList[String] = s #:: streamIncrements(increment(s))
 
     def hasIncreasing(s: String, n: Int = 3): Boolean = {
-        s.sliding(n).exists(_.sliding(2).forall { w =>
+        s.toSeq.sliding(n).exists(_.sliding(2).forall { w =>
             w(0) + 1 == w(1).toInt
         })
     }

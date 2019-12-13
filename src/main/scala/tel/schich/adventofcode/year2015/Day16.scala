@@ -48,7 +48,7 @@ object Day16 extends AoCApp {
     }
 
     part(1, possibleSues.headOption match {
-        case Some((n, _)) => n + ""
+        case Some((n, _)) => s"$n"
         case None => "n/a"
     })
 
@@ -57,7 +57,7 @@ object Day16 extends AoCApp {
     }
 
     part(2, correctPossibleSues.headOption match {
-        case Some((n, _)) => n + ""
+        case Some((n, _)) => s"$n"
         case None => "n/a"
     })
 }

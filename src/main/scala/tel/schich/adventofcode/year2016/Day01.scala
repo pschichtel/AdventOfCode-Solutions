@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 
 object Day01 extends AoCApp {
 
-    val instructions: Seq[(Rotation, Int)] = inputText.split(',').map(_.trim.splitAt(1)).map {
+    val instructions: Seq[(Rotation, Int)] = splitInput(',').map(_.trim.splitAt(1)).map {
         case ("R", steps) => ((rotateRight _).tupled, steps.toInt)
         case ("L", steps) => ((rotateLeft _).tupled, steps.toInt)
         case _ => throw new Exception("Unknown instruction!")
@@ -35,7 +35,7 @@ object Day01 extends AoCApp {
 
     def findFirstDuplicate[T](input: Seq[T]): T = {
 
-        val isDuplicated = input.groupBy(identity).mapValues(_.length > 1)
+        val isDuplicated = input.groupBy(identity).view.mapValues(_.length > 1)
 
         @tailrec
         def firstDup(input: Seq[T]): T = {

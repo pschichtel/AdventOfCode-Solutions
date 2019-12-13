@@ -2,6 +2,7 @@ package tel.schich.adventofcode.year2015
 
 import tel.schich.adventofcode.AoCApp
 
+import scala.collection.immutable.ArraySeq
 import scala.math._
 
 object Day06 extends AoCApp {
@@ -14,7 +15,7 @@ object Day06 extends AoCApp {
             (cm(command), (x1.toInt, y1.toInt), (x2.toInt, y2.toInt))
     }
 
-    def applyCommands[T](grid: Array[T], size: Int, commands: Seq[(T => T, (Int, Int), (Int, Int))]): Seq[T] = {
+    def applyCommands[T](grid: Array[T], size: Int, commands: Seq[(T => T, (Int, Int), (Int, Int))]): Array[T] = {
         commands.foldLeft(grid) {
             case (field, (command, (x1, y1), (x2, y2))) =>
                 for (x <- x1 to x2) {

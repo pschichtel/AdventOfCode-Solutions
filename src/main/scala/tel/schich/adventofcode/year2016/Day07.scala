@@ -16,7 +16,7 @@ object Day07 extends AoCApp {
     }
 
     def findABAs(s: String): Seq[String] = {
-        s.sliding(3).filter(s => s(0) == s(2) && s(0) != s(1)).toSeq
+        s.toSeq.sliding(3).filter(s => s(0) == s(2) && s(0) != s(1)).map(_.unwrap).toSeq
     }
 
     def supernetSeq(i: Int): Boolean = i % 2 == 0

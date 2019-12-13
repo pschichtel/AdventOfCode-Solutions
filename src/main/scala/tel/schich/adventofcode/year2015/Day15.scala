@@ -33,7 +33,7 @@ object Day15 extends AoCApp {
             p(t1._5, t2._5))
     }
 
-    def sum(tastes: Traversable[Taste]): Taste = {
+    def sum(tastes: Iterable[Taste]): Taste = {
         tastes.foldLeft(ZeroTaste)((acc, tas) => combine(acc, tas)(_ + _))
     }
 
@@ -42,16 +42,16 @@ object Day15 extends AoCApp {
         t.copy(_5 = 1).productIterator.map(_.asInstanceOf[Int]).foldLeft(1)(max(0, _) * max(0, _))
     }
 
-    def ingredientDistributions(n: Int, r: Int = 100): Stream[Seq[Int]] = {
+    def ingredientDistributions(n: Int, r: Int = 100): LazyList[Seq[Int]] = {
         val range = List.range(0, r + 1)
 
-        (1 until n).foldLeft(range.toStream.map(List(_))) { (s, i) =>
-            s.flatMap(r => range.toStream.map(_ :: r)).filter(_.sum <= r)
+        (1 until n).foldLeft(range.to(LazyList).map(List(_))) { (s, i) =>
+            s.flatMap(r => range.to(LazyList).map(_ :: r)).filter(_.sum <= r)
         }.filter(_.sum == 100)
 
     }
 
-    def mixtures(ingredients: Seq[Ingredient]): Stream[(Int, Int, Int, Int, Int)] = {
+    def mixtures(ingredients: Seq[Ingredient]): LazyList[(Int, Int, Int, Int, Int)] = {
         ingredientDistributions(ingredients.length).map { dist =>
             val plan = ingredients.zip(dist)
             sum(plan.map {

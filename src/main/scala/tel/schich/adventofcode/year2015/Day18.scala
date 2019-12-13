@@ -9,10 +9,10 @@ object Day18 extends AoCApp {
     val input = inputSource.mkString.replaceAll("\\s", "")
     val steps = 100
 
-    val states = input.map {
+    val states = input.toSeq.map {
         case '#' => true
         case '.' => false
-    }.toArray
+    }
 
     def step1rule(g: Grid, x: Int, y: Int, s: Boolean, n: Int): Boolean = {
         if (s && n == 2 || n == 3) true
@@ -67,7 +67,7 @@ object Day18 extends AoCApp {
 
         def lines: Iterator[Seq[Boolean]] = states.grouped(dim)
 
-        val animation: Stream[Grid] = {
+        val animation: LazyList[Grid] = {
             this #:: animation.map(_.step())
         }
     }

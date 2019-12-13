@@ -4,25 +4,27 @@ import java.security.MessageDigest
 
 import tel.schich.adventofcode.AoCApp
 
+import scala.collection.immutable.ArraySeq
+
 object Day04 extends AoCApp {
 
-    def hash(function: String): String => Array[Byte] = {
+    def hash(function: String): String => ArraySeq[Byte] = {
         val hashFunction = MessageDigest.getInstance(function)
-        (s: String) => hashFunction.digest(s.getBytes)
+        s => ArraySeq.unsafeWrapArray(hashFunction.digest(s.getBytes))
     }
 
     val md5 = hash("MD5")
 
-    def startsWithNZeros(n: Int): Array[Byte] => Boolean = {
+    def startsWithNZeros(n: Int): ArraySeq[Byte] => Boolean = {
         val fullBytes = n / 2
         val halfByteMask = if (fullBytes < n) 0xF0 else 0xFF
 
-        (hash: Array[Byte]) => {
-            (hash.view(0, fullBytes).foldLeft(0)((a, b) => a + Math.abs(b)) + (hash(fullBytes) & halfByteMask)) == 0
+        (hash: ArraySeq[Byte]) => {
+            (hash.slice(0, fullBytes).foldLeft(0)((a, b) => a + Math.abs(b)) + (hash(fullBytes) & halfByteMask)) == 0
         }
     }
 
-    def hashStream(input: String, number: Int = 0): Stream[(Int, Array[Byte])] = (number, md5(input + number)) #:: hashStream(input, number + 1)
+    def hashStream(input: String, number: Int = 0): LazyList[(Int, ArraySeq[Byte])] = (number, md5(input + number)) #:: hashStream(input, number + 1)
 
     val input = inputText
 

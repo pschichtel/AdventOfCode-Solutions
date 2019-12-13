@@ -13,7 +13,7 @@ object Day05 extends AoCApp {
 
     val nice = input.filter { s =>
         val vowelCount = s.filter(vowels.contains).length
-        val windows = s.sliding(2).toList
+        val windows = s.toSeq.sliding(2).map(_.unwrap).toList
 
         val doubleWindowCount = windows.count(w => w(0) == w(1))
         val forbiddenWindowCount = windows.count(forbiddenWindows.contains)
@@ -31,7 +31,7 @@ object Day05 extends AoCApp {
             case (i, w) if s.substring(0, i).contains(w) || s.substring(i + 2).contains(w) => Some(w)
         }
 
-        val triple = s.sliding(3).filter(w => w(0) == w(2)).toList.size
+        val triple = s.toSeq.sliding(3).filter(w => w(0) == w(2)).toList.size
         reoccuringSlides.nonEmpty && triple >= 1
     }
 

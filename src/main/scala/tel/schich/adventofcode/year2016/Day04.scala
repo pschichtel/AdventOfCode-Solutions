@@ -5,7 +5,7 @@ import tel.schich.adventofcode.AoCApp
 object Day04 extends AoCApp {
 
     val Σ: Vector[Char] = (0 until 26).map (i => ('a' + i).toChar).toVector
-    def frequencies(string: String): Seq[(Char, Int)] = string.groupBy(identity).mapValues(_.length).toSeq
+    def frequencies(string: String): Seq[(Char, Int)] = string.toSeq.groupBy(identity).view.mapValues(_.length).toSeq
     def decrypt(string: String, shift: Int): String = string.map(c => Σ((c - 'a' + shift) % Σ.length)).mkString
 
     val values = "((?:\\w+-)+)(\\d+)\\[(\\w+)\\]".r

@@ -46,11 +46,11 @@ object Day08 extends AoCApp {
 
     def encode(s: String): String = {
 
-        '"' + s.flatMap {
+        "\"" + s.flatMap {
             case '"' => "\\\""
             case '\\' => "\\\\"
-            case c => "" + c
-        } + '"'
+            case c => s"$c"
+        } + "\""
 
     }
 

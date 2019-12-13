@@ -75,7 +75,7 @@ object Day07 extends AoCApp {
         val byOutput = ICs.groupBy(_.output)
         val byInput = ICs.flatMap(ic => ic.inputs.collect {
             case Dyn(n) => (n, ic)
-        }).groupBy(_._1).mapValues(_.map(_._2))
+        }).groupBy(_._1).view.mapValues(_.map(_._2))
 
         def apply(ic: IC, wireStates: WireStates = Map.empty, applied: Set[IC] = Set.empty, stack: List[IC] = Nil): (WireStates, Set[IC]) = {
 

@@ -1,8 +1,11 @@
 name := "AdventOfCode"
 version := "1.0.0"
-scalaVersion := "2.12.1"
+scalaVersion := "2.13.1"
 
 libraryDependencies := Seq()
 
+scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-scalacOptions := Seq("-optimize")
+sources in (Compile, doc) := Seq.empty
+
+publishArtifact in (Compile, packageDoc) := false

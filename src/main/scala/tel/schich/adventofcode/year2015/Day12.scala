@@ -152,7 +152,7 @@ object Day12 extends AoCApp {
         o match {
             case JsonObject(children) =>
                 if (children.values.exists(_ == e)) JsonObject(Map.empty)
-                else JsonObject(children.mapValues(v => removeObjectsWith(v, e)))
+                else JsonObject(children.view.mapValues(v => removeObjectsWith(v, e)).toMap)
             case JsonArray(children) =>
                 JsonArray(children.map(v => removeObjectsWith(v, e)))
             case leaf => leaf
