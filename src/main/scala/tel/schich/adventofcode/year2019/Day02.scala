@@ -37,7 +37,7 @@ object Day02 extends AoCApp {
         99 -> opExit
     )
 
-    val program: Program = ArraySeq.unsafeWrapArray(inputText.split(',').map(_.toInt))
+    val program: Program = splitInput(',').map(_.toInt)
 
     val invoke = (a: Int, b: Int) => interpret(instructions)(patch(program, 1 -> a, 2 -> b), 0)(0)
 
