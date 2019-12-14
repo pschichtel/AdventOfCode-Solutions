@@ -46,9 +46,7 @@ object Day02 extends AoCApp {
         patches.foldLeft(mem)((c, p) => c.updated(p._1, p._2))
 
     def binaryOp(op: (Int, Int) => Int)(mem: Program, pc: Int, in: Input, out: Output) = {
-        val a = readParam(mem, pc, 1)
-        val b = readParam(mem, pc,  2)
-        (mem.updated(mem(pc + 3), op(a, b)), pc + 4, in, out)
+        (mem.updated(mem(pc + 3), op(readParam(mem, pc, 1), readParam(mem, pc, 2))), pc + 4, in, out)
     }
 
     def comparisonOp(comp: (Int, Int) => Boolean)(mem: Program, pc: Int, in: Input, out: Output) =
