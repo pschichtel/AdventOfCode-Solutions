@@ -2,8 +2,6 @@ name := "AdventOfCode"
 version := "1.0.0"
 scalaVersion := "2.13.1"
 
-libraryDependencies := Seq()
-
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 sources in (Compile, doc) := Seq.empty

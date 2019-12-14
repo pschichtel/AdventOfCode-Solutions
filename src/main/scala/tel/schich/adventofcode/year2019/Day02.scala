@@ -35,25 +35,27 @@ object Day02 extends AoCApp {
 
     def exit(mem: Program, pc: Int): (Program, Int) = (mem, ExitPosition)
 
-    val instructions: Map[Int, Instruction] = Map(
-        1 -> binaryOp(_ + _),
-        2 -> binaryOp(_ * _),
-        99 -> exit
-    )
+    timed(TimeUnit.MICROSECONDS) {
+        val instructions: Map[Int, Instruction] = Map(
+            1 -> binaryOp(_ + _),
+            2 -> binaryOp(_ * _),
+            99 -> exit
+        )
 
-    val program: Program = splitInput(',').map(_.toInt)
-    val invoke = (a: Int, b: Int) => interpret(instructions, patch(program, 1 -> a, 2 -> b), 0)(0)
 
-    part(1, invoke(12, 2))
+        val program: Program = splitInput(',').map(_.toInt)
+        val invoke = (a: Int, b: Int) => interpret(instructions, patch(program, 1 -> a, 2 -> b), 0)(0)
+        part(1, invoke(12, 2))
 
-    part(2, timed(TimeUnit.MILLISECONDS) {
-        val requiredOutput = 19690720
-        val solutions = for {
-            noun <- 0 to 99
-            verb <- 0 to 99
-            if invoke(noun, verb) == requiredOutput
-        } yield 100 * noun + verb
-        solutions.head
-    })
+        part(2, {
+            val requiredOutput = 19690720
+            val solutions = for {
+                noun <- 0 to 99
+                verb <- 0 to 99
+                if invoke(noun, verb) == requiredOutput
+            } yield 100 * noun + verb
+            solutions.head
+        })
+    }
 
 }
