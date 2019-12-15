@@ -8,64 +8,87 @@ import scala.annotation.tailrec
 import scala.collection.immutable.ArraySeq
 
 object Day02 extends AoCApp {
-    type Program = ArraySeq[Int]
-    type Input = List[Int]
-    type Output = List[Int]
+    type Input = List[Long]
+    type Output = List[Long]
     type Instruction = ProgramState => ProgramState
-    type InstructionSet = Map[Int, Instruction]
+    type InstructionSet = Map[Long, Instruction]
 
-    sealed trait _ProgramState {
-        def instructionSet: InstructionSet
-        def program: Program
-        def pc: Int
-        def input: Input
-        def output: Output
+    case class Memory(program: ArraySeq[Long], dynamic: Map[Long, Long]) {
+        def apply(address: Long): Long = {
+            if (address < 0) throw new IllegalArgumentException("illegal negative address")
+            if (program.isDefinedAt(address.toInt)) program(address.toInt)
+            else if (dynamic.isDefinedAt(address)) dynamic(address)
+            else 0
+        }
+
+        def updated(address: Long, value: Long): Memory = {
+            if (address < 0) throw new IllegalArgumentException("illegal negative address")
+            else if (program.isDefinedAt(address.toInt)) this.copy(program = program.updated(address.toInt, value))
+            else this.copy(dynamic = dynamic.updated(address, value))
+        }
     }
+
     sealed trait Status
     case object SuccessfullyCompleted extends Status
     case object RequiredMoreInput extends Status
     case object Ready extends Status
     case class Failed(e: Exception) extends Status
 
-    case class ProgramState(instructionSet: InstructionSet, program: Program, pc: Int, input: Input, output: Output, status: Status) {
+    case class ProgramState(instructionSet: InstructionSet, memory: Memory, pc: Long, relativeBase: Long, input: Input, output: Output, status: Status) {
 
-        lazy val instruction = instructionSet(program(pc) % 100)
+        lazy val baseOpCode: Long = memory.program(pc.toInt) % 100
+        lazy val instruction: Instruction = instructionSet(baseOpCode)
 
         def runInstruction(): ProgramState = {
             try {
-                instruction(this)
+                val instr = instruction
+                val newState = instr(this)
+                newState
             } catch {
                 case e: Exception => copy(status = Failed(e))
             }
         }
 
-        def continue(program: Program = this.program, pc: Int = this.pc, input: Input = this.input, output: Output = this.output): ProgramState =
-            this.copy(program = program, pc = pc, input = input, output = output, status = Ready)
+        def continue(memory: Memory = this.memory, pc: Long = this.pc, relativeBase: Long = this.relativeBase, input: Input = this.input, output: Output = this.output): ProgramState =
+            this.copy(memory = memory, pc = pc, relativeBase = relativeBase, input = input, output = output, status = Ready)
 
-        def complete(program: Program = this.program, pc: Int = this.pc, input: Input = this.input, output: Output = this.output): ProgramState =
-            this.copy(program = program, pc = pc, input = input, output = output, status = SuccessfullyCompleted)
+        def complete(memory: Memory = this.memory, pc: Long = this.pc, relativeBase: Long = this.relativeBase, input: Input = this.input, output: Output = this.output): ProgramState =
+            this.copy(memory = memory, pc = pc, relativeBase = relativeBase, input = input, output = output, status = SuccessfullyCompleted)
 
         def requireInput(): ProgramState =
             this.copy(status = RequiredMoreInput)
 
-        def readParam(offset: Int): Int = {
-            val opCode = program(pc)
-            val value = program(pc + offset)
-            val mode = (opCode / math.pow(10, 1 + offset).toInt) % 10
+        private def resolveMode(offset: Long): (Long, Long) = {
+            val opCode = memory(pc)
+            val value = memory(pc + offset)
 
-            mode match {
-                case 0 => program(value)
-                case 1 => value
+            (value, (opCode / math.pow(10, 1 + offset).toInt) % 10)
+        }
+
+        def readParam(offset: Long): Long = {
+            resolveMode(offset) match {
+                case (addr, 0) => memory(addr)
+                case (value, 1) => value
+                case (relAddr, 2) => memory(relativeBase + relAddr)
             }
+        }
+
+        def writeMemoryTo(offset: Long, value: Long): Memory = {
+            val absAddr = resolveMode(offset) match {
+                case (addr, 0) => addr
+                case (value, 1) => throw new IllegalArgumentException("out parameters do not support immediate mode!")
+                case (relAddr, 2) => relativeBase + relAddr
+            }
+            memory.updated(absAddr, value)
         }
     }
 
-    def parseProgram(input: String): Program = ArraySeq.unsafeWrapArray(input.split(',')).map(_.toInt)
+    def parseProgram(input: String): Memory = Memory(ArraySeq.unsafeWrapArray(input.split(',')).map(_.toLong), Map.empty)
 
-    def initProgram(instructionSet: InstructionSet, program: Program, input: List[Int]): ProgramState =
-        ProgramState(instructionSet, program, 0, input, Nil, Ready)
+    def initProgram(instructionSet: InstructionSet, program: Memory, input: Input): ProgramState =
+        ProgramState(instructionSet, program, pc = 0, relativeBase = 0, input, output = Nil, status = Ready)
 
-    def runProgram(instructionSet: InstructionSet, program: Program, input: List[Int] = Nil): ProgramState =
+    def runProgram(instructionSet: InstructionSet, program: Memory, input: Input = Nil): ProgramState =
         runProgram(initProgram(instructionSet, program, input))
 
     def runProgram(startState: ProgramState): ProgramState = {
@@ -75,27 +98,23 @@ object Day02 extends AoCApp {
                 case Ready => interpret(state.runInstruction())
                 case SuccessfullyCompleted => state
                 case RequiredMoreInput => state
-                case Failed(e) => {
+                case Failed(e) =>
                     e.printStackTrace(System.err)
                     state
-                }
             }
         }
 
         interpret(startState)
     }
 
-    def patch(mem: Program, patches: (Int, Int)*): Program =
+    def patch(mem: Memory, patches: (Long, Long)*): Memory =
         patches.foldLeft(mem)((c, p) => c.updated(p._1, p._2))
 
-    def binaryOp(op: (Int, Int) => Int)(state: ProgramState): ProgramState =
+    def binaryOp(op: (Long, Long) => Long)(state: ProgramState): ProgramState =
         state.continue(
-            program = state.program.updated(state.program(state.pc + 3), op(state.readParam(1), state.readParam(2))),
+            memory = state.writeMemoryTo(3, op(state.readParam(1), state.readParam(2))),
             pc = state.pc + 4
         )
-
-    def comparisonOp(comp: (Int, Int) => Boolean)(state: ProgramState) =
-        binaryOp((a, b) => if (comp(a, b)) 1 else 0)(state)
 
     def exit(state: ProgramState) =
         state.complete()
@@ -104,7 +123,7 @@ object Day02 extends AoCApp {
         state.input match {
             case Nil => state.requireInput()
             case head :: tail => state.continue(
-                program = state.program.updated(state.program(state.pc + 1), head),
+                memory = state.writeMemoryTo(1, head),
                 pc = state.pc + 2,
                 input = tail
             )
@@ -116,21 +135,17 @@ object Day02 extends AoCApp {
             output = state.output :+ state.readParam(1)
         )
 
-    def jumpIf(condition: Int => Boolean)(state: ProgramState) =
-        if (condition(state.readParam(1))) state.continue(pc = state.readParam(2))
-        else state.continue(pc = state.pc + 3)
-
-    lazy val instructions: Map[Int, Instruction] = Map(
-        1 -> binaryOp(_ + _),
-        2 -> binaryOp(_ * _),
-        3 -> readInput,
-        4 -> writeOutput,
-        99 -> exit
+    lazy val instructions: InstructionSet = Map(
+        1L -> binaryOp(_ + _),
+        2L -> binaryOp(_ * _),
+        3L -> readInput,
+        4L -> writeOutput,
+        99L -> exit
     )
 
     timed(TimeUnit.MICROSECONDS) {
         val program = parseProgram(inputText)
-        val invoke = (a: Int, b: Int) => runProgram(instructions, patch(program, 1 -> a, 2 -> b), List.empty).program(0)
+        val invoke = (a: Long, b: Long) => runProgram(instructions, patch(program, 1L -> a, 2L -> b), List.empty).memory(0)
         part(1, invoke(12, 2))
 
         part(2, {
