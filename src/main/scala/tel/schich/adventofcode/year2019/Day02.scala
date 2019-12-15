@@ -8,61 +8,117 @@ import scala.annotation.tailrec
 import scala.collection.immutable.ArraySeq
 
 object Day02 extends AoCApp {
-    final val ExitPosition = -1
     type Program = ArraySeq[Int]
-    type Input = Seq[Int]
-    type Output = Seq[Int]
-    type Instruction = (Program, Int, Input, Output) => (Program, Int, Input, Output)
+    type Input = List[Int]
+    type Output = List[Int]
+    type Instruction = ProgramState => ProgramState
     type InstructionSet = Map[Int, Instruction]
 
-    def parseProgram(input: String): Program = ArraySeq.unsafeWrapArray(input.split(',')).map(_.toInt)
+    sealed trait _ProgramState {
+        def instructionSet: InstructionSet
+        def program: Program
+        def pc: Int
+        def input: Input
+        def output: Output
+    }
+    sealed trait Status
+    case object SuccessfullyCompleted extends Status
+    case object RequiredMoreInput extends Status
+    case object Ready extends Status
+    case class Failed(e: Exception) extends Status
 
-    def runProgram(instructions: InstructionSet, mem: Program, in: Input): (Program, Output) = {
-        @tailrec
-        def interpret(mem: Program, pc: Int, in: Input, out: Output): (Program, Output) = {
-            if (pc == ExitPosition) (mem, out)
-            else {
-                val instruction = instructions(mem(pc) % 100)
-                val (newMem, newPc, newIn, newOut) = instruction(mem, pc, in, out)
-                interpret(newMem, newPc, newIn, newOut)
+    case class ProgramState(instructionSet: InstructionSet, program: Program, pc: Int, input: Input, output: Output, status: Status) {
+
+        lazy val instruction = instructionSet(program(pc) % 100)
+
+        def runInstruction(): ProgramState = {
+            try {
+                instruction(this)
+            } catch {
+                case e: Exception => copy(status = Failed(e))
             }
         }
 
-        interpret(mem, 0, in, Vector.empty)
+        def continue(program: Program = this.program, pc: Int = this.pc, input: Input = this.input, output: Output = this.output): ProgramState =
+            this.copy(program = program, pc = pc, input = input, output = output, status = Ready)
+
+        def complete(program: Program = this.program, pc: Int = this.pc, input: Input = this.input, output: Output = this.output): ProgramState =
+            this.copy(program = program, pc = pc, input = input, output = output, status = SuccessfullyCompleted)
+
+        def requireInput(): ProgramState =
+            this.copy(status = RequiredMoreInput)
+
+        def readParam(offset: Int): Int = {
+            val opCode = program(pc)
+            val value = program(pc + offset)
+            val mode = (opCode / math.pow(10, 1 + offset).toInt) % 10
+
+            mode match {
+                case 0 => program(value)
+                case 1 => value
+            }
+        }
     }
 
-    def readParam(mem: Program, pc: Int, param: Int): Int = {
-        val opCode = mem(pc)
-        val value = mem(pc + param)
-        val mode = (opCode / math.pow(10, 1 + param).toInt) % 10
+    def parseProgram(input: String): Program = ArraySeq.unsafeWrapArray(input.split(',')).map(_.toInt)
 
-        mode match {
-            case 0 => mem(value)
-            case 1 => value
+    def initProgram(instructionSet: InstructionSet, program: Program, input: List[Int]): ProgramState =
+        ProgramState(instructionSet, program, 0, input, Nil, Ready)
+
+    def runProgram(instructionSet: InstructionSet, program: Program, input: List[Int] = Nil): ProgramState =
+        runProgram(initProgram(instructionSet, program, input))
+
+    def runProgram(startState: ProgramState): ProgramState = {
+        @tailrec
+        def interpret(state: ProgramState): ProgramState = {
+            state.status match {
+                case Ready => interpret(state.runInstruction())
+                case SuccessfullyCompleted => state
+                case RequiredMoreInput => state
+                case Failed(e) => {
+                    e.printStackTrace(System.err)
+                    state
+                }
+            }
         }
+
+        interpret(startState)
     }
 
     def patch(mem: Program, patches: (Int, Int)*): Program =
         patches.foldLeft(mem)((c, p) => c.updated(p._1, p._2))
 
-    def binaryOp(op: (Int, Int) => Int)(mem: Program, pc: Int, in: Input, out: Output) = {
-        (mem.updated(mem(pc + 3), op(readParam(mem, pc, 1), readParam(mem, pc, 2))), pc + 4, in, out)
-    }
+    def binaryOp(op: (Int, Int) => Int)(state: ProgramState): ProgramState =
+        state.continue(
+            program = state.program.updated(state.program(state.pc + 3), op(state.readParam(1), state.readParam(2))),
+            pc = state.pc + 4
+        )
 
-    def comparisonOp(comp: (Int, Int) => Boolean)(mem: Program, pc: Int, in: Input, out: Output) =
-        binaryOp((a, b) => if (comp(a, b)) 1 else 0)
+    def comparisonOp(comp: (Int, Int) => Boolean)(state: ProgramState) =
+        binaryOp((a, b) => if (comp(a, b)) 1 else 0)(state)
 
-    def exit(mem: Program, pc: Int, in: Input, out: Output) =
-        (mem, ExitPosition, in, out)
+    def exit(state: ProgramState) =
+        state.complete()
 
-    def readInput(mem: Program, pc: Int, in: Input, out: Output) =
-        (mem.updated(mem(pc + 1), in.head), pc + 2, in.tail, out)
+    def readInput(state: ProgramState) =
+        state.input match {
+            case Nil => state.requireInput()
+            case head :: tail => state.continue(
+                program = state.program.updated(state.program(state.pc + 1), head),
+                pc = state.pc + 2,
+                input = tail
+            )
+        }
 
-    def writeOutput(mem: Program, pc: Int, in: Input, out: Output) =
-        (mem, pc + 2, in, out :+ readParam(mem, pc, 1))
+    def writeOutput(state: ProgramState): ProgramState =
+        state.continue(
+            pc = state.pc + 2,
+            output = state.output :+ state.readParam(1)
+        )
 
-    def jumpIf(condition: Int => Boolean)(mem: Program, pc: Int, in: Input, out: Output) =
-        (mem, if (condition(readParam(mem, pc, 1))) readParam(mem, pc, 2) else pc + 3, in, out)
+    def jumpIf(condition: Int => Boolean)(state: ProgramState) =
+        if (condition(state.readParam(1))) state.continue(pc = state.readParam(2))
+        else state.continue(pc = state.pc + 3)
 
     lazy val instructions: Map[Int, Instruction] = Map(
         1 -> binaryOp(_ + _),
@@ -74,7 +130,7 @@ object Day02 extends AoCApp {
 
     timed(TimeUnit.MICROSECONDS) {
         val program = parseProgram(inputText)
-        val invoke = (a: Int, b: Int) => runProgram(instructions, patch(program, 1 -> a, 2 -> b), List.empty)._1(0)
+        val invoke = (a: Int, b: Int) => runProgram(instructions, patch(program, 1 -> a, 2 -> b), List.empty).program(0)
         part(1, invoke(12, 2))
 
         part(2, {
