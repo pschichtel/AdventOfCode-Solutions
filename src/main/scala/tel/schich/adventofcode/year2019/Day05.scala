@@ -6,8 +6,11 @@ import Day02.{InstructionSet, ProgramState, binaryOp, parseProgram, runProgram}
 object Day05 extends AoCApp {
 
     def jumpIf(condition: Long => Boolean)(state: ProgramState) =
-        if (condition(state.readParam(1))) state.continue(pc = state.readParam(2))
-        else state.continue(pc = state.pc + 3)
+        if (condition(state.readParam(1))) {
+            val newPc = state.readParam(2)
+            if (newPc > Int.MaxValue) throw new IllegalArgumentException("A program address can never be larger than a valid 32bit integer!")
+            else state.continue(pc = newPc.toInt)
+        } else state.continue(pc = state.pc + 3)
 
     def comparisonOp(comp: (Long, Long) => Boolean)(state: ProgramState) =
         binaryOp((a, b) => if (comp(a, b)) 1 else 0)(state)

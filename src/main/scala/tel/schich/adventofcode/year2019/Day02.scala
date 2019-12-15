@@ -34,25 +34,23 @@ object Day02 extends AoCApp {
     case object Ready extends Status
     case class Failed(e: Exception) extends Status
 
-    case class ProgramState(instructionSet: InstructionSet, memory: Memory, pc: Long, relativeBase: Long, input: Input, output: Output, status: Status) {
+    case class ProgramState(instructionSet: InstructionSet, memory: Memory, pc: Int, relativeBase: Long, input: Input, output: Output, status: Status) {
 
-        lazy val baseOpCode: Long = memory.program(pc.toInt) % 100
-        lazy val instruction: Instruction = instructionSet(baseOpCode)
+        val MaxInstructions: Int = 100
+        lazy val instruction: Instruction = instructionSet(memory.program(pc) % MaxInstructions)
 
         def runInstruction(): ProgramState = {
             try {
-                val instr = instruction
-                val newState = instr(this)
-                newState
+                instruction(this)
             } catch {
                 case e: Exception => copy(status = Failed(e))
             }
         }
 
-        def continue(memory: Memory = this.memory, pc: Long = this.pc, relativeBase: Long = this.relativeBase, input: Input = this.input, output: Output = this.output): ProgramState =
+        def continue(memory: Memory = this.memory, pc: Int = this.pc, relativeBase: Long = this.relativeBase, input: Input = this.input, output: Output = this.output): ProgramState =
             this.copy(memory = memory, pc = pc, relativeBase = relativeBase, input = input, output = output, status = Ready)
 
-        def complete(memory: Memory = this.memory, pc: Long = this.pc, relativeBase: Long = this.relativeBase, input: Input = this.input, output: Output = this.output): ProgramState =
+        def complete(memory: Memory = this.memory, pc: Int = this.pc, relativeBase: Long = this.relativeBase, input: Input = this.input, output: Output = this.output): ProgramState =
             this.copy(memory = memory, pc = pc, relativeBase = relativeBase, input = input, output = output, status = SuccessfullyCompleted)
 
         def requireInput(): ProgramState =
@@ -70,14 +68,15 @@ object Day02 extends AoCApp {
                 case (addr, 0) => memory(addr)
                 case (value, 1) => value
                 case (relAddr, 2) => memory(relativeBase + relAddr)
+                case (value, mode) => throw new IllegalArgumentException(s"unsupported input parameter mode for value $value at offset $offset: $mode")
             }
         }
 
         def writeMemoryTo(offset: Long, value: Long): Memory = {
             val absAddr = resolveMode(offset) match {
                 case (addr, 0) => addr
-                case (value, 1) => throw new IllegalArgumentException("out parameters do not support immediate mode!")
                 case (relAddr, 2) => relativeBase + relAddr
+                case (value, mode) => throw new IllegalArgumentException(s"unsupported output parameter mode for value $value at offset $offset: $mode")
             }
             memory.updated(absAddr, value)
         }
