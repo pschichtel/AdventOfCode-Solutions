@@ -11,12 +11,7 @@ object Day03 extends AoCApp {
         .map(_.split(',').toList)
         .map(rel => translateToPoints(rel, 0, 0, 0, 0, 0, Vector.empty))
 
-    println(line1)
-    println(line2)
-
     val intersectionPoints = line1.intersect(line2).toSet
-
-    println(intersectionPoints)
 
     part(1, intersectionPoints.map(p => math.abs(p._1) + math.abs(p._2)).min)
 
