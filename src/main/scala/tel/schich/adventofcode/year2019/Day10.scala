@@ -2,6 +2,7 @@ package tel.schich.adventofcode.year2019
 
 import tel.schich.adventofcode.AoCApp
 
+import scala.math.Ordering.Double.IeeeOrdering
 import scala.math.Pi
 
 object Day10 extends AoCApp {
@@ -31,8 +32,8 @@ object Day10 extends AoCApp {
     val sortedByAngleAndDistance = angles(monitor, asteroids)
         .groupBy(_._2)
         .toSeq
-        .flatMap(a => a._2.sortBy(t => distance(monitor, t._1)).zipWithIndex.map(t => (t._1._1, a._1 + t._2 * 360.0)))
-        .sortBy(t => t._2)
+        .flatMap(a => a._2.sortBy(t => distance(monitor, t._1))(IeeeOrdering).zipWithIndex.map(t => (t._1._1, a._1 + t._2 * 360.0)))
+        .sortBy(t => t._2)(IeeeOrdering)
     part(2, sortedByAngleAndDistance.drop(199).headOption.map(_._1).map(t => t._1 * 100 + t._2).getOrElse(0))
 
     def distance(a: Point, b: Point): Double = a._1 * b._1 + a._2 * b._2
