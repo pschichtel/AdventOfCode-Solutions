@@ -1,6 +1,6 @@
 package tel.schich.adventofcode.year2015
 
-import tel.schich.adventofcode.AoCApp
+import tel.schich.adventofcode.shared.AoCApp
 
 import scala.collection.immutable.ArraySeq
 import scala.math._

@@ -1,6 +1,6 @@
 package tel.schich.adventofcode.year2019
 
-import tel.schich.adventofcode.AoCApp
+import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2019.Day02.{ProgramState, RequiredMoreInput, SuccessfullyCompleted, initProgram, parseProgram}
 
 import scala.annotation.tailrec

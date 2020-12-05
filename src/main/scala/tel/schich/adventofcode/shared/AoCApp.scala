@@ -1,10 +1,8 @@
-package tel.schich.adventofcode
+package tel.schich.adventofcode.shared
 
 import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
-
 import scala.collection.immutable.ArraySeq
-import scala.concurrent.duration.TimeUnit
 import scala.io.Source
 
 trait AoCApp extends App {
@@ -17,9 +15,13 @@ trait AoCApp extends App {
     }
 
     lazy val inputSource = sourceFromCP("/" + this.getClass.getName.replace("$", "").replaceAll("\\.", "/") + ".txt")
+
     def inputText: String = inputSource.mkString.trim
+
     def inputLines: Seq[String] = inputSource.getLines().map(_.trim).filter(_.nonEmpty).toSeq
+
     def splitInput(at: String) = ArraySeq.unsafeWrapArray(inputText.split(at))
+
     def splitInput(at: Char) = ArraySeq.unsafeWrapArray(inputText.split(at))
 
     def part(n: Int, value: Any): Unit = {

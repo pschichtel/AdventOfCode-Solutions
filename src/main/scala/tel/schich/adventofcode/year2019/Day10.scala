@@ -1,6 +1,6 @@
 package tel.schich.adventofcode.year2019
 
-import tel.schich.adventofcode.AoCApp
+import tel.schich.adventofcode.shared.AoCApp
 
 import scala.math.Ordering.Double.IeeeOrdering
 import scala.math.Pi

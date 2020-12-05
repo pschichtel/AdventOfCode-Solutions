@@ -1,9 +1,8 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.shared.AoCApp
+
 import java.util.concurrent.TimeUnit
-
-import tel.schich.adventofcode.AoCApp
-
 import scala.annotation.tailrec
 import scala.collection.immutable.ArraySeq
 

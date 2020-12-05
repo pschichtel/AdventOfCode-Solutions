@@ -1,6 +1,6 @@
 package tel.schich.adventofcode.year2016
 
-import tel.schich.adventofcode.AoCApp
+import tel.schich.adventofcode.shared.AoCApp
 
 object Day08 extends AoCApp {
 

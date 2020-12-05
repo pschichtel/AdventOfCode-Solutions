@@ -1,9 +1,8 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.shared.AoCApp
+
 import java.security.MessageDigest
-
-import tel.schich.adventofcode.AoCApp
-
 import scala.collection.immutable.ArraySeq
 
 object Day04 extends AoCApp {

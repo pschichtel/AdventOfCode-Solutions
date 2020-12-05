@@ -1,8 +1,8 @@
 package tel.schich.adventofcode.year2019
 
-import java.util.concurrent.TimeUnit
+import tel.schich.adventofcode.shared.AoCApp
 
-import tel.schich.adventofcode.AoCApp
+import java.util.concurrent.TimeUnit
 
 object Day02NonPure extends AoCApp {
     timed(TimeUnit.MICROSECONDS) {
