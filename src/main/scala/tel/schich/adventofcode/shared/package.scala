@@ -21,8 +21,6 @@ package object shared {
 
         def andThenIgnore(other: Parser[_]): Parser[A] = flatMap(v => other.map(_ => v))
 
-        def thenParse[B](other: Parser[B]): Parser[(A, B)] = flatMap(a => other.map(b => (a, b)))
-
         def or[B](other: Parser[B]): Parser[Either[A, B]] = input => {
             apply(input) match {
                 case ParseResult.Success(value, rest) => ParseResult.Success(Left(value), rest)

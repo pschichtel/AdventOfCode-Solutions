@@ -20,10 +20,10 @@ object Day05 extends AoCApp {
 
     def foldToInt(nums: Seq[Int]) = nums.foldLeft(0)((agg, i) => (agg << 1) | i)
 
-    val parseSeatPath = parseFrontBack.thenParse(parseLeftRight).map {
-        case (frontBack, leftRight) =>
-            Seat(foldToInt(frontBack), foldToInt(leftRight))
-    }
+    val parseSeatPath = for {
+        frontBack <- parseFrontBack
+        leftRight <- parseLeftRight
+    } yield Seat(foldToInt(frontBack), foldToInt(leftRight))
 
     implicit val parseInput: Parser[Seq[Seat]] = for {
         first <- parseSeatPath
