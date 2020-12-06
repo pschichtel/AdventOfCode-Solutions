@@ -8,15 +8,18 @@ object Day05 extends AoCApp {
 
     case class Seat(row: Int, column: Int)
 
-    val parseFrontBack = parseOneOf("FB").map {
-        case 'F' => 0
-        case 'B' => 1
-    }.repeated(7)
+    def partitionBit(c: Char) = c match {
+        case 'F' | 'L' => 0
+        case 'B' | 'R' => 1
+    }
 
-    val parseLeftRight = parseOneOf("LR").map {
-        case 'L' => 0
-        case 'R' => 1
-    }.repeated(3)
+    val parseFrontBack = parseOneOf("FB")
+        .map(partitionBit)
+        .repeated(7)
+
+    val parseLeftRight = parseOneOf("LR")
+        .map(partitionBit)
+        .repeated(3)
 
     def foldToInt(nums: Seq[Int]) = nums.foldLeft(0)((agg, i) => (agg << 1) | i)
 
