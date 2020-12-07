@@ -8,7 +8,7 @@ import java.lang.Integer.bitCount
 object Day06 extends AoCApp {
 
     val parsePerson = parseAtLeastOnce(_.isLetter).map { person =>
-        person.toSeq.map(1 << ('a' - _)).foldLeft(0)(_ | _)
+        person.toSeq.map(c => 1 << ('a' - c)).foldLeft(0)(_ | _)
     }
     val parseGroup = parseAllSeparated(parsePerson, parseLineBreak)
     val parseInput = parseAllSeparated(parseGroup, parseLineBreak.repeated(2))
