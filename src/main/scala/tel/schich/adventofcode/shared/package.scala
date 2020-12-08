@@ -131,9 +131,9 @@ package object shared {
         def parseAllSeparated[A](parser: Parser[A], separatorParser: Parser[_]): Parser[Seq[A]] =
             parser.flatMap(first => parseAll(separatorParser.ignoreAndThen(parser)).map(first +: _))
 
-        def parseNaturalNumber: Parser[Long] = parseOne(_ == '0').or(parseOne(c => c.isDigit && c != '0')).flatMap {
-            case Left('0') => noop(0L)
-            case Right(firstDigit) => parseWhile(_.isDigit).map { digits =>
+        def parseNaturalNumber: Parser[Long] = parseOne(_.isDigit).flatMap {
+            case '0' => noop(0L)
+            case firstDigit => parseWhile(_.isDigit).map { digits =>
                 digits.foldLeft((firstDigit - '0').toLong)((num, digit) => num * 10 + (digit - '0'))
             }
         }
