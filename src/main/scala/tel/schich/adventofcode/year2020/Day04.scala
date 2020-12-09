@@ -9,7 +9,7 @@ import scala.util.matching.Regex
 object Day04 extends AoCApp {
 
     val CountryId = StringSlice("cid")
-    case class Passport(fields: Map[StringSlice, String])
+    case class Passport(fields: Map[StringSlice, StringSlice])
 
     val parseName = parseWord
     val parseValue = parseWhile(!_.isWhitespace)
@@ -17,7 +17,7 @@ object Day04 extends AoCApp {
     val parsePair = for {
         name <- parseName
         _ <- parseString(":")
-        value <- parseValue.map(_.asString)
+        value <- parseValue
     } yield (name, value)
 
     val parsePassportLine = parseAllSeparated(parsePair, parseSpaces)
