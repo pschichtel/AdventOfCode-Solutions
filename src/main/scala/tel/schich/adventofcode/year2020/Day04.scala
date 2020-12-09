@@ -6,7 +6,7 @@ import tel.schich.adventofcode.shared.Parser._
 
 import scala.util.matching.Regex
 
-object Day04 extends AoCApp{
+object Day04 extends AoCApp {
 
     case class Passport(fields: Map[String, String])
 
