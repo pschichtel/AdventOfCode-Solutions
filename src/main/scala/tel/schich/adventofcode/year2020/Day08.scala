@@ -7,15 +7,15 @@ import scala.annotation.tailrec
 
 object Day08 extends AoCApp {
 
-    sealed trait Op
-    final case class NoOperation(v: Int) extends Op
-    final case class Accumulate(v: Int) extends Op
-    final case class Jump(v: Int) extends Op
+    sealed trait Instr
+    final case class NoOperation(v: Int) extends Instr
+    final case class Accumulate(v: Int) extends Instr
+    final case class Jump(v: Int) extends Instr
 
-    case class CodeBlock(start: Int, end: Int, jumpTo: Int)
+    case class Block(start: Int, end: Int, jumpTo: Int)
 
     @tailrec
-    def executeUntil(program: Array[Op], pc: Int, end: Int, acc: Int): Int = {
+    def executeUntil(program: Array[Instr], pc: Int, end: Int, acc: Int): Int = {
         if (pc == end) acc
         else program(pc) match {
             case NoOperation(_) => executeUntil(program, pc + 1, end, acc)
@@ -24,9 +24,9 @@ object Day08 extends AoCApp {
         }
     }
 
-    def extractForwardLoopBody(reversePath: List[CodeBlock]): List[CodeBlock] = {
+    def extractForwardLoopBody(reversePath: List[Block]): List[Block] = {
         @tailrec
-        def find(until: CodeBlock, backwards: List[CodeBlock], forwards: List[CodeBlock]): List[CodeBlock] = {
+        def find(until: Block, backwards: List[Block], forwards: List[Block]): List[Block] = {
             if (backwards.head == until) backwards.head :: forwards
             else find(until, backwards.tail, backwards.head :: forwards)
         }
@@ -35,15 +35,15 @@ object Day08 extends AoCApp {
     }
 
     @tailrec
-    def findReachedBy(reachable: Set[CodeBlock], predecessorLookup: Map[CodeBlock, Set[CodeBlock]]): Set[CodeBlock] = {
+    def findReachedBy(reachable: Set[Block], predecessorLookup: Map[Block, Set[Block]]): Set[Block] = {
         val newReachable = reachable ++ reachable.flatMap(b => predecessorLookup.getOrElse(b, Set.empty))
         if (newReachable != reachable) findReachedBy(newReachable, predecessorLookup)
         else reachable
     }
 
-    def findLoop(start: CodeBlock, successorLookup: Map[CodeBlock, CodeBlock]): List[CodeBlock] = {
+    def findLoop(start: Block, successorLookup: Map[Block, Block]): List[Block] = {
         @tailrec
-        def findPath(path: List[CodeBlock], known: Set[CodeBlock]): List[CodeBlock] = {
+        def findPath(path: List[Block], known: Set[Block]): List[Block] = {
             if (known.contains(path.head)) path
             else successorLookup.get(path.head) match {
                 case Some(value) =>findPath(value :: path, known + path.head)
@@ -54,12 +54,12 @@ object Day08 extends AoCApp {
         findPath(start :: Nil, Set.empty)
     }
 
-    def findBlocks(program: Array[Op]): Set[CodeBlock] = {
+    def findBlocks(program: Array[Instr]): Set[Block] = {
         @tailrec
-        def search(pc: Int, blockStart: Int, blocks: Set[CodeBlock]): Set[CodeBlock] = {
-            if (pc >= program.length) blocks + CodeBlock(blockStart, pc - 1, program.length)
+        def search(pc: Int, blockStart: Int, blocks: Set[Block]): Set[Block] = {
+            if (pc >= program.length) blocks + Block(blockStart, pc - 1, program.length)
             else program(pc) match {
-                case Jump(v) => search(pc + 1, pc + 1, blocks + CodeBlock(blockStart, pc, pc + v))
+                case Jump(v) => search(pc + 1, pc + 1, blocks + Block(blockStart, pc, pc + v))
                 case _ => search(pc + 1, blockStart, blocks)
             }
         }
@@ -67,7 +67,7 @@ object Day08 extends AoCApp {
         search(0, 0, Set.empty)
     }
 
-    def findCorrectableInstructions(program: Array[Op], pcToBlock: Map[Int, CodeBlock], blocks: Set[CodeBlock], predecessorLookup: Map[CodeBlock, Set[CodeBlock]], loopBody: List[CodeBlock]): Set[Int] = {
+    def findCorrectableInstructions(program: Array[Instr], pcToBlock: Map[Int, Block], blocks: Set[Block], predecessorLookup: Map[Block, Set[Block]], loopBody: List[Block]): Set[Int] = {
         val ends = blocks.filter(_.jumpTo >= program.length)
         val terminatingBlocks = findReachedBy(ends, predecessorLookup)
         loopBody
@@ -92,7 +92,7 @@ object Day08 extends AoCApp {
     val parseAccumulator = parseString("acc ").ignoreAndThen(parseWholeNumber).map(i => Accumulate(i.toInt))
     val parseJump = parseString("jmp ").ignoreAndThen(parseWholeNumber).map(i => Jump(i.toInt))
 
-    val parseOp = parseSelector[Op](Seq(parseNoOperation, parseAccumulator, parseJump))
+    val parseOp = parseSelector[Instr](Seq(parseNoOperation, parseAccumulator, parseJump))
     val parseInput = parseAllSeparated(parseOp, parseLineBreak)
 
     val program = input(parseInput).toArray
@@ -103,7 +103,7 @@ object Day08 extends AoCApp {
         pc <- block.start to block.`end`
     } yield (pc, block)).toMap
 
-    val (successorLookup, predecessors) = blocks.foldLeft((Map.empty[CodeBlock, CodeBlock], Set.empty[(CodeBlock, CodeBlock)])) {
+    val (successorLookup, predecessors) = blocks.foldLeft((Map.empty[Block, Block], Set.empty[(Block, Block)])) {
         case (acc, block) if block.jumpTo >= program.length => acc
         case ((forward, backward), block) =>
             val next = pcToBlock(block.jumpTo)
@@ -129,4 +129,9 @@ object Day08 extends AoCApp {
     }
 
     part(2, executeUntil(correctedProgram, 0, correctedProgram.length, 0))
+
+    // approaches for part 2
+    // 1. depth-first search trying to mutate the program (can reuse partially executed programs)
+    // 2. linearly scan through the program flipping each instruction once
+    // 3. analyse the program flow (extract looping sub-program and test for mutations into paths that terminate)
 }
