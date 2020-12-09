@@ -7,7 +7,15 @@ import scala.collection.IndexedSeqView
 
 package object shared {
 
-    class StringSlice(private val source: Array[Char], private val offset: Int, val length: Int) extends (Int => Char) {
+    class StringSlice(private val source: Array[Char], private val offset: Int, val length: Int)
+        extends (Int => Char)
+            with CharSequence {
+
+        private lazy val hash =
+            (offset until (offset + length)).foldLeft(1) { (result, element) =>
+                31 * result * source(element)
+            }
+
         def headOption: Option[Char] = if (length > 0) Some(source(offset)) else None
         override def apply(i: Int): Char = source(offset + i)
 
@@ -40,11 +48,12 @@ package object shared {
             case _ => false
         }
 
-        override def hashCode(): Int = {
-            (offset until (offset + length)).foldLeft(1) { (result, element) =>
-                31 * result * source(element)
-            }
-        }
+        override def hashCode(): Int = hash
+
+        override def charAt(index: Int): Char = apply(index)
+
+        override def subSequence(start: Int, `end`: Int): CharSequence =
+            new StringSlice(source, offset + start, length - start - (length - `end`))
     }
 
     object StringSlice {
