@@ -6,6 +6,10 @@ import scala.collection.immutable.ArraySeq
 import scala.io.Source
 
 trait AoCApp extends App {
+
+    val name = getClass.getSimpleName
+    lazy val printStuff = !args.contains("silent")
+
     def sourceFromCP(path: String): Source = {
         val resourceStream = getClass.getResourceAsStream(path)
         if (resourceStream == null) {
@@ -30,14 +34,18 @@ trait AoCApp extends App {
 
     lazy val inputText: String = inputSource.mkString.trim
 
-    def inputLines: Seq[String] = inputSource.getLines().map(_.trim).filter(_.nonEmpty).toSeq
+    private lazy val lines: Array[String] = inputSource.getLines().map(_.trim).filter(_.nonEmpty).toArray
+
+    def inputLines: Seq[String] = lines
 
     def splitInput(at: String) = ArraySeq.unsafeWrapArray(inputText.split(at))
 
     def splitInput(at: Char) = ArraySeq.unsafeWrapArray(inputText.split(at))
 
     def part(n: Int, value: Any): Unit = {
-        println(s"Part $n: $value")
+        if (printStuff) {
+            println(s"Part $n: $value")
+        }
     }
 
     def notImplementedYet(): Unit = {

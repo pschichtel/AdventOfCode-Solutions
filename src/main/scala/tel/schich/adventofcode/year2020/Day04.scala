@@ -49,8 +49,5 @@ object Day04 extends AoCApp {
         case (field, pattern) => passport.fields.get(field).forall(pattern.matches(_))
     }
 
-    passports.filter(p => hasRequiredField(p) && allFieldsValid(p, fieldValidationRules))
-        .foreach(println)
-
     part(2, passports.count(p => hasRequiredField(p) && allFieldsValid(p, fieldValidationRules)))
 }

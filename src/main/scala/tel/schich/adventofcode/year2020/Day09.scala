@@ -39,13 +39,6 @@ object Day09 extends AoCApp {
         find(preambleSize)
     }
 
-    val outlier = findOutlier[Long](cipherCode, preambleLength, _ + _) match {
-        case Some(value) => value
-        case None => throw new Exception("no outlier found!")
-    }
-
-    part(1, outlier)
-
     def findWeakness(cipherCode: Array[Long], outlier: Long): Option[Long] = {
 
         @tailrec
@@ -61,6 +54,13 @@ object Day09 extends AoCApp {
             seq.min + seq.max
         }
     }
+
+    val outlier = findOutlier[Long](cipherCode, preambleLength, _ + _) match {
+        case Some(value) => value
+        case None => throw new Exception("no outlier found!")
+    }
+
+    part(1, outlier)
 
     val weakness = findWeakness(cipherCode, outlier) match {
         case Some(value) => value
