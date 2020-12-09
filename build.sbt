@@ -2,7 +2,8 @@ name := "AdventOfCode"
 version := "1.0.0"
 scalaVersion := "2.13.4"
 
-enablePlugins(ScalaJSPlugin)
+// enablePlugins(ScalaJSPlugin)
+// enablePlugins(ScalaNativePlugin)
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
@@ -10,9 +11,12 @@ sources in (Compile, doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
 
-scalaJSUseMainModuleInitializer := true
-//scalaJSMainModuleInitializer in Global := Some(ModuleInitializer.mainMethod("tel.schich.adventofcode.year2020.RunAll", "main"))
-mainClass in Compile := Some("tel.schich.adventofcode.year2020.RunAll")
+// scalaJSUseMainModuleInitializer := true
+// mainClass in Compile := Some("tel.schich.adventofcode.year2020.RunAll")
+
+// nativeMode := "release"
+// nativeGC := "immix"
+// nativeLTO := "thin"
 
 sourceGenerators in Compile += Def.task {
     val baseDir = baseDirectory.value / "inputs" // or whatever
