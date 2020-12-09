@@ -5,7 +5,7 @@ import scala.collection.immutable.ArraySeq
 
 trait AoCApp extends App {
 
-    val name = getClass.getSimpleName
+    val name = getClass.getSimpleName.replace("$", "")
     lazy val printStuff = !args.contains("silent")
 
     def splitInput(input: String, at: Char) = ArraySeq.unsafeWrapArray(input.split(at))

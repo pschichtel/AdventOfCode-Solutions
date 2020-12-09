@@ -1,6 +1,5 @@
 package tel.schich.adventofcode.year2020
 
-import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.shared.Parser
 import tel.schich.adventofcode.shared.Parser._

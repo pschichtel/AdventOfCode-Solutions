@@ -1,6 +1,5 @@
 package tel.schich.adventofcode.year2019
 
-import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2019.Day02.{ProgramState, RequiredMoreInput, SuccessfullyCompleted, initProgram, parseProgram}
 

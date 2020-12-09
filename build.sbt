@@ -32,7 +32,6 @@ sourceGenerators in Compile += Def.task {
     }
 
 
-    val targetPackage = Seq("tel", "schich", "adventofcode", "generated")
     val sourceDir = (sourceManaged in Compile).value
 
     for ((year, inputs) <- filesForYears) yield {
@@ -53,11 +52,12 @@ sourceGenerators in Compile += Def.task {
                 .mkString("", "\n", "\n")
 
 
+        val targetPackage = Seq("tel", "schich", "adventofcode", s"year$year")
         val scalaCode =
             s"""
                |package ${targetPackage.mkString(".")}
                |
-               |final case object Input$year {
+               |private[year$year] final case object Input$year {
                |$fields
                |}
             """.stripMargin

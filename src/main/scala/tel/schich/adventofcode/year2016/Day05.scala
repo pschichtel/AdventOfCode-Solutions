@@ -1,6 +1,5 @@
 package tel.schich.adventofcode.year2016
 
-import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2015.Day04.hash
 import tel.schich.adventofcode.year2015.Day04.startsWithNZeros

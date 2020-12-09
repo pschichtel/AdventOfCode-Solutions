@@ -1,9 +1,7 @@
 package tel.schich.adventofcode.year2015
 
-import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
-import scala.collection.immutable.ArraySeq
 import scala.math._
 
 object Day06 extends AoCApp {
@@ -11,7 +9,7 @@ object Day06 extends AoCApp {
     val Command = "(turn off|turn on|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)".r
     val input = asLines(Input2015.Day06)
 
-    def toCommands[T](inputs: Seq[String])(cm: String => (T => T)): Seq[((T) => T, (Int, Int), (Int, Int))] = input.map {
+    def toCommands[T](inputs: Seq[String])(cm: String => T => T): Seq[((T) => T, (Int, Int), (Int, Int))] = input.map {
         case Command(command, x1, y1, x2, y2) =>
             (cm(command), (x1.toInt, y1.toInt), (x2.toInt, y2.toInt))
     }

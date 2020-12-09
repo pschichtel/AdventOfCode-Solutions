@@ -1,6 +1,5 @@
 package tel.schich.adventofcode.year2015
 
-import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2015.Day21.extractNumber
 
