@@ -12,7 +12,7 @@ object Day02 extends AoCApp {
         _ <- parseSpaces
         letter <- parseChar
         _ <- parseString(": ")
-        password <- parseWhile(_.isLetterOrDigit).map(_.asString)
+        password <- parseWhile(_.isLetterOrDigit)
     } yield (n1, n2, letter, password)
 
     val parseInput = parseAllSeparated(parseLine, parseLineBreak)
@@ -21,7 +21,7 @@ object Day02 extends AoCApp {
 
     part(1, entries.count {
         case (min, max, letter, password) =>
-            val letterCount = password.count(_ == letter)
+            val letterCount = password.view.count(_ == letter)
             letterCount >= min && letterCount <= max
     })
 
