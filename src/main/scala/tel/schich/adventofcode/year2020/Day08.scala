@@ -88,6 +88,23 @@ object Day08 extends AoCApp {
             .toSet
     }
 
+    def buildAdjacentLookups(program: Array[Instr], pcToBlock: Map[Int, Block], blocks: Set[Block]): (Map[Block, Block], Map[Block, Set[Block]]) = {
+        @tailrec
+        def build(blocks: Set[Block], successors: Set[(Block, Block)], predecessors: Set[(Block, Block)]): (Map[Block, Block], Map[Block, Set[Block]]) = {
+            if (blocks.isEmpty) (successors.toMap, predecessors.groupMap(_._1)(_._2))
+            else {
+                val block = blocks.head
+                if (block.jumpTo >= program.length) build(blocks.tail, successors, predecessors)
+                else {
+                    val successor = pcToBlock(block.jumpTo)
+                    build(blocks.tail, successors + (block -> successor), predecessors + (successor -> block))
+                }
+            }
+        }
+
+        build(blocks, Set.empty, Set.empty)
+    }
+
     val parseNoOperation = parseString("nop ").ignoreAndThen(parseWholeNumber).map(i => NoOperation(i.toInt))
     val parseAccumulator = parseString("acc ").ignoreAndThen(parseWholeNumber).map(i => Accumulate(i.toInt))
     val parseJump = parseString("jmp ").ignoreAndThen(parseWholeNumber).map(i => Jump(i.toInt))
@@ -103,23 +120,14 @@ object Day08 extends AoCApp {
         pc <- block.start to block.`end`
     } yield (pc, block)).toMap
 
-    val (successorLookup, predecessors) = blocks.foldLeft((Map.empty[Block, Block], Set.empty[(Block, Block)])) {
-        case (acc, block) if block.jumpTo >= program.length => acc
-        case ((forward, backward), block) =>
-            val next = pcToBlock(block.jumpTo)
-            (forward + (block -> next), backward + (next -> block))
-    }
-
-    val predecessorLookup = predecessors.groupMap(_._1)(_._2)
+    val (successorLookup, predecessorLookup) = buildAdjacentLookups(program, pcToBlock, blocks)
 
     val start = pcToBlock(0)
-
     val backwardsPathFromLoop = findLoop(start, successorLookup)
+
     part(1, executeUntil(program, 0, backwardsPathFromLoop.tail.head.`end`, 0))
 
     val forwardsLoopBody = extractForwardLoopBody(backwardsPathFromLoop)
-
-
     val correctableInstructions = findCorrectableInstructions(program, pcToBlock, blocks, predecessorLookup, forwardsLoopBody)
     val pcToCorrect = correctableInstructions.head
     val correctedProgram = program(pcToCorrect) match {
