@@ -20,13 +20,19 @@ trait AoCApp extends App {
         .map(_.trim)
         .filter(_.nonEmpty)
 
-    def parse[T](input: String, parser: Parser[T]): T = {
-        parser(input) match {
-            case ParseResult.Success(value, _) => value
+    def parse[T](input: String, parser: Parser[T]): T =  timed(s"$name input parsing") {
+        parser(StringSlice(input)) match {
+            case ParseResult.Success(value, rest) =>
+                if (rest.length == 0) value
+                else {
+                    println("Parsing succesful, but incomplete!")
+                    println(s"Parsed: $value")
+                    println(s"Rest:\n${rest.asString}")
+                    throw new Exception("incomplete!")
+                }
             case ParseResult.Error(error, rest) =>
                 println(s"Failed to parse input:")
-                error.printStackTrace(System.err)
-                println(s"Remaining input:\n$rest")
+                println(s"Remaining input:\n${rest.asString}")
                 throw error
         }
     }
@@ -35,11 +41,11 @@ trait AoCApp extends App {
         throw new Exception("Not implemented yet!")
     }
 
-    def timed[U](unit: TimeUnit)(value: => U): U = {
+    def timed[U](label: String)(value: => U): U = {
         val start = System.nanoTime()
         val result = value
-        val delta = unit.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)
-        println(s"Time: $delta µs")
+        val delta = TimeUnit.MICROSECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)
+        println(s"$label: $delta µs")
         result
     }
 }

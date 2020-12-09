@@ -3,12 +3,57 @@ package tel.schich.adventofcode
 import tel.schich.adventofcode.shared.Parser.parseRepeated
 
 import scala.annotation.tailrec
+import scala.collection.IndexedSeqView
 
 package object shared {
 
-    trait Parser[A] extends (String => ParseResult[A]) { self =>
+    class StringSlice(private val source: Array[Char], private val offset: Int, val length: Int) extends (Int => Char) {
+        def headOption: Option[Char] = if (length > 0) Some(source(offset)) else None
+        override def apply(i: Int): Char = source(offset + i)
 
-        def map[B](f: A => B): Parser[B] = (input: String) => apply(input).map(f)
+        def slice(n: Int): StringSlice = new StringSlice(source, offset, n)
+        def drop(n: Int): StringSlice = new StringSlice(source, offset + n, length - n)
+
+        def startsWith(s: String): Boolean =
+            if (s.length > length) false
+            else s.indices.forall(i => s.charAt(i) == source(offset + i))
+
+        def countPrefix(p: Char => Boolean): Int = {
+            @tailrec
+            def count(i: Int): Int = {
+                if (i >= source.length) i
+                else if (p(source(i))) count(i + 1)
+                else i
+            }
+
+            count(offset) - offset
+        }
+
+        def view: IndexedSeqView[Char] = source.view.slice(offset, offset + length)
+
+        def asString = new String(source, offset, length)
+
+        override def equals(other: Any): Boolean = other match {
+            case that: StringSlice =>
+                if (that.length != length) false
+                else (0 until length).forall(i => apply(i) == that.apply(i))
+            case _ => false
+        }
+
+        override def hashCode(): Int = {
+            (offset until (offset + length)).foldLeft(1) { (result, element) =>
+                31 * result * source(element)
+            }
+        }
+    }
+
+    object StringSlice {
+        def apply(s: String): StringSlice = new StringSlice(s.toCharArray, 0, s.length)
+    }
+
+    trait Parser[A] extends (StringSlice => ParseResult[A]) { self =>
+
+        def map[B](f: A => B): Parser[B] = input => apply(input).map(f)
 
         def flatMap[B](f: A => Parser[B]): Parser[B] = input => {
             apply(input) match {
@@ -40,62 +85,54 @@ package object shared {
 
         def noop[T](value: T): Parser[T] = input => ParseResult.Success(value, input)
 
-        def check(predicate: String => Boolean): Parser[Boolean] =
-            (input: String) => ParseResult.Success(predicate(input), input)
+        def check(predicate: StringSlice => Boolean): Parser[Boolean] =
+            input => ParseResult.Success(predicate(input), input)
 
         def check(string: String): Parser[Boolean] = check(i => i.startsWith(string))
 
-        def parseString(s: String): Parser[String] = input => {
-            if (input.startsWith(s)) ParseResult.Success(s, input.substring(s.length))
+        def parseString(s: String): Parser[StringSlice] = input => {
+            if (input.startsWith(s)) ParseResult.Success(input.slice(s.length), input.drop(s.length))
             else ParseResult.Error(new Exception(s"Did not match string $s"), input)
         }
 
         def parseOneOf(s: Seq[Char]): Parser[Char] = parseOne(c => s.contains(c))
 
-        def parseFixedLengthString(n: Int): Parser[String] = input => {
-            if (input.length < n) ParseResult.Error(new Exception(s"Not enough input left! Required $n"), input)
-            else {
-                val (string, rest) = input.splitAt(n)
-                ParseResult.Success(string, rest)
-            }
-        }
-
         def parseOne(predicate: Char => Boolean): Parser[Char] = input => input.headOption match {
-            case Some(c) if predicate(c) => ParseResult.Success(c, input.substring(1))
+            case Some(c) if predicate(c) => ParseResult.Success(c, input.drop(1))
             case _ => ParseResult.Error(new Exception("nothing found!"), input)
         }
 
-        def parseWhile(predicate: Char => Boolean): Parser[String] = input => {
-            val string = input.takeWhile(predicate)
-            ParseResult.Success(string, input.substring(string.length))
+        def parseWhile(predicate: Char => Boolean): Parser[StringSlice] = input => {
+            val prefixLength = input.countPrefix(predicate)
+            ParseResult.Success(input.slice(prefixLength), input.drop(prefixLength))
         }
 
-        def parseAtLeastOnce(predicate: Char => Boolean): Parser[String] = parseOne(predicate).flatMap { first =>
-            parseWhile(predicate).map(s => s"$first$s")
+        def parseAtLeastOnce(predicate: Char => Boolean): Parser[StringSlice] = input => {
+            val count = input.countPrefix(predicate)
+            if (count == 0) ParseResult.Error(new Exception("not enough input!"), input)
+            else ParseResult.Success(input.slice(count), input.drop(count))
         }
 
-        def parseWhitespace: Parser[String] = parseWhile(_.isWhitespace)
+        def parseWhitespace: Parser[StringSlice] = parseWhile(_.isWhitespace)
 
-        def parseSpaces: Parser[String] = parseAtLeastOnce(c => c.isWhitespace && c != '\r' && c != '\n')
+        def parseSpaces: Parser[StringSlice] = parseAtLeastOnce(c => c.isWhitespace && c != '\r' && c != '\n')
 
-        def parseLineBreak: Parser[String] = parseOneOf("\r\n").flatMap {
-            case '\r' => parseString("\n").?.map {
-                case Some(_) => "\r\n"
-                case None => "\r"
-            }
-            case '\n' => noop("\n")
+        def parseLineBreak: Parser[StringSlice] = input => {
+            if (input.startsWith("\r\n")) ParseResult.Success(input.slice(2), input.drop(2))
+            else if (input.startsWith("\r") || input.startsWith("\n")) ParseResult.Success(input.slice(1), input.drop(1))
+            else ParseResult.Error(new Exception("no linebreak found!"), input)
         }
 
         def parseChar: Parser[Char] = input => {
             input.headOption match {
-                case Some(c) => ParseResult.Success(c, input.substring(1))
+                case Some(c) => ParseResult.Success(c, input.drop(1))
                 case _ => ParseResult.Error(new Exception("No more input"), input)
             }
         }
 
         def parseRepeated[A](n: Int, parser: Parser[A]): Parser[Seq[A]] = input => {
             @tailrec
-            def loop(input: String, n: Int, carry: Seq[A]): ParseResult[Seq[A]] = {
+            def loop(input: StringSlice, n: Int, carry: Seq[A]): ParseResult[Seq[A]] = {
                 if (n == 0) ParseResult.Success(carry, input)
                 else {
                     parser(input) match {
@@ -110,7 +147,7 @@ package object shared {
 
         def parseAll[A](parser: Parser[A]): Parser[Seq[A]] = input => {
             @tailrec
-            def loop(input: String, carry: Seq[A]): ParseResult[Seq[A]] = {
+            def loop(input: StringSlice, carry: Seq[A]): ParseResult[Seq[A]] = {
                 parser(input) match {
                     case ParseResult.Success(value, rest) => loop(rest, carry :+ value)
                     case ParseResult.Error(_, _) => ParseResult.Success(carry, input)
@@ -126,7 +163,7 @@ package object shared {
         def parseNaturalNumber: Parser[Long] = parseOne(_.isDigit).flatMap {
             case '0' => noop(0L)
             case firstDigit => parseWhile(_.isDigit).map { digits =>
-                digits.foldLeft((firstDigit - '0').toLong)((num, digit) => num * 10 + (digit - '0'))
+                digits.view.foldLeft((firstDigit - '0').toLong)((num, digit) => num * 10 + (digit - '0'))
             }
         }
 
@@ -152,11 +189,13 @@ package object shared {
             tryParse(parsers)
         }
 
+        def parseWord: Parser[StringSlice] = parseAtLeastOnce(_.isLetter)
+
     }
 
 
     sealed trait ParseResult[T] {
-        val rest: String
+        val rest: StringSlice
 
         def map[A](f: T => A): ParseResult[A] = {
             this match {
@@ -164,14 +203,14 @@ package object shared {
                 case ParseResult.Error(value, rest) => ParseResult.Error(value, rest)
             }
         }
-        def flatMap[A](f: (T, String) => ParseResult[A]): ParseResult[A] = {
+        def flatMap[A](f: (T, StringSlice) => ParseResult[A]): ParseResult[A] = {
             this match {
                 case ParseResult.Success(value, rest) => f(value, rest)
                 case ParseResult.Error(value, rest) => ParseResult.Error(value, rest)
             }
         }
 
-        def andThen[A](f: String => ParseResult[A]): ParseResult[(T, A)] = {
+        def andThen[A](f: StringSlice => ParseResult[A]): ParseResult[(T, A)] = {
             this match {
                 case ParseResult.Success(value, rest) => f(rest).map(secondValue => (value, secondValue))
                 case ParseResult.Error(value, rest) => ParseResult.Error(value, rest)
@@ -180,7 +219,7 @@ package object shared {
     }
 
     object ParseResult {
-        final case class Success[T](value: T, rest: String) extends ParseResult[T]
-        final case class Error[T](error: Throwable, rest: String) extends ParseResult[T]
+        final case class Success[T](value: T, rest: StringSlice) extends ParseResult[T]
+        final case class Error[T](error: Throwable, rest: StringSlice) extends ParseResult[T]
     }
 }

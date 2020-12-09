@@ -9,13 +9,13 @@ object Day04 extends AoCApp {
 
     case class Passport(fields: Map[String, String])
 
-    val parseName = parseAtLeastOnce(c => !c.isWhitespace && c != ':')
+    val parseName = parseWord
     val parseValue = parseWhile(!_.isWhitespace)
 
     val parsePair = for {
-        name <- parseName
+        name <- parseName.map(_.asString)
         _ <- parseString(":")
-        value <- parseValue
+        value <- parseValue.map(_.asString)
     } yield (name, value)
 
     val parsePassportLine = parseAllSeparated(parsePair, parseSpaces)

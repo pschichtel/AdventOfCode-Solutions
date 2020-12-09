@@ -141,7 +141,7 @@ object Day02 extends AoCApp {
         99L -> exit
     )
 
-    timed(TimeUnit.MICROSECONDS) {
+    timed("day 02 execution") {
         val program = parseProgram(Input2019.Day02)
         val invoke = (a: Long, b: Long) => runProgram(instructions, patch(program, 1L -> a, 2L -> b), List.empty).memory(0)
         part(1, invoke(12, 2))

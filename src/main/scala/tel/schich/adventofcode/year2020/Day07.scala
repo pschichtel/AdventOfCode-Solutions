@@ -1,20 +1,20 @@
 package tel.schich.adventofcode.year2020
 
-import tel.schich.adventofcode.shared.AoCApp
+import tel.schich.adventofcode.shared.{AoCApp, StringSlice}
 import tel.schich.adventofcode.shared.Parser._
 
 import scala.annotation.tailrec
 
 object Day07 extends AoCApp {
 
-    type Bag = (String, String)
+    type Bag = (StringSlice, StringSlice)
     type CountedBag = (Long, Bag)
     type BagWithBags = (Bag, Seq[CountedBag])
 
     val parseBag = for {
-        modifier <- parseAtLeastOnce(_.isLetter)
+        modifier <- parseWord
         _ <- parseSpaces
-        color <- parseAtLeastOnce(_.isLetter)
+        color <- parseWord
         _ <- parseString(" bag")
         _ <- parseString("s").?
     } yield (modifier, color)
@@ -41,7 +41,7 @@ object Day07 extends AoCApp {
 
     val allThemBags: Seq[BagWithBags] = parse(Input2020.Day07, parseInput)
 
-    val myBag = ("shiny", "gold")
+    val myBag = (StringSlice("shiny"), StringSlice("gold"))
 
     def findBagsContaining(needle: Bag, haystack: Seq[BagWithBags]): Set[Bag] = {
 
