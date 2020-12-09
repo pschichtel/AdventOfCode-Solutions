@@ -92,14 +92,14 @@ package object shared {
 
         def parseString(s: String): Parser[StringSlice] = input => {
             if (input.startsWith(s)) ParseResult.Success(input.slice(s.length), input.drop(s.length))
-            else ParseResult.Error(new Exception(s"Did not match string $s"), input)
+            else ParseResult.Error(s"Did not match string $s", input)
         }
 
         def parseOneOf(s: Seq[Char]): Parser[Char] = parseOne(c => s.contains(c))
 
         def parseOne(predicate: Char => Boolean): Parser[Char] = input => input.headOption match {
             case Some(c) if predicate(c) => ParseResult.Success(c, input.drop(1))
-            case _ => ParseResult.Error(new Exception("nothing found!"), input)
+            case _ => ParseResult.Error("nothing found!", input)
         }
 
         def parseWhile(predicate: Char => Boolean): Parser[StringSlice] = input => {
@@ -109,7 +109,7 @@ package object shared {
 
         def parseAtLeastOnce(predicate: Char => Boolean): Parser[StringSlice] = input => {
             val count = input.countPrefix(predicate)
-            if (count == 0) ParseResult.Error(new Exception("not enough input!"), input)
+            if (count == 0) ParseResult.Error("not enough input!", input)
             else ParseResult.Success(input.slice(count), input.drop(count))
         }
 
@@ -120,13 +120,13 @@ package object shared {
         def parseLineBreak: Parser[StringSlice] = input => {
             if (input.startsWith("\r\n")) ParseResult.Success(input.slice(2), input.drop(2))
             else if (input.startsWith("\r") || input.startsWith("\n")) ParseResult.Success(input.slice(1), input.drop(1))
-            else ParseResult.Error(new Exception("no linebreak found!"), input)
+            else ParseResult.Error("no linebreak found!", input)
         }
 
         def parseChar: Parser[Char] = input => {
             input.headOption match {
                 case Some(c) => ParseResult.Success(c, input.drop(1))
-                case _ => ParseResult.Error(new Exception("No more input"), input)
+                case _ => ParseResult.Error("No more input", input)
             }
         }
 
@@ -179,7 +179,7 @@ package object shared {
         def parseSelector[A](parsers: Seq[Parser[_ <: A]]): Parser[A] = input => {
             @tailrec
             def tryParse(parsersLeft: Seq[Parser[_ <: A]]): ParseResult[A] = parsersLeft match {
-                case Nil => ParseResult.Error(new Exception("no more parser to try!"), input)
+                case Nil => ParseResult.Error("no more parser to try!", input)
                 case head :: tail => head(input) match {
                     case ParseResult.Error(_, _) => tryParse(tail)
                     case ParseResult.Success(value, rest) => ParseResult.Success(value, rest)
@@ -220,6 +220,6 @@ package object shared {
 
     object ParseResult {
         final case class Success[T](value: T, rest: StringSlice) extends ParseResult[T]
-        final case class Error[T](error: Throwable, rest: StringSlice) extends ParseResult[T]
+        final case class Error[T](error: String, rest: StringSlice) extends ParseResult[T]
     }
 }

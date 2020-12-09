@@ -33,7 +33,7 @@ trait AoCApp extends App {
             case ParseResult.Error(error, rest) =>
                 println(s"Failed to parse input:")
                 println(s"Remaining input:\n${rest.asString}")
-                throw error
+                throw new Exception(error)
         }
     }
 
