@@ -27,10 +27,10 @@ sourceGenerators in Compile += Def.task {
             baseDir.listFiles(f => f.isDirectory && f.name.matches("\\d+")).toSeq.map { yearDir =>
                 val year = yearDir.name.toInt
                 val inputs = yearDir.listFiles(f => !f.isDirectory && f.name.endsWith(".txt")).toSeq.map { input =>
-                    IO.read(input).trim
+                    (input.name.substring(0, input.name.length - 4), IO.read(input).trim)
                 }
 
-                (year, inputs)
+                (year, inputs.sortBy(_._1))
             }
         }
     }
@@ -41,9 +41,7 @@ sourceGenerators in Compile += Def.task {
     for ((year, inputs) <- filesForYears) yield {
         val sourceFile = sourceDir / s"Inputs$year.scala"
         val fields = inputs
-                .zipWithIndex
-                .map { case (content, i) =>
-                    val fieldName = s"Day${(i + 1).formatted("%02d")}"
+                .map { case (name, content) =>
                     val stringPrefix = "raw\"\"\""
                     val stringSuffix = "\"\"\""
                     val stringSeparator = s"$stringSuffix + $stringPrefix"
@@ -51,7 +49,7 @@ sourceGenerators in Compile += Def.task {
                             .grouped(50000)
                             .map(_.replaceAllLiterally("$", "$$"))
                             .mkString(stringPrefix, stringSeparator, stringSuffix)
-                    s"  final val $fieldName = $value"
+                    s"  final val $name = $value"
                 }
                 .mkString("", "\n", "\n")
 
