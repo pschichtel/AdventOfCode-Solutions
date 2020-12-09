@@ -86,14 +86,6 @@ package object shared {
             case '\n' => noop("\n")
         }
 
-        def parseInteger: Parser[Int] = parseWhile(_.isDigit)
-            .flatMap { digitString =>
-                rest => digitString.toIntOption match {
-                    case Some(num) => ParseResult.Success(num, rest)
-                    case None => ParseResult.Error(new Exception(s"Digits found were not a valid number: $digitString"), rest)
-                }
-            }
-
         def parseChar: Parser[Char] = input => {
             input.headOption match {
                 case Some(c) => ParseResult.Success(c, input.substring(1))
@@ -145,6 +137,19 @@ package object shared {
                     case _ => n
                 }
             }
+        }
+
+        def parseSelector[A](parsers: Seq[Parser[_ <: A]]): Parser[A] = input => {
+            @tailrec
+            def tryParse(parsersLeft: Seq[Parser[_ <: A]]): ParseResult[A] = parsersLeft match {
+                case Nil => ParseResult.Error(new Exception("no more parser to try!"), input)
+                case head :: tail => head(input) match {
+                    case ParseResult.Error(_, _) => tryParse(tail)
+                    case ParseResult.Success(value, rest) => ParseResult.Success(value, rest)
+                }
+            }
+
+            tryParse(parsers)
         }
 
     }
