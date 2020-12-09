@@ -15,12 +15,12 @@ object Day08 extends AoCApp {
     case class CodeBlock(start: Int, end: Int, jumpTo: Int)
 
     @tailrec
-    def executeAndDetectLoop(program: Array[Op], pc: Int, end: Int, acc: Int): Int = {
+    def executeUntil(program: Array[Op], pc: Int, end: Int, acc: Int): Int = {
         if (pc == end) acc
         else program(pc) match {
-            case NoOperation(_) => executeAndDetectLoop(program, pc + 1, end, acc)
-            case Accumulate(v) => executeAndDetectLoop(program, pc + 1, end, acc + v)
-            case Jump(v) => executeAndDetectLoop(program, pc + v, end, acc)
+            case NoOperation(_) => executeUntil(program, pc + 1, end, acc)
+            case Accumulate(v) => executeUntil(program, pc + 1, end, acc + v)
+            case Jump(v) => executeUntil(program, pc + v, end, acc)
         }
     }
 
@@ -115,7 +115,7 @@ object Day08 extends AoCApp {
     val start = pcToBlock(0)
 
     val backwardsPathFromLoop = findLoop(start, successorLookup)
-    part(1, executeAndDetectLoop(program, 0, backwardsPathFromLoop.tail.head.`end`, 0))
+    part(1, executeUntil(program, 0, backwardsPathFromLoop.tail.head.`end`, 0))
 
     val forwardsLoopBody = extractForwardLoopBody(backwardsPathFromLoop)
 
@@ -128,5 +128,5 @@ object Day08 extends AoCApp {
         case _ => program
     }
 
-    part(2, executeAndDetectLoop(correctedProgram, 0, correctedProgram.length, 0))
+    part(2, executeUntil(correctedProgram, 0, correctedProgram.length, 0))
 }
