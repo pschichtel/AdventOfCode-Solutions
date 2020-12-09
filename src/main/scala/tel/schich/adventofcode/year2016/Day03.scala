@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day03 extends AoCApp {
 
     val triangleSpec = "\\d+"
 
-    val numberLines = inputLines.map(_.split("\\s+").map(_.trim.toInt).toList).toVector
+    val numberLines = asLines(Input2016.Day03).map(_.split("\\s+").map(_.trim.toInt).toList).toVector
 
     def validateTriangle(numbers: Seq[Int]): Boolean = {
         numbers.permutations.forall({

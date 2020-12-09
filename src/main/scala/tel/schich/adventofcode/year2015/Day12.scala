@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -116,6 +117,7 @@ object Day12 extends AoCApp {
     }
 
     def parseJsonNumber(startInput: Seq[Char]): (JsonNumber, Seq[Char]) = {
+        @tailrec
         def parse(input: Seq[Char], acc: String, float: Boolean): (JsonNumber, Seq[Char]) = {
             if (input.isEmpty) (toObj(acc, float), input)
             else input.head match {
@@ -160,7 +162,7 @@ object Day12 extends AoCApp {
 
     }
 
-    parseJson(inputText) match {
+    parseJson(Input2015.Day12) match {
         case Success(tree) =>
             val sumOfNumbers = findNumbers(tree).map(_.intValue).sum
             part(1, sumOfNumbers)

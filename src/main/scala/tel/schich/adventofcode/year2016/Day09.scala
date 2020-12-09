@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -51,7 +52,7 @@ object Day09 extends AoCApp {
 
     }
 
-    val strippedInput = inputText.replaceAll("\\s+", "")
+    val strippedInput = Input2016.Day09.replaceAll("\\s+", "")
 
     part(1, countCharsDecompressed(strippedInput))
     part(2, countCharsDecompressed(strippedInput, recurse = true))

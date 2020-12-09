@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -8,7 +9,7 @@ object Day01 extends AoCApp {
 
     def calculateFuel(mass: Int) = mass / 3 - 2
 
-    val masses = inputLines.map(_.toInt)
+    val masses = asLines(Input2019.Day01).map(_.toInt)
 
     part(1, masses.map(calculateFuel).sum)
 

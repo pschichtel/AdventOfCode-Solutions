@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.shared.Parser
 import tel.schich.adventofcode.shared.Parser._
@@ -16,9 +17,9 @@ object Day02 extends AoCApp {
         password <- parseWhile(_.isLetterOrDigit)
     } yield (n1, n2, letter, password)
 
-    implicit val inputParser: Parser[Seq[(Int, Int, Char, String)]] = parseAllSeparated(parseLine, parseLineBreak)
+    val parseInput: Parser[Seq[(Int, Int, Char, String)]] = parseAllSeparated(parseLine, parseLineBreak)
 
-    private val entries = input[Seq[(Int, Int, Char, String)]]
+    private val entries = parse(Input2020.Day02, parseInput)
 
     part(1, entries.count {
         case (min, max, letter, password) =>

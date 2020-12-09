@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day24 extends AoCApp {
 
-    val packageWeights = inputLines.map(_.toInt)
+    val packageWeights = asLines(Input2015.Day24).map(_.toInt)
 
     def findMinimumQuantumEntanglement(weights: Seq[Int], compartments: Int): Long = {
         val maxWeightPerCompartment = weights.sum / compartments

@@ -1,7 +1,7 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
-import tel.schich.adventofcode.shared.Parser
 import tel.schich.adventofcode.shared.Parser._
 
 object Day05 extends AoCApp {
@@ -28,12 +28,12 @@ object Day05 extends AoCApp {
         leftRight <- parseLeftRight
     } yield Seat(foldToInt(frontBack), foldToInt(leftRight))
 
-    implicit val parseInput: Parser[Seq[Seat]] = for {
+    val parseInput = for {
         first <- parseSeatPath
         following <- parseAll(parseWhitespace.?.flatMap(_ => parseSeatPath))
     } yield first +: following
 
-    val sortedSeatIds = input[Seq[Seat]].map(s => s.row * 8 + s.column).sorted
+    val sortedSeatIds = parse(Input2020.Day05, parseInput).map(s => s.row * 8 + s.column).sorted
 
     val result = sortedSeatIds.last
     part(1, result)

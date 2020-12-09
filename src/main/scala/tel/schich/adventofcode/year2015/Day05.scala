@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.math._
 
 object Day05 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day05)
 
     val vowels = Set('a', 'e', 'i', 'o', 'u')
     val forbiddenWindows = Set("ab", "cd", "pq", "xy")

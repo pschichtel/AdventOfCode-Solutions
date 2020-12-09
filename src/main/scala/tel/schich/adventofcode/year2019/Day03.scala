@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -7,7 +8,7 @@ import scala.annotation.tailrec
 object Day03 extends AoCApp {
     type Point = (Int, Int)
 
-    val Seq(line1, line2) = inputLines
+    val Seq(line1, line2) = asLines(Input2019.Day03)
         .map(_.split(',').toList)
         .map(rel => translateToPoints(rel, 0, 0, 0, 0, 0, Vector.empty))
 

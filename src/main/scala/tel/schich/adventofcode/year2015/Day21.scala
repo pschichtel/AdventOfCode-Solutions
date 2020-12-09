@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day21 extends AoCApp {
@@ -82,7 +83,7 @@ object Day21 extends AoCApp {
     )
 
 
-    val List(hitPointsLine, damageLine, armorLine) = inputLines.toList
+    val List(hitPointsLine, damageLine, armorLine) = asLines(Input2015.Day21).toList
 
     val enemy = (extractNumber(hitPointsLine), extractNumber(damageLine), extractNumber(armorLine))
 

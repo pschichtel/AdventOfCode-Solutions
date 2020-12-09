@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.shared.Parser._
 
@@ -112,7 +113,7 @@ object Day08 extends AoCApp {
     val parseOp = parseSelector[Instr](Seq(parseNoOperation, parseAccumulator, parseJump))
     val parseInput = parseAllSeparated(parseOp, parseLineBreak)
 
-    val program = input(parseInput).toArray
+    val program = parse(Input2020.Day08, parseInput).toArray
 
     val blocks = findBlocks(program)
     val pcToBlock = (for {

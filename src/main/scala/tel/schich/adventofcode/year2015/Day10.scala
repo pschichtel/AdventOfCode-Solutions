@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
 
 object Day10 extends AoCApp {
 
-    val input: VString = vstr(inputText)
+    val input: VString = vstr(Input2015.Day10)
     val iterations = (40, 50)
 
     @inline

@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day06 extends AoCApp {
 
-    val input = inputLines.toList
+    val input = asLines(Input2016.Day06).toList
 
     def decode(input: Seq[String], dir: Int = -1): String = {
         (0 until input.head.length).map {

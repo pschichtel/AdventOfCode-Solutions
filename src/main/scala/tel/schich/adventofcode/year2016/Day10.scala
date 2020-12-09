@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -28,7 +29,7 @@ object Day10 extends AoCApp {
         }
     }
 
-    val instructions: Seq[Instruction] = inputLines map {
+    val instructions: Seq[Instruction] = asLines(Input2016.Day10) map {
         case valueToBot(value, targetType, targetId) =>
             StartAssignment(Value(value.toInt), toTarget(targetType, targetId))
         case botGivesLowAndHigh(source, lowType, lowId, highType, highId) =>

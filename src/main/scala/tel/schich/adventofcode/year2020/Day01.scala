@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day01 extends AoCApp {
 
-    val values = inputLines.map(_.toInt)
+    val values = asLines(Input2020.Day01).map(_.toInt)
 
     val part1Vales = for {
         a <- values

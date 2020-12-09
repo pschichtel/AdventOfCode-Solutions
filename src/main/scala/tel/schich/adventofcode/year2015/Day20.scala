@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.math._
@@ -15,7 +16,7 @@ object Day20 extends AoCApp {
         factor * divisors.sum
     }
 
-    val input = inputText.toInt
+    val input = Input2015.Day20.toInt
 
     val (house, _) = (1 to input / 10).map(house => (house, numberOfPresentsFor(house, 10, (_, _) => true)))
         .filter {case (_, presents) => presents >= input}

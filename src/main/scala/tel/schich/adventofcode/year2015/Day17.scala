@@ -1,11 +1,12 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 
 object Day17 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day17)
 
     case class Container(size: Int, number: Int)
 

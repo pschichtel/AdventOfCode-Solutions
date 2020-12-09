@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day08 extends AoCApp {
@@ -85,7 +86,7 @@ object Day08 extends AoCApp {
     val rotRow = "rotate row y=(\\d+) by (\\d+)".r
     val rotCol = "rotate column x=(\\d+) by (\\d+)".r
 
-    val operations = inputLines.map {
+    val operations = asLines(Input2016.Day08).map {
         case rect(a, b) => enableRect(a.toInt, b.toInt) _
         case rotRow(y, b) => rotateRow(y.toInt, b.toInt) _
         case rotCol(x, b) => rotateColumn(x.toInt, b.toInt) _

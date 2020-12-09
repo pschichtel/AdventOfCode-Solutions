@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.math._
 
 object Day15 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day15)
 
     val ingredient = "(\\w+): capacity (\\-?\\d+), durability (\\-?\\d+), flavor (\\-?\\d+), texture (\\-?\\d+), calories (\\-?\\d+)".r
 

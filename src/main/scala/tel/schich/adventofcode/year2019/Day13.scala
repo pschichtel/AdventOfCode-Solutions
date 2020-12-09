@@ -1,7 +1,8 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
-import tel.schich.adventofcode.year2019.Day02.{Failed, Input, ProgramState, Ready, RequiredMoreInput, SuccessfullyCompleted, initProgram, runProgram}
+import tel.schich.adventofcode.year2019.Day02._
 import tel.schich.adventofcode.year2019.Day09.instructions
 
 import scala.annotation.tailrec
@@ -14,12 +15,13 @@ object Day13 extends AoCApp {
     case object Incomplete extends GameResult
     case class Complete(score: Long) extends GameResult
 
-    val program = Day02.parseProgram(inputText)
+    val program = Day02.parseProgram(Input2019.Day13)
 
     val output = runProgram(instructions, program, Nil).output
 
     val tileMap = output.grouped(3).foldLeft(Map.empty[(Long, Long), Long]) {
         case (map, List(x, y, kind)) => map.updated((x, y), kind)
+        case _ => throw new Exception("should not be reached")
     }
 
     part(1, tileMap.count(_._2 == 2))

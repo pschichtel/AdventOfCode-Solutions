@@ -1,6 +1,7 @@
 package tel.schich.adventofcode.year2019
 
 import Day02.{InstructionSet, ProgramState, binaryOp, parseProgram, runProgram}
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day05 extends AoCApp {
@@ -15,7 +16,7 @@ object Day05 extends AoCApp {
     def comparisonOp(comp: (Long, Long) => Boolean)(state: ProgramState) =
         binaryOp((a, b) => if (comp(a, b)) 1 else 0)(state)
 
-    val program = parseProgram(inputText)
+    val program = parseProgram(Input2019.Day05)
 
     part(1, runProgram(Day02.instructions, program, 1 :: Nil).output.last)
 

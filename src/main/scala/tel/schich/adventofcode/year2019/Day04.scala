@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -8,7 +9,7 @@ object Day04 extends AoCApp {
 
     type Num = IndexedSeq[Int]
 
-    val Array(lower, upper) = inputText.split('-').map(_.toInt)
+    val Array(lower, upper) = Input2019.Day04.split('-').map(_.toInt)
 
     val validPasswords = (lower to upper).filter { n =>
         val s = n.toString

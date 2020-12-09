@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
 
 object Day08 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day08)
 
     def parse(s: String): String = parseChars(s.iterator)
 
@@ -17,7 +18,7 @@ object Day08 extends AoCApp {
     }
 
     def parseChar(s: Iterator[Char]): String = {
-        s.next match {
+        s.next() match {
             case '\\' => parseEscapeSequence(s)
             case '"' => ""
             case c => "" + c
@@ -25,11 +26,11 @@ object Day08 extends AoCApp {
     }
 
     def parseEscapeSequence(s: Iterator[Char]): String = {
-        s.next match {
+        s.next() match {
             case '"' => "\""
             case '\\' => "\\"
             case 'x' =>
-                "" + Integer.parseInt("" + s.next + s.next, 16).toChar
+                "" + Integer.parseInt("" + s.next() + s.next(), 16).toChar
             case c => "\\" + c
         }
     }

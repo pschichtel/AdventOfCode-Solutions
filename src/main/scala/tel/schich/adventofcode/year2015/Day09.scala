@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day09 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day09)
 
     val edge = "(\\w+) to (\\w+) = (\\d+)".r
 
@@ -28,7 +29,7 @@ object Day09 extends AoCApp {
 
         val next = path :+ node
         if (toVisit.isEmpty) Set(next)
-        else toVisit.flatMap((visit) => buildPaths(visit, next))
+        else toVisit.flatMap(visit => buildPaths(visit, next))
     }
 
     def pathLength(p: Path): Int = p.sliding(2).map(w => distanceBetween((w.head, w(1)))).sum

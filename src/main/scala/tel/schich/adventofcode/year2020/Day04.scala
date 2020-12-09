@@ -1,7 +1,7 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
-import tel.schich.adventofcode.shared.Parser
 import tel.schich.adventofcode.shared.Parser._
 
 import scala.util.matching.Regex
@@ -24,10 +24,10 @@ object Day04 extends AoCApp {
     val parsePassport = parseAllSeparated(parsePassportLine, parseLineBreak)
         .map(pairs => Passport(pairs.flatten.toMap))
 
-    implicit val parseInput: Parser[Seq[Passport]] = parseAllSeparated(parsePassport, parseLineBreak.repeated(2))
+    val parseInput = parseAllSeparated(parsePassport, parseLineBreak.repeated(2))
         .andThenIgnore(parseWhitespace)
 
-    val passports = input[Seq[Passport]]
+    val passports = parse(Input2020.Day04, parseInput)
 
     def hasRequiredField(p: Passport): Boolean =
         p.fields.size == 8 || p.fields.size == 7 && !p.fields.contains("cid")

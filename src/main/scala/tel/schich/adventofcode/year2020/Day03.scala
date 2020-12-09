@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
 
 object Day03 extends AoCApp {
 
-    val grid = inputLines.map(_.map {
+    val grid = asLines(Input2020.Day03).map(_.map {
         case '#' => true
         case '.' => false
     })

@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2019.Day02.{Failed, Memory, Output, ProgramState, SuccessfullyCompleted, initProgram, parseProgram, runProgram}
 import tel.schich.adventofcode.year2019.Day05.instructions
@@ -9,7 +10,7 @@ import scala.collection.immutable.Queue
 
 object Day07 extends AoCApp {
 
-    val program = parseProgram(inputText)
+    val program = parseProgram(Input2019.Day07)
 
     part(1, findBestPermutation(program, 0 to 4))
 

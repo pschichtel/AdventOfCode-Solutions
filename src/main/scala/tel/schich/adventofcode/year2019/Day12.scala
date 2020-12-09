@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -23,7 +24,7 @@ object Day12 extends AoCApp {
 
     val bodyDef = "<x=(-?\\d+), y=(-?\\d+), z=(-?\\d+)>".r
 
-    val initialBodies = inputLines.map {
+    val initialBodies = asLines(Input2019.Day12).map {
         case bodyDef(x, y, z) => Body(x.toInt, y.toInt, z.toInt, 0, 0, 0)
     }
 

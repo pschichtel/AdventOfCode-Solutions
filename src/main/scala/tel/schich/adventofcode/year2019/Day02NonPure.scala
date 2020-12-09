@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import java.util.concurrent.TimeUnit
 
 object Day02NonPure extends AoCApp {
     timed(TimeUnit.MICROSECONDS) {
-        val input = inputText
+        val input = Input2019.Day02
         val inputLen = input.length
         val program = Array.ofDim[Int](input.length)
 

@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import java.util.concurrent.TimeUnit
@@ -59,7 +60,7 @@ object Day02 extends AoCApp {
             val opCode = memory(pc)
             val value = memory(pc + offset)
 
-            (value, (opCode / math.pow(10, 1 + offset).toInt) % 10)
+            (value, (opCode / math.pow(10, 1 + offset.toDouble).toInt) % 10)
         }
 
         def readParam(offset: Long): Long = {
@@ -142,7 +143,7 @@ object Day02 extends AoCApp {
     )
 
     timed(TimeUnit.MICROSECONDS) {
-        val program = parseProgram(inputText)
+        val program = parseProgram(Input2019.Day02)
         val invoke = (a: Long, b: Long) => runProgram(instructions, patch(program, 1L -> a, 2L -> b), List.empty).memory(0)
         part(1, invoke(12, 2))
 

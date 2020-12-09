@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day06 extends AoCApp {
 
-    val descendentsMap = inputLines
+    val descendentsMap = asLines(Input2019.Day06)
         .map(_.split(')'))
         .groupBy(_(0))
         .view

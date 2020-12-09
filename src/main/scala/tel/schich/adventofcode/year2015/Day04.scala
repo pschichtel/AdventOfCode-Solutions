@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import java.security.MessageDigest
@@ -25,7 +26,7 @@ object Day04 extends AoCApp {
 
     def hashStream(input: String, number: Int = 0): LazyList[(Int, ArraySeq[Byte])] = (number, md5(input + number)) #:: hashStream(input, number + 1)
 
-    val input = inputText
+    val input = Input2015.Day04
 
     private val startsWith5Zeros = startsWithNZeros(5)
     var (n1, _) = hashStream(input).filter(p => startsWith5Zeros(p._2)).head

@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.math._
 
 object Day18 extends AoCApp {
 
-    val input = inputSource.mkString.replaceAll("\\s", "")
+    val input = Input2015.Day18.replaceAll("\\s", "")
     val steps = 100
 
     val states = input.toSeq.map {

@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day02 extends AoCApp {
@@ -40,7 +41,7 @@ object Day02 extends AoCApp {
         (0, 0) -> '7', (1, 0) -> '8', (2, 0) -> '9'
     )
 
-    val instructions = inputLines
+    val instructions = asLines(Input2016.Day02)
 
     part(1, decode(ImaginedKeypad, instructions, (1, 1)))
 

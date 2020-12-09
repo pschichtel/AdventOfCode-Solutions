@@ -1,6 +1,7 @@
 package tel.schich.adventofcode.year2020
 
-import tel.schich.adventofcode.shared.{AoCApp, Parser}
+import tel.schich.adventofcode.generated.Input2020
+import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.shared.Parser._
 
 import scala.annotation.tailrec
@@ -39,7 +40,7 @@ object Day07 extends AoCApp {
 
     val parseInput = parseAllSeparated(parseStatement, parseLineBreak)
 
-    val allThemBags: Seq[BagWithBags] = input(parseInput)
+    val allThemBags: Seq[BagWithBags] = parse(Input2020.Day07, parseInput)
 
     val myBag = ("shiny", "gold")
 

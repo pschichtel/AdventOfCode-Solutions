@@ -1,14 +1,14 @@
 package tel.schich.adventofcode.year2020
 
+import tel.schich.adventofcode.generated.Input2020
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
+import scala.collection.immutable.ArraySeq
 
 object Day09 extends AoCApp {
-    val preambleLength = 25
-    val cipherCode = inputLines.map(_.toLong).toArray
 
-    def findPairs[T](values: Array[T], offset: Int, length: Int): List[(T, T)] = {
+    def findPairs[T](values: ArraySeq[T], offset: Int, length: Int): List[(T, T)] = {
         val end = offset + length
 
         @tailrec
@@ -25,7 +25,7 @@ object Day09 extends AoCApp {
         pair(offset, Nil)
     }
 
-    def findOutlier[T](cipherCode: Array[T], preambleSize: Int, op: (T, T) => T): Option[T] = {
+    def findOutlier[T](cipherCode: ArraySeq[T], preambleSize: Int, op: (T, T) => T): Option[T] = {
         @tailrec
         def find(i: Int): Option[T] = {
             if (i >= cipherCode.length) None
@@ -39,7 +39,7 @@ object Day09 extends AoCApp {
         find(preambleSize)
     }
 
-    def findWeakness(cipherCode: Array[Long], outlier: Long): Option[Long] = {
+    def findWeakness(cipherCode: ArraySeq[Long], outlier: Long): Option[Long] = {
 
         @tailrec
         def findWeakSequence(windowSize: Int): Option[Seq[Long]] = {
@@ -54,6 +54,9 @@ object Day09 extends AoCApp {
             seq.min + seq.max
         }
     }
+
+    val preambleLength = 25
+    val cipherCode = asLines(Input2020.Day09).map(_.toLong)
 
     val outlier = findOutlier[Long](cipherCode, preambleLength, _ + _) match {
         case Some(value) => value

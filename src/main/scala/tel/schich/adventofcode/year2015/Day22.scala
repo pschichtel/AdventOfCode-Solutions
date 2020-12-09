@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2015.Day21.extractNumber
 
@@ -149,7 +150,7 @@ object Day22 extends AoCApp {
 
     }
 
-    val Seq(hpLine, damageLine) = inputLines
+    val Seq(hpLine, damageLine) = asLines(Input2015.Day22)
     val startState = SimulationState(50, 0, 500, extractNumber(hpLine), extractNumber(damageLine))
 
     val Some(cheapestEasyFight) = findCheapestFight(startState, Spells.toList)

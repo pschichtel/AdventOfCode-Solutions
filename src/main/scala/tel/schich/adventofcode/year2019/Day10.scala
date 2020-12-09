@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.math.Ordering.Double.IeeeOrdering
@@ -21,7 +22,7 @@ object Day10 extends AoCApp {
     }
 
     val asteroids = for {
-        (line, y) <- inputLines.zipWithIndex
+        (line, y) <- asLines(Input2019.Day10).zipWithIndex
         x <- line.indices
         if line(x) == '#'
     } yield (x, y)

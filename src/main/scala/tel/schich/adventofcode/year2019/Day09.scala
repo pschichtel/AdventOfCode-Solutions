@@ -1,11 +1,12 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2019.Day02.{InstructionSet, ProgramState, parseProgram, runProgram}
 
 object Day09 extends AoCApp {
 
-    val program = parseProgram(inputText)
+    val program = parseProgram(Input2019.Day09)
 
     def relativeBaseOffset(state: ProgramState): ProgramState =
         state.continue(

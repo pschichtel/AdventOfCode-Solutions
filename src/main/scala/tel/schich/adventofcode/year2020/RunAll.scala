@@ -19,7 +19,7 @@ object RunAll {
     )
 
     def main(args: Array[String]): Unit = {
-        val appArgs = Array("silent")
+        val appArgs = args :+ "silent"
         // warmup
         //apps.foreach(_.main(appArgs))
 

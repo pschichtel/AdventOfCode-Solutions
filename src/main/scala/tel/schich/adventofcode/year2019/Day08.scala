@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -10,7 +11,7 @@ object Day08 extends AoCApp {
     val height = 6
     val size = width * height
 
-    val input = inputText
+    val input = Input2019.Day08
 
     val checkSum = input.grouped(size)
         .toSeq

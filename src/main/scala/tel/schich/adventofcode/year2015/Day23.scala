@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -57,7 +58,7 @@ object Day23 extends AoCApp {
         }.toArray
     }
 
-    val program = loadProgram(inputLines)
+    val program = loadProgram(asLines(Input2015.Day23))
 
     val finalState = execute(Processor(Map(), 0), program)
     part(1, finalState.registerValue("b"))

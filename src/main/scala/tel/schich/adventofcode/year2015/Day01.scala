@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day01 extends AoCApp {
 
-    val input = inputSource.mkString.trim
+    val input = Input2015.Day01.trim
 
     val rel = input map {
         case '(' => 1

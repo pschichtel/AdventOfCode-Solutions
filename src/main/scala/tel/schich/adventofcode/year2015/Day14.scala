@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day14 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day14)
     val RaceDuration = 2503
 
     val deer = "(\\w+) can fly (\\d+) km/s for (\\d+) seconds, but then must rest for (\\d+) seconds.".r
@@ -20,7 +21,7 @@ object Day14 extends AoCApp {
 
         val startStates = deers.toSeq.map(d => (d, false, 0, 0, 0))
 
-        (1 to duration).foldLeft(startStates) { (states, i) =>
+        (1 to duration).foldLeft(startStates) { (states, _) =>
 
             val nextStates = states.map {
                 case ((n, v, t, r), s, ts, d, p) =>

@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day13 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day13)
 
     type Relation = (String, String, Int)
 

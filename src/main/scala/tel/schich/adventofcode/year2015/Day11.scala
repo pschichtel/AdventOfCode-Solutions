@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -39,7 +40,7 @@ object Day11 extends AoCApp {
         hasIncreasing(s) && !containsForbidden(s) && containsLetterPairs(s)
     }
 
-    val stream = streamIncrements(inputText).filter(stepOneCond)
+    val stream = streamIncrements(Input2015.Day11).filter(stepOneCond)
 
     val firstPass = stream.head
     part(1, firstPass)

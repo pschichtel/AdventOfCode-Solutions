@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2015.Day04.hash
 import tel.schich.adventofcode.year2015.Day04.startsWithNZeros
@@ -26,7 +27,7 @@ object Day05 extends AoCApp {
         bin.flatMap("%02X".format(_))
     }
 
-    val input = inputText
+    val input = Input2016.Day05
     val interesting = startsWithNZeros(5)
 
     val firstDoorPassword: String = findPassword(

@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2015.Day23._
 
@@ -14,8 +15,8 @@ object Day12 extends AoCApp {
         val jnzConstant = "jnz (\\d+) ([+-]?\\d+)".r
 
         rawInstrctions.map {
-            case cpyRegister(source, target) => Mutation(target, (cpu, r) => cpu.registerValue(source))
-            case cpyConstant(value, target) => Mutation(target, (_, r) => value.toInt)
+            case cpyRegister(source, target) => Mutation(target, (cpu, _) => cpu.registerValue(source))
+            case cpyConstant(value, target) => Mutation(target, (_, _) => value.toInt)
             case inc(target) => Mutation(target, (_, r) => r + 1)
             case dec(target) => Mutation(target, (_, r) => r - 1)
             case jnzRegister(r, offset) => Jump(_.registerValue(r) != 0, offset.toInt)
@@ -24,7 +25,7 @@ object Day12 extends AoCApp {
     }
 
 
-    val program = loadProgram(inputLines)
+    val program = loadProgram(asLines(Input2016.Day12))
 
     val brokenCpu = execute(Processor(Map.empty, 0), program)
     part(1, brokenCpu.registerValue("a"))

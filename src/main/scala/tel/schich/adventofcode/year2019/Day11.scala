@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2019
 
+import tel.schich.adventofcode.generated.Input2019
 import tel.schich.adventofcode.shared.AoCApp
 import tel.schich.adventofcode.year2019.Day02.{ProgramState, RequiredMoreInput, SuccessfullyCompleted, initProgram, parseProgram}
 
@@ -56,7 +57,7 @@ object Day11 extends AoCApp {
         val pos: (Int, Int) = (x, y)
     }
 
-    val program = parseProgram(inputText)
+    val program = parseProgram(Input2019.Day11)
     val startState = initProgram(Day09.instructions, program, Nil)
     val robot = Robot(0, 0, Up, startState)
     val blackStartField = paintField(robot, Map.empty)
@@ -99,6 +100,7 @@ object Day11 extends AoCApp {
             case RequiredMoreInput =>
                 val Color(color) :: robot.dir(dir) :: Nil = newState.output
                 paintField(Robot(robot.x + dir.x, robot.y + dir.y, dir, newState), field.updated(robot.pos, color))
+            case _ => throw new Exception("should not be reached")
         }
     }
 

@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
 
 object Day01 extends AoCApp {
 
-    val instructions: Seq[(Rotation, Int)] = splitInput(',').map(_.trim.splitAt(1)).map {
+    val instructions: Seq[(Rotation, Int)] = splitInput(Input2016.Day01, ',').map(_.trim.splitAt(1)).map {
         case ("R", steps) => ((rotateRight _).tupled, steps.toInt)
         case ("L", steps) => ((rotateLeft _).tupled, steps.toInt)
         case _ => throw new Exception("Unknown instruction!")

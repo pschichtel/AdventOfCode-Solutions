@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
@@ -24,7 +25,7 @@ object Day25 extends AoCApp {
         findNext(startCode, 1, 1)
     }
 
-    val List(y, x) = "\\d+".r.findAllIn(inputText).toList
+    val List(y, x) = "\\d+".r.findAllIn(Input2015.Day25).toList
     val targetPos = (x.toInt, y.toInt)
 
     part(1, findCode(20151125L, x.toInt, y.toInt))

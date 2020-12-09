@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day07 extends AoCApp {
 
-    val input = inputLines.toList
+    val input = asLines(Input2015.Day07).toList
     val RelevantWire = "a"
     val ReplaceWire = "b"
 
@@ -73,9 +74,9 @@ object Day07 extends AoCApp {
     def evaluate(ICs: Seq[IC]): WireStates = {
 
         val byOutput = ICs.groupBy(_.output)
-        val byInput = ICs.flatMap(ic => ic.inputs.collect {
-            case Dyn(n) => (n, ic)
-        }).groupBy(_._1).view.mapValues(_.map(_._2))
+        //val byInput = ICs.flatMap(ic => ic.inputs.collect {
+        //    case Dyn(n) => (n, ic)
+        //}).groupBy(_._1).view.mapValues(_.map(_._2))
 
         def apply(ic: IC, wireStates: WireStates = Map.empty, applied: Set[IC] = Set.empty, stack: List[IC] = Nil): (WireStates, Set[IC]) = {
 
@@ -97,12 +98,14 @@ object Day07 extends AoCApp {
                         case (Const(vl), Const(vr)) => in + (o -> (vl & vr))
                         case (Dyn(nl), Const(vr)) if in contains nl => in + (o -> (in(nl) & vr))
                         case (Const(vl), Dyn(nr)) if in contains nr => in + (o -> (vl & in(nr)))
+                        case _ => throw new Exception("should not be reached")
                     }
                     case Or(l, r, o) => (l, r) match {
                         case (Dyn(nl), Dyn(nr)) if in.contains(nl) && in.contains(nr) => in + (o -> (in(nl) | in(nr)))
                         case (Const(vl), Const(vr)) => in + (o -> (vl | vr))
                         case (Dyn(nl), Const(vr)) if in contains nl => in + (o -> (in(nl) | vr))
                         case (Const(vl), Dyn(nr)) if in contains nr => in + (o -> (vl | in(nr)))
+                        case _ => throw new Exception("should not be reached")
                     }
                     case Not(Const(v), o) => in + (o -> (~v & 0xFFFF))
                     case Not(Dyn(n), o) if in contains n => in + (o -> (~in(n) & 0xFFFF))

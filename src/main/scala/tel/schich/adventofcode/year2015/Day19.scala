@@ -1,12 +1,13 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
 
 object Day19 extends AoCApp {
 
-    val input = inputLines
+    val input = asLines(Input2015.Day19)
 
     val subst = "(\\w+) => (\\w+)".r
     val substitutions = input.collect {

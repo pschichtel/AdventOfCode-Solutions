@@ -1,5 +1,6 @@
 package tel.schich.adventofcode.year2016
 
+import tel.schich.adventofcode.generated.Input2016
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day04 extends AoCApp {
@@ -10,7 +11,7 @@ object Day04 extends AoCApp {
 
     val values = "((?:\\w+-)+)(\\d+)\\[(\\w+)\\]".r
 
-    val correct = inputLines.flatMap {
+    val correct = asLines(Input2016.Day04).flatMap {
         case values(string, id, checksum) =>
             val encryptedWords = string.split("-")
             val selectorId = id.toInt

@@ -1,10 +1,11 @@
 package tel.schich.adventofcode.year2015
 
+import tel.schich.adventofcode.generated.Input2015
 import tel.schich.adventofcode.shared.AoCApp
 
 object Day16 extends AoCApp {
 
-    val input = inputLines
+    val input: Seq[String] = asLines(Input2015.Day16)
 
     val entry = "Sue (\\d+): (.+)".r
     val property = "(\\w+): (\\d+)".r
