@@ -16,6 +16,7 @@ object RunAll {
         Day07,
         Day08,
         Day09,
+        Day10,
     )
 
     def main(args: Array[String]): Unit = {
