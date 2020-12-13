@@ -11,6 +11,8 @@ sources in (Compile, doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
 
+libraryDependencies ++= Seq("org.jblas" % "jblas" % "1.2.5")
+
 // scalaJSUseMainModuleInitializer := true
 // mainClass in Compile := Some("tel.schich.adventofcode.year2020.RunAll")
 
