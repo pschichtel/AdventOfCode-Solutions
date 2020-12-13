@@ -11,7 +11,7 @@ object Day15 extends AoCApp {
     val ingredient = "(\\w+): capacity (-?\\d+), durability (-?\\d+), flavor (-?\\d+), texture (-?\\d+), calories (-?\\d+)".r
 
     type Taste = (Int, Int, Int, Int, Int)
-    type Ingredient = (String, (Int) => Taste)
+    type Ingredient = (String, Int => Taste)
     val ZeroTaste = (0, 0, 0, 0, 0)
     val UnitTaste = (1, 1, 1, 1, 1)
 
@@ -45,10 +45,9 @@ object Day15 extends AoCApp {
     def ingredientDistributions(n: Int, r: Int = 100): LazyList[Seq[Int]] = {
         val range = List.range(0, r + 1)
 
-        (1 until n).foldLeft(range.to(LazyList).map(List(_))) { (s, i) =>
+        (1 until n).foldLeft(range.to(LazyList).map(List(_))) { (s, _) =>
             s.flatMap(r => range.to(LazyList).map(_ :: r)).filter(_.sum <= r)
         }.filter(_.sum == 100)
-
     }
 
     def mixtures(ingredients: Seq[Ingredient]): LazyList[(Int, Int, Int, Int, Int)] = {
