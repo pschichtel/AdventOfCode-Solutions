@@ -1,9 +1,9 @@
 package tel.schich.adventofcode.year2020
 
-import org.jblas.DoubleMatrix
 import tel.schich.adventofcode.shared.AoCApp
 
 import scala.annotation.tailrec
+import scala.reflect.ClassTag
 
 object Day10 extends AoCApp {
 
@@ -13,7 +13,26 @@ object Day10 extends AoCApp {
 
     part(1, countByDiff(values, 1) * (countByDiff(values, 3) + 1))
 
-    def countCombinations(adaptors: List[Int]): Double = {
+    case class SquareMatrix[T](data: Array[T], size: Int) {
+        def multiply(b: SquareMatrix[T])(implicit numeric: Numeric[T], ct: ClassTag[T]): SquareMatrix[T] = {
+            val result = Array.ofDim[T](size * size)
+
+            for {
+                row <- 0 until size
+                column <- 0 until size
+            } {
+                result(row * size + column) = (0 until size).map { i =>
+                    numeric.times(data(row * size + i), b.data(i * size + column))
+                }.sum
+            }
+
+            SquareMatrix(result, size)
+        }
+
+        override def toString: String = data.grouped(size).map(_.mkString(" ")).mkString("\n")
+    }
+
+    def countCombinations[T](adaptors: List[Int])(implicit numeric: Numeric[T], ct: ClassTag[T]): T = {
         val outletAndAdapters = 0 :: adaptors
         val canSupply = outletAndAdapters.map { a =>
             (a, adaptors.filter { b =>
@@ -22,24 +41,24 @@ object Day10 extends AoCApp {
             })
         }.toMap
 
-        val A = new DoubleMatrix(outletAndAdapters.size, outletAndAdapters.size, outletAndAdapters.flatMap { a =>
+        val A = SquareMatrix(outletAndAdapters.flatMap { a =>
             outletAndAdapters.map { b =>
-                if (canSupply(a).contains(b)) 1.0 else 0.0
+                if (canSupply(a).contains(b)) numeric.one else numeric.zero
             }
-        }.toArray: _*)
+        }.toArray, outletAndAdapters.size)
 
         @tailrec
-        def count(matrix: DoubleMatrix, i: Int, n: Double): Double = {
-            if (i >= outletAndAdapters.size) n
+        def count(matrix: SquareMatrix[T], i: Int, n: T): T = {
+            if (i > adaptors.size) n
             else {
-                val next = matrix.mmul(A)
-                count(next, i + 1, n + next.get(next.columns - 1, 0))
+                val next = matrix.multiply(A)
+                count(next, i + 1, numeric.plus(n, next.data(adaptors.size)))
             }
         }
 
-        count(A, 0, 0.0)
+        count(A, 1, numeric.zero)
     }
 
-    part(2, countCombinations(values).toLong)
+    part(2, countCombinations[Long](values))
 
 }
