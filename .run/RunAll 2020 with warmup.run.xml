@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RunAll 2020 with warmup" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="tel.schich.adventofcode.year2020.RunAll" />
+    <module name="AdventOfCode" />
+    <option name="PROGRAM_PARAMETERS" value="warmup" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
