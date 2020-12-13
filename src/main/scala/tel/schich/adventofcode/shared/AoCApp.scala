@@ -45,7 +45,9 @@ trait AoCApp extends App {
         val start = System.nanoTime()
         val result = value
         val delta = TimeUnit.MICROSECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)
-        println(s"$label: $delta µs")
+        if (printStuff) {
+            println(s"$label: $delta µs")
+        }
         result
     }
 }

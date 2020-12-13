@@ -17,12 +17,17 @@ object RunAll {
         Day08,
         Day09,
         Day10,
+        Day11,
     )
 
     def main(args: Array[String]): Unit = {
         val appArgs = args :+ "silent"
-        // warmup
-        //apps.foreach(_.main(appArgs))
+
+        if (args.contains("warmup")) {
+            print("Warming...")
+            apps.foreach(_.main(appArgs))
+            println("done")
+        }
 
         val overallStart = System.nanoTime()
         apps.foreach { app =>
