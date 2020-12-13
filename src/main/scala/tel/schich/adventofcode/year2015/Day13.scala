@@ -19,14 +19,14 @@ object Day13 extends AoCApp {
 
     def optimalSeating(relations: Set[Relation]): (Seq[String], Int) = {
 
-        val happynessByPair = relations.map(r => (r._1, r._2) -> r._3).toMap
+        val happinessByPair = relations.map(r => (r._1, r._2) -> r._3).toMap
 
         val people = peopleFrom(relations)
 
         val plans = people.toSeq.permutations.map { plan =>
             val pairs = plan.sliding(2).toSeq :+ Seq(plan.head, plan.last)
             val change = pairs.map(_.toList).map {
-                case l :: r :: _ => happynessByPair((l, r)) + happynessByPair((r, l))
+                case l :: r :: _ => happinessByPair((l, r)) + happinessByPair((r, l))
                 case _ => 0
             }.sum
             (plan, change)

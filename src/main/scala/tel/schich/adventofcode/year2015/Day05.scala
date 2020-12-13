@@ -12,7 +12,7 @@ object Day05 extends AoCApp {
     val forbiddenWindows = Set("ab", "cd", "pq", "xy")
 
     val nice = input.filter { s =>
-        val vowelCount = s.filter(vowels.contains).length
+        val vowelCount = s.count(vowels.contains)
         val windows = s.toSeq.sliding(2).map(_.unwrap).toList
 
         val doubleWindowCount = windows.count(w => w(0) == w(1))

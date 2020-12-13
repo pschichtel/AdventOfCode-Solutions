@@ -38,8 +38,8 @@ object Day18 extends AoCApp {
 
         val neighbours = Seq(
             (-1, -1), (0, -1), (1, -1),
-            (-1, 0), (1, 0),
-            (-1, 1), (0, 1), (1, 1)
+            (-1, 0),           (1, 0),
+            (-1, 1),  (0, 1),  (1, 1)
         )
 
         def at(x: Int, y: Int): Boolean = {

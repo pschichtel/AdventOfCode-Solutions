@@ -8,7 +8,7 @@ object Day15 extends AoCApp {
 
     val input = asLines(Input2015.Day15)
 
-    val ingredient = "(\\w+): capacity (\\-?\\d+), durability (\\-?\\d+), flavor (\\-?\\d+), texture (\\-?\\d+), calories (\\-?\\d+)".r
+    val ingredient = "(\\w+): capacity (-?\\d+), durability (-?\\d+), flavor (-?\\d+), texture (-?\\d+), calories (-?\\d+)".r
 
     type Taste = (Int, Int, Int, Int, Int)
     type Ingredient = (String, (Int) => Taste)
