@@ -13,45 +13,46 @@ object Day10 extends AoCApp {
 
     part(1, countByDiff(values, 1) * (countByDiff(values, 3) + 1))
 
-    type Matrix[T] = Array[Array[T]]
+    case class SquareMatrix[T](data: Array[T], size: Int) {
+        def multiply(b: SquareMatrix[T])(implicit numeric: Numeric[T], ct: ClassTag[T]): SquareMatrix[T] = {
+            val result = Array.ofDim[T](size * size)
 
-    def multiply[T](A: Matrix[T], B: Matrix[T])(implicit numeric: Numeric[T], ct: ClassTag[T]): Matrix[T] = {
-        val size = A.length
-        val result = Array.ofDim[T](size, size)
+            for {
+                row <- 0 until size
+                column <- 0 until size
+            } {
+                result(row * size + column) = (0 until size).map { i =>
+                    numeric.times(data(row * size + i), b.data(i * size + column))
+                }.sum
+            }
 
-        for (column <- 0 until size; row <- 0 until size) {
-            result(column)(row) = (0 until size).map { i =>
-                numeric.times(A(i)(row), B(column)(i))
-            }.sum
+            SquareMatrix(result, size)
         }
 
-        result
-    }
-
-    def printMatrix(matrix: Matrix[_]): Unit = {
-        println(matrix.map(_.mkString(" ")).mkString("\n"))
+        override def toString: String = data.grouped(size).map(_.mkString(" ")).mkString("\n")
     }
 
     def countCombinations[T](adaptors: List[Int])(implicit numeric: Numeric[T], ct: ClassTag[T]): T = {
-        val canSupply = (0 :: values).map { a =>
-            (a, values.filter { b =>
+        val outletAndAdapters = 0 :: adaptors
+        val canSupply = outletAndAdapters.map { a =>
+            (a, adaptors.filter { b =>
                 val diff = b - a
                 diff > 0 && diff <= 3
             })
         }.toMap
 
-        val A: Matrix[T] = (0 :: values).map { a =>
-            (0 :: values).map { b =>
+        val A = SquareMatrix(outletAndAdapters.flatMap { a =>
+            outletAndAdapters.map { b =>
                 if (canSupply(a).contains(b)) numeric.one else numeric.zero
-            }.toArray
-        }.toArray
+            }
+        }.toArray, outletAndAdapters.size)
 
         @tailrec
-        def count(matrix: Matrix[T], i: Int, n: T): T = {
+        def count(matrix: SquareMatrix[T], i: Int, n: T): T = {
             if (i > adaptors.size) n
             else {
-                val next = multiply(matrix, A)
-                count(next, i + 1, numeric.plus(n, next(0)(adaptors.size)))
+                val next = matrix.multiply(A)
+                count(next, i + 1, numeric.plus(n, next.data(adaptors.size)))
             }
         }
 
