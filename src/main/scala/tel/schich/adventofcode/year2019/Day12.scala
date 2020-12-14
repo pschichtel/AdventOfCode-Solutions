@@ -38,12 +38,12 @@ object Day12 extends AoCApp {
     part(2, lcm(componentRepeatsAt))
 
     @tailrec
-    def gcd(a: Int, b: Int): Int =
-        if (b == 0) a.abs
-        else gcd(b, a % b)
+    def gcd[T](a: T, b: T)(implicit int: Integral[T]): T =
+        if (b == int.zero) int.abs(a)
+        else gcd(b, int.rem(a, b))
 
-    def lcm(numbers: Seq[Int]): Int =
-        numbers.foldLeft(1)((a, b) => (a / gcd(a, b)) * b)
+    def lcm[T](numbers: Seq[T])(implicit int: Integral[T]): T =
+        numbers.foldLeft(int.one)((a, b) => int.times(int.quot(a, gcd(a, b)), b))
 
     @tailrec
     def simulateUntilRepeat(bodies: Seq[Body], dim: Body => Int, seen: Set[Seq[Int]], i: Int): Int = {
