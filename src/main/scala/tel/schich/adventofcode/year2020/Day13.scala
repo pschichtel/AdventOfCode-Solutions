@@ -18,7 +18,7 @@ object Day13 extends AoCApp {
     val (estimate, busLines) = parse(Input2020.Day13, parseInput)
 
     val (line, delay) = busLines.flatten.map { line =>
-        (line, ((Math.ceil(estimate / line) * line).toInt + line) - estimate)
+        (line, ((math.ceil(estimate / line) * line).toInt + line) - estimate)
     }.minBy(_._2)
 
     part(1, line * delay)
