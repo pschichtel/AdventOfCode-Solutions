@@ -6,24 +6,10 @@ import scala.math._
 
 object Day15 extends AoCApp {
 
-    val input = asLines(Input2015.Day15)
-
-    val ingredient = "(\\w+): capacity (-?\\d+), durability (-?\\d+), flavor (-?\\d+), texture (-?\\d+), calories (-?\\d+)".r
-
     type Taste = (Int, Int, Int, Int, Int)
     type Ingredient = (String, Int => Taste)
-    val ZeroTaste = (0, 0, 0, 0, 0)
-    val UnitTaste = (1, 1, 1, 1, 1)
-
-    val ingredients = input.map {
-        case ingredient(n, cp, d, f, t, cl) =>
-            val cap = cp.toInt
-            val dur = d.toInt
-            val fla = f.toInt
-            val tex = t.toInt
-            val cal = cl.toInt
-            (n, (n: Int) => (cap * n, dur * n, fla * n, tex * n, cal * n))
-    }
+    private val ZeroTaste = (0, 0, 0, 0, 0)
+    private val UnitTaste = (1, 1, 1, 1, 1)
 
     def combine(t1: Taste, t2: Taste)(p: (Int, Int) => Int): Taste = {
         (p(t1._1, t2._1),
@@ -59,10 +45,25 @@ object Day15 extends AoCApp {
         }
     }
 
-    val bestScore = mixtures(ingredients).map(scoreTaste).max
-    part(1, bestScore)
+    override def solution: (Any, Any) = {
 
-    val bestScoreWithNCalories = mixtures(ingredients).filter(_._5 == 500).map(scoreTaste).max
-    part(2, bestScoreWithNCalories)
+        val input = asLines(Input2015.Day15)
 
+        val ingredient = "(\\w+): capacity (-?\\d+), durability (-?\\d+), flavor (-?\\d+), texture (-?\\d+), calories (-?\\d+)".r
+
+        val ingredients = input.map {
+            case ingredient(n, cp, d, f, t, cl) =>
+                val cap = cp.toInt
+                val dur = d.toInt
+                val fla = f.toInt
+                val tex = t.toInt
+                val cal = cl.toInt
+                (n, (n: Int) => (cap * n, dur * n, fla * n, tex * n, cal * n))
+        }
+
+        val bestScore = mixtures(ingredients).map(scoreTaste).max
+        val bestScoreWithNCalories = mixtures(ingredients).filter(_._5 == 500).map(scoreTaste).max
+
+        (bestScore, bestScoreWithNCalories)
+    }
 }

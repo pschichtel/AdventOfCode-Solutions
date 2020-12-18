@@ -15,18 +15,17 @@ object Day20 extends AoCApp {
         factor * divisors.sum
     }
 
-    val input = Input2015.Day20.toInt
+    override def solution: (Any, Any) = {
+        val input = Input2015.Day20.toInt
 
-    val (house, _) = (1 to input / 10).map(house => (house, numberOfPresentsFor(house, 10, (_, _) => true)))
-        .filter {case (_, presents) => presents >= input}
-        .head
+        val (house, _) = (1 to input / 10).map(house => (house, numberOfPresentsFor(house, 10, (_, _) => true)))
+            .filter {case (_, presents) => presents >= input}
+            .head
 
-    part(1, house)
+        val (houseLimited, _) = (1 to input / 10).map(house => (house, numberOfPresentsFor(house, 11, _ / _ < 50)))
+            .filter {case (_, presents) => presents >= input}
+            .head
 
-
-    val (houseLimited, _) = (1 to input / 10).map(house => (house, numberOfPresentsFor(house, 11, _ / _ < 50)))
-        .filter {case (_, presents) => presents >= input}
-        .head
-
-    part(2, houseLimited)
+        (house, houseLimited)
+    }
 }

@@ -7,16 +7,11 @@ import scala.collection.immutable.ArraySeq
 
 object Day11 extends AoCApp {
 
-    val Floor = '.'
-    val OccupiedSeat = '#'
-    val FreeSeat = 'L'
+    private val Floor = '.'
+    private val OccupiedSeat = '#'
+    private val FreeSeat = 'L'
 
-    val lines = asLines(Input2020.Day11)
-    val gridWidth = lines.head.length
-    val gridHeight = lines.size
-    val startGrid = ArraySeq.unsafeWrapArray(lines.flatMap(_.toCharArray).toArray)
-
-    val neighborDirections = Seq(
+    private val neighborDirections = Seq(
         (-1, -1), (0, -1), (1, -1),
         (-1, 0),           (1, 0),
         (-1, 1),  (0, 1),  (1, 1),
@@ -61,17 +56,26 @@ object Day11 extends AoCApp {
             val ny = y + dy
             if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
                 val char = grid(ny * width + nx)
-                if (char == '.') rayCast(nx, ny, dx, dy)
+                if (char == Floor) rayCast(nx, ny, dx, dy)
                 else char
             }
-            else '.'
+            else Floor
         }
 
-        neighborDirections.count { case (dx, dy) => rayCast(seatX, seatY, dx, dy) == '#' }
+        neighborDirections.count { case (dx, dy) => rayCast(seatX, seatY, dx, dy) == OccupiedSeat }
     }
 
-    def countOccupiedSeats(grid: IndexedSeq[Char]) = grid.count(_ == OccupiedSeat)
+    def countOccupiedSeats(grid: IndexedSeq[Char]): Int = grid.count(_ == OccupiedSeat)
 
-    part(1, countOccupiedSeats(simulateUntilStable(startGrid, gridWidth, gridHeight, 4, countOccupiedNeighbors)))
-    part(2, countOccupiedSeats(simulateUntilStable(startGrid, gridWidth, gridHeight, 5, countVisibleOccupiedSeats)))
+    override def solution: (Any, Any) = {
+        val lines = asLines(Input2020.Day11)
+        val gridWidth = lines.head.length
+        val gridHeight = lines.size
+        val startGrid = ArraySeq.unsafeWrapArray(lines.flatMap(_.toCharArray).toArray)
+
+        val part1 = countOccupiedSeats(simulateUntilStable(startGrid, gridWidth, gridHeight, 4, countOccupiedNeighbors))
+        val part2 = countOccupiedSeats(simulateUntilStable(startGrid, gridWidth, gridHeight, 5, countVisibleOccupiedSeats))
+
+        (part1, part2)
+    }
 }

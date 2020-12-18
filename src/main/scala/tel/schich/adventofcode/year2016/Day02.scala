@@ -34,23 +34,27 @@ object Day02 extends AoCApp {
         finalCode
     }
 
-    val ImaginedKeypad = Map(
-        (0, 2) -> '1', (1, 2) -> '2', (2, 2) -> '3',
-        (0, 1) -> '4', (1, 1) -> '5', (2, 1) -> '6',
-        (0, 0) -> '7', (1, 0) -> '8', (2, 0) -> '9'
-    )
+    override def solution: (Any, Any) = {
+        val instructions = asLines(Input2016.Day02)
 
-    val instructions = asLines(Input2016.Day02)
+        val ImaginedKeypad = Map(
+            (0, 2) -> '1', (1, 2) -> '2', (2, 2) -> '3',
+            (0, 1) -> '4', (1, 1) -> '5', (2, 1) -> '6',
+            (0, 0) -> '7', (1, 0) -> '8', (2, 0) -> '9'
+        )
 
-    part(1, decode(ImaginedKeypad, instructions, (1, 1)))
+        val part1 = decode(ImaginedKeypad, instructions, (1, 1))
 
-    val RealKeypad = Map(
-                                      (2, 4) -> '1',
-                       (1, 3) -> '2', (2, 3) -> '3', (3, 3) -> '4',
-        (0, 2) -> '5', (1, 2) -> '6', (2, 2) -> '7', (3, 2) -> '8', (4, 2) -> '9',
-                       (1, 1) -> 'A', (2, 1) -> 'B', (3, 1) -> 'C',
-                                      (2, 0) -> 'D'
-    )
+        val RealKeypad = Map(
+            (2, 4) -> '1',
+            (1, 3) -> '2', (2, 3) -> '3', (3, 3) -> '4',
+            (0, 2) -> '5', (1, 2) -> '6', (2, 2) -> '7', (3, 2) -> '8', (4, 2) -> '9',
+            (1, 1) -> 'A', (2, 1) -> 'B', (3, 1) -> 'C',
+            (2, 0) -> 'D'
+        )
 
-    part(2, decode(RealKeypad, instructions, (0, 2)))
+        val part2 = decode(RealKeypad, instructions, (0, 2))
+
+        (part1, part2)
+    }
 }

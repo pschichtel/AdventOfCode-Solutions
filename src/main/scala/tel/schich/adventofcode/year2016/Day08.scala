@@ -22,7 +22,7 @@ object Day08 extends AoCApp {
     }
 
     def enableRect(a: Int, b: Int)(screen: Screen, width: Int, height: Int): Screen = {
-        mapOverScreen(screen, width, height) { (screen, x, y, state) =>
+        mapOverScreen(screen, width, height) { (_, x, y, state) =>
             if (x < a && y < b) true
             else state
         }
@@ -71,47 +71,49 @@ object Day08 extends AoCApp {
         outScreen.toVector
     }
 
-    def ocr(screen: Screen, screenWidth: Int, screenHeight: Int, charWidth: Int, charHeight: Int, charMap: Map[Screen, Char], unknownChar: Char = '?'): String = {
+    def ocr(screen: Screen, screenWidth: Int, charWidth: Int, charHeight: Int, charMap: Map[Screen, Char], unknownChar: Char = '?'): String = {
         (0 until screenWidth / charWidth).map { i =>
             val sub = subScreen(screen, screenWidth, charWidth * i, 0, charWidth, charHeight)
             charMap.getOrElse(sub, unknownChar)
         }.mkString
     }
 
-    val width = 50
-    val height = 6
+    override def solution: (Any, Any) = {
+        val width = 50
+        val height = 6
 
-    val rect = "rect (\\d+)x(\\d+)".r
-    val rotRow = "rotate row y=(\\d+) by (\\d+)".r
-    val rotCol = "rotate column x=(\\d+) by (\\d+)".r
+        val rect = "rect (\\d+)x(\\d+)".r
+        val rotRow = "rotate row y=(\\d+) by (\\d+)".r
+        val rotCol = "rotate column x=(\\d+) by (\\d+)".r
 
-    val operations = asLines(Input2016.Day08).map {
-        case rect(a, b) => enableRect(a.toInt, b.toInt) _
-        case rotRow(y, b) => rotateRow(y.toInt, b.toInt) _
-        case rotCol(x, b) => rotateColumn(x.toInt, b.toInt) _
+        val operations = asLines(Input2016.Day08).map {
+            case rect(a, b) => enableRect(a.toInt, b.toInt) _
+            case rotRow(y, b) => rotateRow(y.toInt, b.toInt) _
+            case rotCol(x, b) => rotateColumn(x.toInt, b.toInt) _
+        }
+
+        val finalScreen = simulateScreen(width, height, operations)
+        val part1 = finalScreen.count(identity)
+
+
+        def c(s: String) = s.map {
+            case '_' => false
+            case '#' => true
+        }.toVector
+
+        val charMap = Map(
+            c("_##__" + "#__#_" + "#__#_" + "####_" + "#__#_" + "#__#_") -> 'A',
+            c("###__" + "#__#_" + "###__" + "#__#_" + "#__#_" + "###__") -> 'B',
+            c("####_" + "#____" + "###__" + "#____" + "#____" + "#____") -> 'F',
+            c("__##_" + "___#_" + "___#_" + "___#_" + "#__#_" + "_##__") -> 'J',
+            c("###__" + "#__#_" + "#__#_" + "###__" + "#____" + "#____") -> 'P',
+            c("_###_" + "#____" + "#____" + "_##__" + "___#_" + "###__") -> 'S',
+            c("#__#_" + "#__#_" + "#__#_" + "#__#_" + "#__#_" + "_##__") -> 'U',
+            c("####_" + "___#_" + "__#__" + "_#___" + "#____" + "####_") -> 'Z'
+        )
+
+        val part2 = ocr(finalScreen, width, 5, 6, charMap)
+
+        (part1, part2)
     }
-
-    val finalScreen = simulateScreen(width, height, operations)
-    part(1, finalScreen.count(identity))
-
-
-    def c(s: String) = s.map {
-        case '_' => false
-        case '#' => true
-    }.toVector
-
-    val charMap = Map(
-        c("_##__" + "#__#_" + "#__#_" + "####_" + "#__#_" + "#__#_") -> 'A',
-        c("###__" + "#__#_" + "###__" + "#__#_" + "#__#_" + "###__") -> 'B',
-        c("####_" + "#____" + "###__" + "#____" + "#____" + "#____") -> 'F',
-        c("__##_" + "___#_" + "___#_" + "___#_" + "#__#_" + "_##__") -> 'J',
-        c("###__" + "#__#_" + "#__#_" + "###__" + "#____" + "#____") -> 'P',
-        c("_###_" + "#____" + "#____" + "_##__" + "___#_" + "###__") -> 'S',
-        c("#__#_" + "#__#_" + "#__#_" + "#__#_" + "#__#_" + "_##__") -> 'U',
-        c("####_" + "___#_" + "__#__" + "_#___" + "#____" + "####_") -> 'Z'
-    )
-
-    part(2, ocr(finalScreen, width, height, 5, 6, charMap))
-
-
 }

@@ -105,41 +105,44 @@ object Day08 extends AoCApp {
         build(blocks, Set.empty, Set.empty)
     }
 
-    val parseNoOperation = parseString("nop ").ignoreAndThen(parseWholeNumber).map(i => NoOperation(i.toInt))
-    val parseAccumulator = parseString("acc ").ignoreAndThen(parseWholeNumber).map(i => Accumulate(i.toInt))
-    val parseJump = parseString("jmp ").ignoreAndThen(parseWholeNumber).map(i => Jump(i.toInt))
+    private val parseNoOperation = parseString("nop ").ignoreAndThen(parseWholeNumber).map(i => NoOperation(i.toInt))
+    private val parseAccumulator = parseString("acc ").ignoreAndThen(parseWholeNumber).map(i => Accumulate(i.toInt))
+    private val parseJump = parseString("jmp ").ignoreAndThen(parseWholeNumber).map(i => Jump(i.toInt))
 
-    val parseOp = parseSelector[Instr](Seq(parseNoOperation, parseAccumulator, parseJump))
-    val parseInput = parseAllSeparated(parseOp, parseLineBreak)
-
-    val program = parse(Input2020.Day08, parseInput).toArray
-
-    val blocks = findBlocks(program)
-    val pcToBlock = (for {
-        block <- blocks
-        pc <- block.start to block.`end`
-    } yield (pc, block)).toMap
-
-    val (successorLookup, predecessorLookup) = buildAdjacentLookups(program, pcToBlock, blocks)
-
-    val start = pcToBlock(0)
-    val backwardsPathFromLoop = findLoop(start, successorLookup)
-
-    part(1, executeUntil(program, 0, backwardsPathFromLoop.tail.head.`end`, 0))
-
-    val forwardsLoopBody = extractForwardLoopBody(backwardsPathFromLoop)
-    val correctableInstructions = findCorrectableInstructions(program, pcToBlock, blocks, predecessorLookup, forwardsLoopBody)
-    val pcToCorrect = correctableInstructions.head
-    val correctedProgram = program(pcToCorrect) match {
-        case NoOperation(v) => program.updated(pcToCorrect, Jump(v))
-        case Jump(v) => program.updated(pcToCorrect, NoOperation(v))
-        case _ => program
-    }
-
-    part(2, executeUntil(correctedProgram, 0, correctedProgram.length, 0))
+    private val parseOp = parseSelector[Instr](Seq(parseNoOperation, parseAccumulator, parseJump))
+    private val parseInput = parseAllSeparated(parseOp, parseLineBreak)
 
     // approaches for part 2
     // 1. depth-first search trying to mutate the program (can reuse partially executed programs)
     // 2. linearly scan through the program flipping each instruction once
     // 3. analyse the program flow (extract looping sub-program and test for mutations into paths that terminate)
+
+    override def solution: (Any, Any) = {
+        val program = parse(Input2020.Day08, parseInput).toArray
+
+        val blocks = findBlocks(program)
+        val pcToBlock = (for {
+            block <- blocks
+            pc <- block.start to block.`end`
+        } yield (pc, block)).toMap
+
+        val (successorLookup, predecessorLookup) = buildAdjacentLookups(program, pcToBlock, blocks)
+
+        val start = pcToBlock(0)
+        val backwardsPathFromLoop = findLoop(start, successorLookup)
+
+        val part1 = executeUntil(program, 0, backwardsPathFromLoop.tail.head.`end`, 0)
+
+        val forwardsLoopBody = extractForwardLoopBody(backwardsPathFromLoop)
+        val correctableInstructions = findCorrectableInstructions(program, pcToBlock, blocks, predecessorLookup, forwardsLoopBody)
+        val pcToCorrect = correctableInstructions.head
+        val correctedProgram = program(pcToCorrect) match {
+            case NoOperation(v) => program.updated(pcToCorrect, Jump(v))
+            case Jump(v) => program.updated(pcToCorrect, NoOperation(v))
+            case _ => program
+        }
+        val part2 = executeUntil(correctedProgram, 0, correctedProgram.length, 0)
+
+        (part1, part2)
+    }
 }

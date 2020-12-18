@@ -31,7 +31,7 @@ object RunAll {
 
         val overallStart = System.nanoTime()
         apps.foreach { app =>
-            println(s"App: ${app.name}")
+            println(s"App: ${app.Name}")
             val appStart = System.nanoTime()
             app.main(appArgs)
             val appTime = TimeUnit.MICROSECONDS.convert(System.nanoTime() - appStart, TimeUnit.NANOSECONDS)

@@ -6,8 +6,7 @@ import scala.annotation.tailrec
 
 object Day10 extends AoCApp {
 
-    val input: VString = vstr(Input2015.Day10)
-    val iterations = (40, 50)
+    private val iterations = (40, 50)
 
     @inline
     private def toC(i: Int) = ('0' + i).toChar
@@ -30,13 +29,11 @@ object Day10 extends AoCApp {
 
     def transformer(input: VString, it: Int): VString = lookAndSay(input)
 
-    // warmup
-    // (0 until iterations._2).foldLeft(input)(transformer)
+    override def solution: (Any, Any) = {
+        val input = vstr(Input2015.Day10)
+        val transformed = (0 until iterations._1).foldLeft(input)(transformer)
+        val transformedMore = (iterations._1 until iterations._2).foldLeft(transformed)(transformer)
 
-    val start = System.currentTimeMillis()
-    val transformed = (0 until iterations._1).foldLeft(input)(transformer)
-    part(1, s"${transformed.length} ${System.currentTimeMillis() - start}ms")
-
-    val transformedMore = (iterations._1 until iterations._2).foldLeft(transformed)(transformer)
-    part(2, s"${transformedMore.length} ${System.currentTimeMillis() - start}ms")
+        (transformed.length, transformedMore.length)
+    }
 }

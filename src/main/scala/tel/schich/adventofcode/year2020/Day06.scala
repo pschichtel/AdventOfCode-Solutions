@@ -7,18 +7,18 @@ import java.lang.Integer.bitCount
 
 object Day06 extends AoCApp {
 
-    val parsePerson = parseWord.map { person =>
+    private val parsePerson = parseWord.map { person =>
         person.view.foldLeft(0)((bitSet, c) => bitSet | (1 << ('a' - c)))
     }
-    val parseGroup = parseAllSeparated(parsePerson, parseLineBreak)
-    val parseInput = parseAllSeparated(parseGroup, parseLineBreak.repeated(2))
+    private val parseGroup = parseAllSeparated(parsePerson, parseLineBreak)
+    private val parseInput = parseAllSeparated(parseGroup, parseLineBreak.repeated(2))
 
-    val groups = parse(Input2020.Day06, parseInput)
-
-    def solve(groups: Seq[Seq[Int]], f: (Int, Int) => Int) =
+    def solve(groups: Seq[Seq[Int]], f: (Int, Int) => Int): Int =
         groups.foldLeft(0)((sum, group) => sum + bitCount(group.reduce(f)))
 
-    part(1, solve(groups, _ | _))
-    part(2, solve(groups, _ & _))
+    override def solution: (Any, Any) = {
+        val groups = parse(Input2020.Day06, parseInput)
 
+        (solve(groups, _ | _), solve(groups, _ & _))
+    }
 }

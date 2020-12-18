@@ -29,7 +29,7 @@ object Day11 extends AoCApp {
         s.exists(forbidden.contains)
     }
 
-    val LetterPair = raw"(.)\1".r
+    private val LetterPair = raw"(.)\1".r
 
     def containsLetterPairs(s: String, r: Regex = LetterPair, n: Int = 2): Boolean = {
         r.findAllIn(s).size >= n
@@ -39,12 +39,13 @@ object Day11 extends AoCApp {
         hasIncreasing(s) && !containsForbidden(s) && containsLetterPairs(s)
     }
 
-    val stream = streamIncrements(Input2015.Day11).filter(stepOneCond)
 
-    val firstPass = stream.head
-    part(1, firstPass)
+    override def solution: (Any, Any) = {
+        val stream = streamIncrements(Input2015.Day11).filter(stepOneCond)
 
-    val secondPass = stream.drop(1).head
-    part(2, secondPass)
+        val firstPass = stream.head
+        val secondPass = stream.drop(1).head
 
+        (firstPass, secondPass)
+    }
 }

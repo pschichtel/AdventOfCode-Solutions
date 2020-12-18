@@ -57,12 +57,15 @@ object Day23 extends AoCApp {
         }.toArray
     }
 
-    val program = loadProgram(asLines(Input2015.Day23))
+    override def solution: (Any, Any) = {
+        val program = loadProgram(asLines(Input2015.Day23))
 
-    val finalState = execute(Processor(Map(), 0), program)
-    part(1, finalState.registerValue("b"))
+        val finalState = execute(Processor(Map(), 0), program)
+        val part1 = finalState.registerValue("b")
 
-    val secondFinalState = execute(Processor(Map("a" -> 1), 0), program)
-    part(2, secondFinalState.registerValue("b"))
+        val secondFinalState = execute(Processor(Map("a" -> 1), 0), program)
+        val part2 = secondFinalState.registerValue("b")
 
+        (part1, part2)
+    }
 }

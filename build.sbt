@@ -1,6 +1,6 @@
 name := "AdventOfCode"
 version := "1.0.0"
-scalaVersion := "2.13.4"
+scalaVersion := "3.0.0-M3"
 
 // enablePlugins(ScalaJSPlugin)
 // enablePlugins(ScalaNativePlugin)
@@ -59,7 +59,7 @@ sourceGenerators in Compile += Def.task {
             s"""
                |package ${targetPackage.mkString(".")}
                |
-               |private[year$year] final case object Input$year {
+               |private[year$year] case object Input$year {
                |$fields
                |}
             """.stripMargin

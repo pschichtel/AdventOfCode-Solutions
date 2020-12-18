@@ -12,7 +12,7 @@ object Day04 extends AoCApp {
         s => ArraySeq.unsafeWrapArray(hashFunction.digest(s.getBytes))
     }
 
-    val md5 = hash("MD5")
+    private val md5 = hash("MD5")
 
     def startsWithNZeros(n: Int): ArraySeq[Byte] => Boolean = {
         val fullBytes = n / 2
@@ -25,13 +25,15 @@ object Day04 extends AoCApp {
 
     def hashStream(input: String, number: Int = 0): LazyList[(Int, ArraySeq[Byte])] = (number, md5(input + number)) #:: hashStream(input, number + 1)
 
-    val input = Input2015.Day04
+    override def solution: (Any, Any) = {
+        val input = Input2015.Day04
 
-    private val startsWith5Zeros = startsWithNZeros(5)
-    var (n1, _) = hashStream(input).filter(p => startsWith5Zeros(p._2)).head
-    println(s"Part 1: $n1")
+        val startsWith5Zeros = startsWithNZeros(5)
+        val (n1, _) = hashStream(input).filter(p => startsWith5Zeros(p._2)).head
 
-    private val startsWith6Zeros = startsWithNZeros(6)
-    val (n2, _) = hashStream(input).filter(p => startsWith6Zeros(p._2)).head
-    println(s"Part 2: $n2")
+        val startsWith6Zeros = startsWithNZeros(6)
+        val (n2, _) = hashStream(input).filter(p => startsWith6Zeros(p._2)).head
+
+        (n1, n2)
+    }
 }

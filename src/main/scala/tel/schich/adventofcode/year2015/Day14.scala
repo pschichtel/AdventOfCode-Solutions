@@ -4,14 +4,7 @@ import tel.schich.adventofcode.shared.AoCApp
 
 object Day14 extends AoCApp {
 
-    val input = asLines(Input2015.Day14)
-    val RaceDuration = 2503
-
-    val deer = "(\\w+) can fly (\\d+) km/s for (\\d+) seconds, but then must rest for (\\d+) seconds.".r
-    val deers = input.map {
-        case deer(n, v, t, r) => (n, v.toInt, t.toInt, r.toInt)
-    }.toSet
-
+    private val RaceDuration = 2503
 
     type Deer = (String, Int, Int, Int)
     type DeerState = (Deer, Boolean, Int, Int, Int)
@@ -48,10 +41,17 @@ object Day14 extends AoCApp {
 
     }
 
-    val (_, _, _, distance, _) = simulate(deers).maxBy(_._4)
-    part(1, distance)
+    override def solution: (Any, Any) = {
 
+        val input = asLines(Input2015.Day14)
+        val deer = "(\\w+) can fly (\\d+) km/s for (\\d+) seconds, but then must rest for (\\d+) seconds.".r
+        val deers = input.map {
+            case deer(n, v, t, r) => (n, v.toInt, t.toInt, r.toInt)
+        }.toSet
 
-    val (_, _, _, _, score) = simulate(deers).maxBy(_._5)
-    part(2, score)
+        val (_, _, _, distance, _) = simulate(deers).maxBy(_._4)
+        val (_, _, _, _, score) = simulate(deers).maxBy(_._5)
+
+        (distance, score)
+    }
 }

@@ -14,23 +14,6 @@ object Day13 extends AoCApp {
     case object Incomplete extends GameResult
     case class Complete(score: Long) extends GameResult
 
-    val program = Day02.parseProgram(Input2019.Day13)
-
-    val output = runProgram(instructions, program, Nil).output
-
-    val tileMap = output.grouped(3).foldLeft(Map.empty[(Long, Long), Long]) {
-        case (map, List(x, y, kind)) => map.updated((x, y), kind)
-        case _ => throw new Exception("should not be reached")
-    }
-
-    part(1, tileMap.count(_._2 == 2))
-
-    val programWithCoins = Day02.patch(program, 0L -> 2L)
-    val stateWithCoins = initProgram(instructions, programWithCoins, Nil)
-
-
-    part(2, searchBestInput(Queue(stateWithCoins), -1))
-
     @tailrec
     def searchBestInput(states: Queue[ProgramState], currentHighScore: Long): Long = {
         if (states.length % 100 == 0) {
@@ -84,4 +67,24 @@ object Day13 extends AoCApp {
         run(startState, -1)
     }
 
+    override def solution: (Any, Any) = {
+        val program = Day02.parseProgram(Input2019.Day13)
+
+        val output = runProgram(instructions, program, Nil).output
+
+        val tileMap = output.grouped(3).foldLeft(Map.empty[(Long, Long), Long]) {
+            case (map, List(x, y, kind)) => map.updated((x, y), kind)
+            case _ => throw new Exception("should not be reached")
+        }
+
+        val part1 = tileMap.count(_._2 == 2)
+
+        val programWithCoins = Day02.patch(program, 0L -> 2L)
+        val stateWithCoins = initProgram(instructions, programWithCoins, Nil)
+
+
+        val part2 = searchBestInput(Queue(stateWithCoins), -1)
+
+        (part1, part2)
+    }
 }

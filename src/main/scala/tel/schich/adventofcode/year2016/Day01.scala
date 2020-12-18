@@ -5,26 +5,11 @@ import tel.schich.adventofcode.shared.AoCApp
 import scala.annotation.tailrec
 
 object Day01 extends AoCApp {
-
-    val instructions: Seq[(Rotation, Int)] = splitInput(Input2016.Day01, ',').map(_.trim.splitAt(1)).map {
-        case ("R", steps) => ((rotateRight _).tupled, steps.toInt)
-        case ("L", steps) => ((rotateLeft _).tupled, steps.toInt)
-        case _ => throw new Exception("Unknown instruction!")
-    }
-
     type Rotation = ((Int, Int)) => (Int, Int)
     def add(l: (Int, Int), r: (Int, Int)): (Int, Int) = (l._1 + r._1, l._2 + r._2)
     def scale(pos: (Int, Int), scale: Int): (Int, Int) = (pos._1 * scale, pos._2 * scale)
     def rotateLeft(x: Int, y: Int): (Int, Int) = (-y, x)
     def rotateRight(x: Int, y: Int): (Int, Int) = (y, -x)
-
-
-    val (_, locations) = instructions.foldLeft(((0, 1), Vector((0, 0)))) {
-        case ((direction, corners), (rot, steps)) =>
-            val newDir = rot(direction)
-
-            (newDir, corners :+ add(corners.last, scale(newDir, steps)))
-    }
 
     def manhattenDistance(from: (Int, Int) = (0, 0), to: (Int, Int)): Int = {
         val (fromX, fromY) = from
@@ -47,20 +32,36 @@ object Day01 extends AoCApp {
         firstDup(input)
     }
 
-    part(1, manhattenDistance(to = locations.last))
-
-    val interpolatedLocations = locations.head :: locations.sliding(2).flatMap {way =>
-        def step(x: Int, y: Int) = if (y - x > 0) 1 else -1
-        def interpolate(x: Int, y: Int) = {
-            val s = step(x, y)
-            x + s to y by s
+    override def solution: (Any, Any) = {
+        val instructions: Seq[(Rotation, Int)] = splitInput(Input2016.Day01, ',').map(_.trim.splitAt(1)).map {
+            case ("R", steps) => ((rotateRight _).tupled, steps.toInt)
+            case ("L", steps) => ((rotateLeft _).tupled, steps.toInt)
+            case _ => throw new Exception("Unknown instruction!")
         }
 
-        val Vector((fromX, fromY), (toX, toY)) = way
-        if (fromX == toX) interpolate(fromY, toY).map((fromX, _))
-        else interpolate(fromX, toX).map((_, fromY))
-    }.toList
+        val (_, locations) = instructions.foldLeft(((0, 1), Vector((0, 0)))) {
+            case ((direction, corners), (rot, steps)) =>
+                val newDir = rot(direction)
 
-    part(2, manhattenDistance(to = findFirstDuplicate(interpolatedLocations)))
+                (newDir, corners :+ add(corners.last, scale(newDir, steps)))
+        }
 
+        val part1 = manhattenDistance(to = locations.last)
+
+        val interpolatedLocations = locations.head :: locations.sliding(2).flatMap {way =>
+            def step(x: Int, y: Int) = if (y - x > 0) 1 else -1
+            def interpolate(x: Int, y: Int) = {
+                val s = step(x, y)
+                x + s to y by s
+            }
+
+            val Vector((fromX, fromY), (toX, toY)) = way
+            if (fromX == toX) interpolate(fromY, toY).map((fromX, _))
+            else interpolate(fromX, toX).map((_, fromY))
+        }.toList
+
+        val part2 = manhattenDistance(to = findFirstDuplicate(interpolatedLocations))
+
+        (part1, part2)
+    }
 }

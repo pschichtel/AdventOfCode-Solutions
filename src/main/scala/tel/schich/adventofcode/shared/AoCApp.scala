@@ -3,24 +3,26 @@ package tel.schich.adventofcode.shared
 import java.util.concurrent.TimeUnit
 import scala.collection.immutable.ArraySeq
 
-trait AoCApp extends App {
+abstract class AoCApp {
 
-    val name = getClass.getSimpleName.replace("$", "")
-    lazy val printStuff = !args.contains("silent")
+    private var args: Array[String] = Array.empty
 
-    def splitInput(input: String, at: Char) = ArraySeq.unsafeWrapArray(input.split(at))
+    val Name: String = getClass.getSimpleName.replace("$", "")
+    private val printStuff = !args.contains("silent")
 
-    def part(n: Int, value: Any): Unit = {
+    def splitInput(input: String, at: Char): ArraySeq[String] = ArraySeq.unsafeWrapArray(input.split(at))
+
+    private def part(n: Int, value: Any): Unit = {
         if (printStuff) {
             println(s"Part $n: $value")
         }
     }
 
-    def asLines(input: String) = ArraySeq.unsafeWrapArray(input.split("\r?\n"))
+    def asLines(input: String): ArraySeq[String] = ArraySeq.unsafeWrapArray(input.split("\r?\n"))
         .map(_.trim)
         .filter(_.nonEmpty)
 
-    def parse[T](input: String, parser: Parser[T]): T =  timed(s"$name input parsing") {
+    def parse[T](input: String, parser: Parser[T]): T =  timed(s"$Name input parsing") {
         parser(StringSlice(input)) match {
             case ParseResult.Success(value, rest) =>
                 if (rest.length == 0) value
@@ -37,10 +39,6 @@ trait AoCApp extends App {
         }
     }
 
-    def notImplementedYet(): Unit = {
-        throw new Exception("Not implemented yet!")
-    }
-
     def timed[U](label: String)(value: => U): U = {
         val start = System.nanoTime()
         val result = value
@@ -50,4 +48,20 @@ trait AoCApp extends App {
         }
         result
     }
+
+
+    def main(args: Array[String]): Unit = {
+        this.args = args
+
+        val (a, b) = timed(s"$Name solve time") {
+            solution
+        }
+
+        part(1, a)
+        part(2, b)
+    }
+
+    final val Unsolved: String = "unsolved"
+
+    def solution: (Any, Any) = (Unsolved, Unsolved)
 }

@@ -7,11 +7,7 @@ import scala.reflect.ClassTag
 
 object Day10 extends AoCApp {
 
-    val values = asLines(Input2020.Day10).map(_.toInt).toList.sorted
-
     def countByDiff(adapters: List[Int], n: Int): Int = (0 :: adapters).zip(adapters).count(t => t._2 - t._1 == n)
-
-    part(1, countByDiff(values, 1) * (countByDiff(values, 3) + 1))
 
     case class SquareMatrix[T](data: Array[T], size: Int) {
         def multiply(b: SquareMatrix[T])(implicit numeric: Numeric[T], ct: ClassTag[T]): SquareMatrix[T] = {
@@ -59,6 +55,12 @@ object Day10 extends AoCApp {
         count(A, 1, numeric.zero)
     }
 
-    part(2, countCombinations[Long](values))
+    override def solution: (Any, Any) = {
+        val values = asLines(Input2020.Day10).map(_.toInt).toList.sorted
 
+        val part1 = countByDiff(values, 1) * (countByDiff(values, 3) + 1)
+        val part2 = countCombinations[Long](values)
+
+        (part1, part2)
+    }
 }

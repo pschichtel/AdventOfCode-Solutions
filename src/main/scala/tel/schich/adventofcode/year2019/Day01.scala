@@ -6,11 +6,7 @@ import scala.annotation.tailrec
 
 object Day01 extends AoCApp {
 
-    def calculateFuel(mass: Int) = mass / 3 - 2
-
-    val masses = asLines(Input2019.Day01).map(_.toInt)
-
-    part(1, masses.map(calculateFuel).sum)
+    def calculateFuel(mass: Int): Int = mass / 3 - 2
 
     @tailrec
     def calculateFuelFuel(mass: Int, accumulatedFuel: Int): Int = {
@@ -18,6 +14,12 @@ object Day01 extends AoCApp {
         if (additionalRequiredFuel <= 0) accumulatedFuel
         else calculateFuelFuel(additionalRequiredFuel, accumulatedFuel + additionalRequiredFuel)
     }
+    override def solution: (Any, Any) = {
+        val masses = asLines(Input2019.Day01).map(_.toInt)
 
-    part(2, masses.map(calculateFuelFuel(_: Int, 0)).sum)
+        val part1 = masses.map(calculateFuel).sum
+        val part2 = masses.map(calculateFuelFuel(_: Int, 0)).sum
+
+        (part1, part2)
+    }
 }

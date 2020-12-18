@@ -21,21 +21,7 @@ object Day12 extends AoCApp {
             Body(this.x, this.y, this.z, vx + x, vy + y, vz + z)
     }
 
-    val bodyDef = "<x=(-?\\d+), y=(-?\\d+), z=(-?\\d+)>".r
-
-    val initialBodies = asLines(Input2019.Day12).map {
-        case bodyDef(x, y, z) => Body(x.toInt, y.toInt, z.toInt, 0, 0, 0)
-    }
-
-    val finalState = simulate(initialBodies).drop(1000).head
-    part(1, finalState.map(_.energy).sum)
-
-    def component(b: Body => Int): Body => Int = b
-
-    val componentRepeatsAt = Await.result(Future.sequence(Seq(component(_.x), component(_.y), component(_.z)).map { d =>
-        Future(simulateUntilRepeat(initialBodies, d, Set.empty, 0))
-    }), Duration.Inf)
-    part(2, lcm(componentRepeatsAt))
+    private val bodyDef = "<x=(-?\\d+), y=(-?\\d+), z=(-?\\d+)>".r
 
     @tailrec
     def gcd[T](a: T, b: T)(implicit int: Integral[T]): T =
@@ -92,4 +78,21 @@ object Day12 extends AoCApp {
         }
     }
 
+    override def solution: (Any, Any) = {
+        val initialBodies = asLines(Input2019.Day12).map {
+            case bodyDef(x, y, z) => Body(x.toInt, y.toInt, z.toInt, 0, 0, 0)
+        }
+
+        val finalState = simulate(initialBodies).drop(1000).head
+        val part1 = finalState.map(_.energy).sum
+
+        def component(b: Body => Int): Body => Int = b
+
+        val componentRepeatsAt = Await.result(Future.sequence(Seq(component(_.x), component(_.y), component(_.z)).map { d =>
+            Future(simulateUntilRepeat(initialBodies, d, Set.empty, 0))
+        }), Duration.Inf)
+        val part2 = lcm(componentRepeatsAt)
+
+        (part1, part2)
+    }
 }

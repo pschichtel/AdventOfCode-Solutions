@@ -4,8 +4,6 @@ import tel.schich.adventofcode.shared.AoCApp
 
 object Day24 extends AoCApp {
 
-    val packageWeights = asLines(Input2015.Day24).map(_.toInt)
-
     def findMinimumQuantumEntanglement(weights: Seq[Int], compartments: Int): Long = {
         val maxWeightPerCompartment = weights.sum / compartments
         val maxElementsPerCompartment = math.ceil(weights.length / compartments).toInt
@@ -22,10 +20,16 @@ object Day24 extends AoCApp {
             ._2
     }
 
-//    val inputsExample = Seq(1, 2, 3, 4, 5, 7, 8, 9, 10, 11)
-//    val inputsExampleWin = Seq(10, 9, 1, 11, 7, 2, 8, 5, 4, 3)
+    override def solution: (Any, Any) = {
+        val packageWeights = asLines(Input2015.Day24).map(_.toInt)
 
-    // combinations(x, y) = (2 to ceil(x/y)).map(i => y choose i).sum
-    part(1, findMinimumQuantumEntanglement(packageWeights, 3)) // combinations(29, 3) ~ 36.5M
-    part(2, findMinimumQuantumEntanglement(packageWeights, 4)) // combinations(29, 4) ~  6.5M
+        //    val inputsExample = Seq(1, 2, 3, 4, 5, 7, 8, 9, 10, 11)
+        //    val inputsExampleWin = Seq(10, 9, 1, 11, 7, 2, 8, 5, 4, 3)
+
+        // combinations(x, y) = (2 to ceil(x/y)).map(i => y choose i).sum
+        val part1 = findMinimumQuantumEntanglement(packageWeights, 3) // combinations(29, 3) ~ 36.5M
+        val part2 = findMinimumQuantumEntanglement(packageWeights, 4) // combinations(29, 4) ~  6.5M
+
+        (part1, part2)
+    }
 }

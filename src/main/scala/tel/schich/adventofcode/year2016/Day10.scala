@@ -6,8 +6,8 @@ import scala.annotation.tailrec
 
 object Day10 extends AoCApp {
 
-    val valueToBot = "value (\\d+) goes to (bot|output) (\\d+)".r
-    val botGivesLowAndHigh = "bot (\\d+) gives low to (bot|output) (\\d+) and high to (bot|output) (\\d+)".r
+    private val valueToBot = "value (\\d+) goes to (bot|output) (\\d+)".r
+    private val botGivesLowAndHigh = "bot (\\d+) gives low to (bot|output) (\\d+) and high to (bot|output) (\\d+)".r
 
     sealed trait Instruction
     sealed trait Source
@@ -28,12 +28,6 @@ object Day10 extends AoCApp {
         }
     }
 
-    val instructions: Seq[Instruction] = asLines(Input2016.Day10) map {
-        case valueToBot(value, targetType, targetId) =>
-            StartAssignment(Value(value.toInt), toTarget(targetType, targetId))
-        case botGivesLowAndHigh(source, lowType, lowId, highType, highId) =>
-            LowHighAssignment(Bot(source.toInt), toTarget(lowType, lowId), toTarget(highType, highId))
-    }
 
     @inline
     def addOrInsert[A, B](map: Map[A, Seq[B]], key: A, value: B): Map[A, Seq[B]] = {
@@ -71,28 +65,35 @@ object Day10 extends AoCApp {
         }
     }
 
-    val (assignments, startValues) = buildStart(instructions)
-    val finalValueTable = applyAll(assignments, startValues)
+    override def solution: (Any, Any) = {
+        val instructions: Seq[Instruction] = asLines(Input2016.Day10) map {
+            case valueToBot(value, targetType, targetId) =>
+                StartAssignment(Value(value.toInt), toTarget(targetType, targetId))
+            case botGivesLowAndHigh(source, lowType, lowId, highType, highId) =>
+                LowHighAssignment(Bot(source.toInt), toTarget(lowType, lowId), toTarget(highType, highId))
+        }
 
-    val targetValues = Set(Value(61), Value(17))
-    val targetBotId = finalValueTable.find {
-        case (Bot(_), values) => (targetValues -- values).isEmpty
-        case _ => false
-    }.map {
-        case (Bot(n), _) => n
-        case _ => throw new Exception("Hit illegal input")
-    }.head
+        val (assignments, startValues) = buildStart(instructions)
+        val finalValueTable = applyAll(assignments, startValues)
 
-    part(1, targetBotId)
+        val targetValues = Set(Value(61), Value(17))
+        val targetBotId = finalValueTable.find {
+            case (Bot(_), values) => (targetValues -- values).isEmpty
+            case _ => false
+        }.map {
+            case (Bot(n), _) => n
+            case _ => throw new Exception("Hit illegal input")
+        }.head
 
-    val targetOutputIds = Set(0, 1, 2)
-    val outputProduct = finalValueTable.filter {
-        case (Output(n), _) => targetOutputIds.contains(n)
-        case _ => false
-    }.map {
-        case (_, head :: _) => head.value
-        case _ => throw new Exception("Hit illegal input")
-    }.product
+        val targetOutputIds = Set(0, 1, 2)
+        val outputProduct = finalValueTable.filter {
+            case (Output(n), _) => targetOutputIds.contains(n)
+            case _ => false
+        }.map {
+            case (_, head :: _) => head.value
+            case _ => throw new Exception("Hit illegal input")
+        }.product
 
-    part(2, outputProduct)
+        (targetBotId, outputProduct)
+    }
 }

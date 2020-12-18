@@ -11,7 +11,7 @@ object Day07 extends AoCApp {
     type CountedBag = (Long, Bag)
     type BagWithBags = (Bag, Seq[CountedBag])
 
-    val parseBag = for {
+    private val parseBag = for {
         modifier <- parseWord
         _ <- parseSpaces
         color <- parseWord
@@ -19,29 +19,25 @@ object Day07 extends AoCApp {
         _ <- parseString("s").?
     } yield (modifier, color)
 
-    val parseBagWithCount = for {
+    private val parseBagWithCount = for {
         count <- parseNaturalNumber
         _ <- parseSpaces
         bag <- parseBag
     } yield (count, bag)
 
-    val parseContainedBags = parseAllSeparated(parseBagWithCount, parseString(", ")).or(parseString("no other bags")).map {
+    private val parseContainedBags = parseAllSeparated(parseBagWithCount, parseString(", ")).or(parseString("no other bags")).map {
         case Left(bags) => bags
         case _ => Nil
     }
 
-    val parseStatement = for {
+    private val parseStatement = for {
         bag <- parseBag
         _ <- parseString(" contain ")
         containedBags <- parseContainedBags
         _ <- parseString(".")
     } yield (bag, containedBags)
 
-    val parseInput = parseAllSeparated(parseStatement, parseLineBreak)
-
-    val allThemBags: Seq[BagWithBags] = parse(Input2020.Day07, parseInput)
-
-    val myBag = (StringSlice("shiny"), StringSlice("gold"))
+    private val parseInput = parseAllSeparated(parseStatement, parseLineBreak)
 
     def findBagsContaining(needle: Bag, haystack: Seq[BagWithBags]): Set[Bag] = {
 
@@ -56,10 +52,6 @@ object Day07 extends AoCApp {
         fixPoint(Set(needle), haystack) - needle
     }
 
-    part(1, findBagsContaining(myBag, allThemBags).size)
-
-    val childrenLookup: Map[Bag, Seq[CountedBag]] = allThemBags.toMap
-
     def countChildren(bag: Bag, lookup: Map[Bag, Seq[CountedBag]]): Long = {
         val children = lookup.getOrElse(bag, Nil)
         children.foldLeft(0L) {
@@ -67,5 +59,16 @@ object Day07 extends AoCApp {
         }
     }
 
-    part(2, countChildren(myBag, childrenLookup))
+    override def solution: (Any, Any) = {
+        val allThemBags: Seq[BagWithBags] = parse(Input2020.Day07, parseInput)
+
+        val myBag = (StringSlice("shiny"), StringSlice("gold"))
+
+        val part1 = findBagsContaining(myBag, allThemBags).size
+
+        val childrenLookup: Map[Bag, Seq[CountedBag]] = allThemBags.toMap
+        val part2 = countChildren(myBag, childrenLookup)
+
+        (part1, part2)
+    }
 }

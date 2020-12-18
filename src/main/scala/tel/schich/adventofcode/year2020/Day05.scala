@@ -7,39 +7,40 @@ object Day05 extends AoCApp {
 
     case class Seat(row: Int, column: Int)
 
-    def partitionBit(c: Char) = c match {
+    def partitionBit(c: Char): Int = c match {
         case 'F' | 'L' => 0
         case 'B' | 'R' => 1
     }
 
-    val parseFrontBack = parseOneOf("FB")
+    private val parseFrontBack = parseOneOf("FB")
         .map(partitionBit)
         .repeated(7)
 
-    val parseLeftRight = parseOneOf("LR")
+    private val parseLeftRight = parseOneOf("LR")
         .map(partitionBit)
         .repeated(3)
 
-    def foldToInt(nums: Seq[Int]) = nums.foldLeft(0)((agg, i) => (agg << 1) | i)
+    def foldToInt(nums: Seq[Int]): Int = nums.foldLeft(0)((agg, i) => (agg << 1) | i)
 
-    val parseSeatPath = for {
+    private val parseSeatPath = for {
         frontBack <- parseFrontBack
         leftRight <- parseLeftRight
     } yield Seat(foldToInt(frontBack), foldToInt(leftRight))
 
-    val parseInput = for {
+    private val parseInput = for {
         first <- parseSeatPath
         following <- parseAll(parseWhitespace.?.flatMap(_ => parseSeatPath))
     } yield first +: following
 
-    val sortedSeatIds = parse(Input2020.Day05, parseInput).map(s => s.row * 8 + s.column).sorted
+    override def solution: (Any, Any) = {
+        val sortedSeatIds = parse(Input2020.Day05, parseInput).map(s => s.row * 8 + s.column).sorted
 
-    val result = sortedSeatIds.last
-    part(1, result)
+        val result = sortedSeatIds.last
 
-    val mySeatId = sortedSeatIds.sliding(2).flatMap {
-        case Seq(a, b) => if (a + 1 == b) None else Some(a + 1)
-    }.next()
+        val mySeatId = sortedSeatIds.sliding(2).flatMap {
+            case Seq(a, b) => if (a + 1 == b) None else Some(a + 1)
+        }.next()
 
-    part(2, mySeatId)
+        (result, mySeatId)
+    }
 }

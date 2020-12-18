@@ -2,7 +2,6 @@ package tel.schich.adventofcode.year2019
 
 import tel.schich.adventofcode.shared.AoCApp
 
-import java.util.concurrent.TimeUnit
 import scala.annotation.tailrec
 import scala.collection.immutable.ArraySeq
 
@@ -35,8 +34,8 @@ object Day02 extends AoCApp {
 
     case class ProgramState(instructionSet: InstructionSet, memory: Memory, pc: Int, relativeBase: Long, input: Input, output: Output, status: Status) {
 
-        val MaxInstructions: Int = 100
-        lazy val instruction: Instruction = instructionSet(memory.program(pc) % MaxInstructions)
+        private val MaxInstructions: Int = 100
+        private val instruction: Instruction = instructionSet(memory.program(pc) % MaxInstructions)
 
         def runInstruction(): ProgramState = {
             try {
@@ -114,10 +113,10 @@ object Day02 extends AoCApp {
             pc = state.pc + 4
         )
 
-    def exit(state: ProgramState) =
+    def exit(state: ProgramState): ProgramState =
         state.complete()
 
-    def readInput(state: ProgramState) =
+    def readInput(state: ProgramState): ProgramState =
         state.input match {
             case Nil => state.requireInput()
             case head :: tail => state.continue(
@@ -141,12 +140,13 @@ object Day02 extends AoCApp {
         99L -> exit
     )
 
-    timed("day 02 execution") {
+    override def solution: (Any, Any) = {
         val program = parseProgram(Input2019.Day02)
         val invoke = (a: Long, b: Long) => runProgram(instructions, patch(program, 1L -> a, 2L -> b), List.empty).memory(0)
-        part(1, invoke(12, 2))
 
-        part(2, {
+        val part1 = invoke(12, 2)
+
+        val part2 = {
             val requiredOutput = 19690720
             val solutions = for {
                 noun <- 0 to 99
@@ -154,7 +154,8 @@ object Day02 extends AoCApp {
                 if invoke(noun, verb) == requiredOutput
             } yield 100 * noun + verb
             solutions.head
-        })
-    }
+        }
 
+        (part1, part2)
+    }
 }

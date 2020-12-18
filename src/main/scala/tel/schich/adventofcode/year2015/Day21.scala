@@ -18,7 +18,7 @@ object Day21 extends AoCApp {
 
     //                    (Cost, Damage, Armor)
     type ItemAttributes = (Int, Int, Int)
-    val ZeroEntity = (0, 0, 0)
+    private val ZeroEntity = (0, 0, 0)
 
     def sumItems(items: Seq[Item]): ItemAttributes = {
         items.foldLeft(ZeroEntity) {
@@ -56,7 +56,7 @@ object Day21 extends AoCApp {
         else true
     }
 
-    val weapons = Seq(
+    private val weapons = Seq(
         ("Dagger",      8, 4, 0),
         ("Shortsword", 10, 5, 0),
         ("Warhammer",  25, 6, 0),
@@ -64,7 +64,7 @@ object Day21 extends AoCApp {
         ("Greataxe",   74, 8, 0)
     )
 
-    val armors = Seq(
+    private val armors = Seq(
         ("Leather",     13, 0, 1),
         ("Chainmail",   31, 0, 2),
         ("Splintmail",  53, 0, 3),
@@ -72,7 +72,7 @@ object Day21 extends AoCApp {
         ("Platemail",  102, 0, 5)
     )
 
-    val rings = Seq(
+    private val rings = Seq(
         ("Damage +1",   25, 1, 0),
         ("Damage +2",   50, 2, 0),
         ("Damage +3",  100, 3, 0),
@@ -82,27 +82,27 @@ object Day21 extends AoCApp {
     )
 
 
-    val List(hitPointsLine, damageLine, armorLine) = asLines(Input2015.Day21).toList
+    override def solution: (Any, Any) = {
 
-    val enemy = (extractNumber(hitPointsLine), extractNumber(damageLine), extractNumber(armorLine))
+        val List(hitPointsLine, damageLine, armorLine) = asLines(Input2015.Day21).toList
 
-    val itemBuyRequirements = Seq((1 to 1, weapons), (0 to 1, armors), (0 to 2, rings))
+        val enemy = (extractNumber(hitPointsLine), extractNumber(damageLine), extractNumber(armorLine))
 
-    val possiblePlayersWithCost = buyItems(itemBuyRequirements).map { attributes =>
-        val (cost, damage, armor) = attributes
+        val itemBuyRequirements = Seq((1 to 1, weapons), (0 to 1, armors), (0 to 2, rings))
 
-        (cost, (100, damage, armor))
+        val possiblePlayersWithCost = buyItems(itemBuyRequirements).map { attributes =>
+            val (cost, damage, armor) = attributes
+
+            (cost, (100, damage, armor))
+        }
+
+        val simulatedFights = possiblePlayersWithCost.map {
+            case (cost, player) => (cost, fightSimulation(player, enemy), player)
+        }
+
+        val (minimumCost, _, _) = simulatedFights.filter(_._2).minBy(_._1)
+        val (maximumCost, _, _) = simulatedFights.filter(!_._2).maxBy(_._1)
+
+        (minimumCost, maximumCost)
     }
-
-    val simulatedFights = possiblePlayersWithCost.map {
-        case (cost, player) => (cost, fightSimulation(player, enemy), player)
-    }
-
-    val (minimumCost, _, _) = simulatedFights.filter(_._2).minBy(_._1)
-
-    part(1, minimumCost)
-
-    val (maximumCost, _, _) = simulatedFights.filter(!_._2).maxBy(_._1)
-
-    part(2, maximumCost)
 }

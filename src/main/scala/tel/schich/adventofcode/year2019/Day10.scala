@@ -20,22 +20,6 @@ object Day10 extends AoCApp {
         override def hashCode(): Int = _1.hashCode() + _2.hashCode()
     }
 
-    val asteroids = for {
-        (line, y) <- asLines(Input2019.Day10).zipWithIndex
-        x <- line.indices
-        if line(x) == '#'
-    } yield (x, y)
-
-    val (monitor, visibleAsteroids) = asteroids.map(a => (a, uniqueAngles(a, asteroids).size)).maxBy(_._2)
-    part(1, visibleAsteroids)
-
-    val sortedByAngleAndDistance = angles(monitor, asteroids)
-        .groupBy(_._2)
-        .toSeq
-        .flatMap(a => a._2.sortBy(t => distance(monitor, t._1))(IeeeOrdering).zipWithIndex.map(t => (t._1._1, a._1 + t._2 * 360.0)))
-        .sortBy(t => t._2)(IeeeOrdering)
-    part(2, sortedByAngleAndDistance.drop(199).headOption.map(_._1).map(t => t._1 * 100 + t._2).getOrElse(0))
-
     def distance(a: Point, b: Point): Double = a._1 * b._1 + a._2 * b._2
 
     def uniqueAngles(center: Point, all: Seq[Point]): Set[Double] =
@@ -64,4 +48,25 @@ object Day10 extends AoCApp {
         math.toDegrees(((Tau - full) + Pi / 2.0) % Tau)
     }
 
+    override def solution: (Any, Any) = {
+
+
+        val asteroids = for {
+            (line, y) <- asLines(Input2019.Day10).zipWithIndex
+            x <- line.indices
+            if line(x) == '#'
+        } yield (x, y)
+
+        val (monitor, visibleAsteroids) = asteroids.map(a => (a, uniqueAngles(a, asteroids).size)).maxBy(_._2)
+        val part1 = visibleAsteroids
+
+        val sortedByAngleAndDistance = angles(monitor, asteroids)
+            .groupBy(_._2)
+            .toSeq
+            .flatMap(a => a._2.sortBy(t => distance(monitor, t._1))(IeeeOrdering).zipWithIndex.map(t => (t._1._1, a._1 + t._2 * 360.0)))
+            .sortBy(t => t._2)(IeeeOrdering)
+        val part2 = sortedByAngleAndDistance.drop(199).headOption.map(_._1).map(t => t._1 * 100 + t._2).getOrElse(0)
+
+        (part1, part2)
+    }
 }

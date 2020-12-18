@@ -40,29 +40,34 @@ object Day13 extends AoCApp {
     def modularMultiplicativeInverse[T](n: T, modulus: T)(implicit int: Integral[T]): T =
         extendedGcd(n, modulus)._1._1
 
-    val parseEstimate = parseNaturalNumber.map(_.toInt)
-    val parseBusLine = parseString("x").or(parseNaturalNumber).map(_.toOption)
-    val parseBusLines = parseAllSeparated(parseBusLine, parseString(","))
-    val parseInput = for {
-        estimate <- parseEstimate
-        _ <- parseLineBreak
-        busLines <- parseBusLines
-        _ <- parseAll(parseLineBreak)
-    } yield (estimate, busLines)
+    private val parseInput = {
+        val parseEstimate = parseNaturalNumber.map(_.toInt)
+        val parseBusLine = parseString("x").or(parseNaturalNumber).map(_.toOption)
+        val parseBusLines = parseAllSeparated(parseBusLine, parseString(","))
 
-    val (estimate, busLines) = parse(Input2020.Day13, parseInput)
+        for {
+            estimate <- parseEstimate
+            _ <- parseLineBreak
+            busLines <- parseBusLines
+            _ <- parseAll(parseLineBreak)
+        } yield (estimate, busLines)
+    }
 
-    val (line, delay) = busLines.flatten.map { line =>
-        (line, ((math.ceil(estimate / line) * line).toLong + line) - estimate)
-    }.minBy(_._2)
+    override def solution: (Any, Any) = {
+        val (estimate, busLines) = parse(Input2020.Day13, parseInput)
 
-    part(1, line * delay)
+        val (line, delay) = busLines.flatten.map { line =>
+            (line, ((estimate / line) * line) - estimate + line)
+        }.minBy(_._2)
 
-    val linesWithOffset = busLines.zipWithIndex
-        .collect { case (Some(line), offset) => (line, (line + (line - offset.toLong)) % line) }
+        val part1 = line * delay
+        val linesWithOffset = busLines.zipWithIndex
+            .collect { case (Some(line), offset) => (line, (line + (line - offset.toLong)) % line) }
 
-    val solutions = chineseRemainder(linesWithOffset)
-    val solution = solutions(0)
+        val solutions = chineseRemainder(linesWithOffset)
 
-    part(2, solution)
+        val part2 = solutions(0)
+
+        (part1, part2)
+    }
 }

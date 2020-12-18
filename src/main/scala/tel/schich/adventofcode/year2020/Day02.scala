@@ -5,7 +5,7 @@ import tel.schich.adventofcode.shared.Parser._
 
 object Day02 extends AoCApp {
 
-    val parseLine = for {
+    private val parseLine = for {
         n1 <- parseNaturalNumber.map(_.toInt)
         _ <- parseString("-")
         n2 <- parseNaturalNumber.map(_.toInt)
@@ -15,18 +15,22 @@ object Day02 extends AoCApp {
         password <- parseWhile(_.isLetterOrDigit)
     } yield (n1, n2, letter, password)
 
-    val parseInput = parseAllSeparated(parseLine, parseLineBreak)
+    private val parseInput = parseAllSeparated(parseLine, parseLineBreak)
 
-    private val entries = parse(Input2020.Day02, parseInput)
+    override def solution: (Any, Any) = {
+        val entries = parse(Input2020.Day02, parseInput)
 
-    part(1, entries.count {
-        case (min, max, letter, password) =>
-            val letterCount = password.view.count(_ == letter)
-            letterCount >= min && letterCount <= max
-    })
+        val part1 = entries.count {
+            case (min, max, letter, password) =>
+                val letterCount = password.view.count(_ == letter)
+                letterCount >= min && letterCount <= max
+        }
 
-    part(2, entries.count {
-        case (first, second, letter, password) =>
-            (password(first - 1) == letter) ^ (password(second - 1) == letter)
-    })
+        val part2 = entries.count {
+            case (first, second, letter, password) =>
+                (password(first - 1) == letter) ^ (password(second - 1) == letter)
+        }
+
+        (part1, part2)
+    }
 }

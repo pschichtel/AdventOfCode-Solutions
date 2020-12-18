@@ -53,13 +53,13 @@ object Day09 extends AoCApp {
         }
     }
 
-    val preambleLength = 25
-    val cipherCode = asLines(Input2020.Day09).map(_.toLong)
+    override def solution: (Any, Any) = {
+        val preambleLength = 25
+        val cipherCode = asLines(Input2020.Day09).map(_.toLong)
 
-    val Some(outlier) = findOutlier(cipherCode, preambleLength)
+        val Some(outlier) = findOutlier(cipherCode, preambleLength)
+        val Some(weakness) = findWeakness(cipherCode, outlier)
 
-    part(1, outlier)
-
-    val Some(weakness) = findWeakness(cipherCode, outlier)
-    part(2, weakness)
+        (outlier, weakness)
+    }
 }

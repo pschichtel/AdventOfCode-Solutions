@@ -7,19 +7,6 @@ import scala.annotation.tailrec
 object Day03 extends AoCApp {
     type Point = (Int, Int)
 
-    val Seq(line1, line2) = asLines(Input2019.Day03)
-        .map(_.split(',').toList)
-        .map(rel => translateToPoints(rel, 0, 0, 0, 0, 0, Vector.empty))
-
-    val intersectionPoints = line1.intersect(line2).toSet
-
-    part(1, intersectionPoints.map(p => math.abs(p._1) + math.abs(p._2)).min)
-
-    val line1StepsToIntersections = countStepsForLine(line1.toList, intersectionPoints, 1, Map.empty)
-    val line2StepsToIntersections = countStepsForLine(line2.toList, intersectionPoints, 1, Map.empty)
-
-    part(2, intersectionPoints.map(p => line1StepsToIntersections(p) + line2StepsToIntersections(p)).min)
-
     @tailrec
     def translateToPoints(relative: List[String], cx: Int, cy: Int, x: Int, y: Int, direction: Int, points: Vector[Point]): Vector[Point] = {
         if (x > 0) translateToPoints(relative, cx + direction, cy, x - 1, y, direction, points :+ ((cx + direction, cy)))
@@ -47,5 +34,22 @@ object Day03 extends AoCApp {
                 else countStepsForLine(tail, intersections, steps + 1, stepMap)
             case Nil => stepMap
         }
+    }
+
+    override def solution: (Any, Any) = {
+        val Seq(line1, line2) = asLines(Input2019.Day03)
+            .map(_.split(',').toList)
+            .map(rel => translateToPoints(rel, 0, 0, 0, 0, 0, Vector.empty))
+
+        val intersectionPoints = line1.intersect(line2).toSet
+
+        val part1 = intersectionPoints.map(p => math.abs(p._1) + math.abs(p._2)).min
+
+        val line1StepsToIntersections = countStepsForLine(line1.toList, intersectionPoints, 1, Map.empty)
+        val line2StepsToIntersections = countStepsForLine(line2.toList, intersectionPoints, 1, Map.empty)
+
+        val part2 = intersectionPoints.map(p => line1StepsToIntersections(p) + line2StepsToIntersections(p)).min
+
+        (part1, part2)
     }
 }

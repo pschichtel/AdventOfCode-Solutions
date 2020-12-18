@@ -5,9 +5,7 @@ import tel.schich.adventofcode.shared.AoCApp
 import scala.annotation.tailrec
 
 object Day09 extends AoCApp {
-
     def countCharsDecompressed(input: String, recurse: Boolean = false): Long = {
-
         @tailrec
         def countCompressedSeqs(input: List[Char], count: Long): Long = {
             val (seqRead, length) = countCompressedSeq(input)
@@ -23,8 +21,8 @@ object Day09 extends AoCApp {
                 val repRead = headRead.drop(length)
                 val resolvedLength =
                     if (recurse) countCompressedSeqs(headRead.take(length), 0)
-                    else length
-                (repRead, prefixLength + resolvedLength * repetitions)
+                    else length.toLong
+                (repRead, prefixLength + (resolvedLength * repetitions))
 
             } else (prefixRead, prefixLength)
         }
@@ -51,8 +49,11 @@ object Day09 extends AoCApp {
 
     }
 
-    val strippedInput = Input2016.Day09.replaceAll("\\s+", "")
+    override def solution: (Any, Any) = {
+        val strippedInput = Input2016.Day09.replaceAll("\\s+", "")
+        val part1 = countCharsDecompressed(strippedInput)
+        val part2 = countCharsDecompressed(strippedInput, recurse = true)
 
-    part(1, countCharsDecompressed(strippedInput))
-    part(2, countCharsDecompressed(strippedInput, recurse = true))
+        (part1, part2)
+    }
 }

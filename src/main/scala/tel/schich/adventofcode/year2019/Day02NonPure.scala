@@ -2,10 +2,25 @@ package tel.schich.adventofcode.year2019
 
 import tel.schich.adventofcode.shared.AoCApp
 
-import java.util.concurrent.TimeUnit
-
 object Day02NonPure extends AoCApp {
-    timed("day 02 non-pure execution") {
+    @inline
+    def run(program: Array[Int]): Unit = {
+        var pc = 0
+        val len = program.length
+        while (pc < len) {
+            program(pc) match {
+                case 1 =>
+                    program(program(pc + 3)) = program(program(pc + 1)) + program(program(pc + 2))
+                    pc += 4
+                case 2 =>
+                    program(program(pc + 3)) = program(program(pc + 1)) * program(program(pc + 2))
+                    pc += 4
+                case 99 => return
+            }
+        }
+    }
+
+    override def solution: (Any, Any) = {
         val input = Input2019.Day02
         val inputLen = input.length
         val program = Array.ofDim[Int](input.length)
@@ -31,14 +46,6 @@ object Day02NonPure extends AoCApp {
 
         val runCopy = Array.ofDim[Int](programLength)
 
-        program.copyToArray(runCopy, 0, programLength)
-        runCopy(1) = 12
-        runCopy(2) = 2
-        run(runCopy)
-        part(1, runCopy(0))
-
-        part(2, solve())
-
         def solve(): Int = {
             var noun = 0
             var verb = 0
@@ -58,24 +65,12 @@ object Day02NonPure extends AoCApp {
             }
             -1
         }
+
+        program.copyToArray(runCopy, 0, programLength)
+        runCopy(1) = 12
+        runCopy(2) = 2
+        run(runCopy)
+
+        (runCopy(0), solve())
     }
-
-
-    @inline
-    def run(program: Array[Int]): Unit = {
-        var pc = 0
-        val len = program.length
-        while (pc < len) {
-            program(pc) match {
-                case 1 =>
-                    program(program(pc + 3)) = program(program(pc + 1)) + program(program(pc + 2))
-                    pc += 4
-                case 2 =>
-                    program(program(pc + 3)) = program(program(pc + 1)) * program(program(pc + 2))
-                    pc += 4
-                case 99 => return
-            }
-        }
-    }
-
 }

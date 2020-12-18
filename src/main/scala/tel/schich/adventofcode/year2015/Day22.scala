@@ -61,12 +61,12 @@ object Day22 extends AoCApp {
     }
 
 
-    val MagicMissile = Spell("Magic Missle", cost = 53, damage = 4)
-    val Drain = Spell("Drain", cost = 73, damage = 2, heal = 2)
-    val Shield = Spell("Shield", cost = 113, armor = 7, duration = 6)
-    val Poison = Spell("Poison", cost = 173, damage = 3, duration = 6)
-    val Recharge = Spell("Recharge", cost = 229, mana = 101, duration = 5)
-    val Spells = Vector(MagicMissile, Drain, Shield, Poison, Recharge)
+    private val MagicMissile = Spell("Magic Missle", cost = 53, damage = 4)
+    private val Drain = Spell("Drain", cost = 73, damage = 2, heal = 2)
+    private val Shield = Spell("Shield", cost = 113, armor = 7, duration = 6)
+    private val Poison = Spell("Poison", cost = 173, damage = 3, duration = 6)
+    private val Recharge = Spell("Recharge", cost = 229, mana = 101, duration = 5)
+    private val Spells = Vector(MagicMissile, Drain, Shield, Poison, Recharge)
 
     def simulateRound(simulationState: SimulationState, spell: Spell, hardMode: Boolean): Result = {
 
@@ -149,13 +149,13 @@ object Day22 extends AoCApp {
 
     }
 
-    val Seq(hpLine, damageLine) = asLines(Input2015.Day22)
-    val startState = SimulationState(50, 0, 500, extractNumber(hpLine), extractNumber(damageLine))
+    override def solution: (Any, Any) = {
+        val Seq(hpLine, damageLine) = asLines(Input2015.Day22)
+        val startState = SimulationState(50, 0, 500, extractNumber(hpLine), extractNumber(damageLine))
 
-    val Some(cheapestEasyFight) = findCheapestFight(startState, Spells.toList)
-    part(1, cheapestEasyFight.manaUsed)
+        val Some(cheapestEasyFight) = findCheapestFight(startState, Spells.toList)
+        val Some(cheapestHardFight) = findCheapestFight(startState, Spells.toList, hardMode = true)
 
-    val Some(cheapestHardFight) = findCheapestFight(startState, Spells.toList, hardMode = true)
-    part(2, cheapestHardFight.manaUsed)
-
+        (cheapestEasyFight.manaUsed, cheapestHardFight.manaUsed)
+    }
 }

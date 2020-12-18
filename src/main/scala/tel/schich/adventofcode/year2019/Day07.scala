@@ -8,13 +8,6 @@ import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 
 object Day07 extends AoCApp {
-
-    val program = parseProgram(Input2019.Day07)
-
-    part(1, findBestPermutation(program, 0 to 4))
-
-    part(2, findBestPermutation(program, 5 to 9))
-
     def findBestPermutation(program: Memory, modes: Range): Long = {
         val allPermutationsExecuted = modes.permutations.map { modePermutation =>
             val states = Queue.from(modePermutation.map(mode => initProgram(instructions, program, mode :: Nil)))
@@ -34,5 +27,14 @@ object Day07 extends AoCApp {
             case _: Failed => newState
             case _ => runAmplifiers(newQueue.enqueue(newState.copy(output = Nil)), newOutput)
         }
+    }
+
+    override def solution: (Any, Any) = {
+        val program = parseProgram(Input2019.Day07)
+
+        val part1 = findBestPermutation(program, 0 to 4)
+        val part2 = findBestPermutation(program, 5 to 9)
+
+        (part1, part2)
     }
 }

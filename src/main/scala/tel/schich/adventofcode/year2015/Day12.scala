@@ -161,15 +161,12 @@ object Day12 extends AoCApp {
 
     }
 
-    parseJson(Input2015.Day12) match {
-        case Success(tree) =>
-            val sumOfNumbers = findNumbers(tree).map(_.intValue).sum
-            part(1, sumOfNumbers)
+    override def solution: (Any, Any) = {
 
-            val sumOfNonRedNumbers = findNumbers(removeObjectsWith(tree, JsonString("red"))).map(_.intValue).sum
-            part(2, sumOfNonRedNumbers)
-        case Failure(e) =>
-            e.printStackTrace()
+        val Success(tree) = parseJson(Input2015.Day12)
+        val sumOfNumbers = findNumbers(tree).map(_.intValue).sum
+        val sumOfNonRedNumbers = findNumbers(removeObjectsWith(tree, JsonString("red"))).map(_.intValue).sum
+
+        (sumOfNumbers, sumOfNonRedNumbers)
     }
-
 }

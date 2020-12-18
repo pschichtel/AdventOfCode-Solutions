@@ -4,9 +4,8 @@ import tel.schich.adventofcode.shared.AoCApp
 
 object Day07 extends AoCApp {
 
-    val input = asLines(Input2016.Day07)
-    val ABBA = "(\\w)(\\w)\\2\\1".r
-    val ABA = "(\\w)(\\w)\\1".r
+    private val ABBA = "(\\w)(\\w)\\2\\1".r
+    private val ABA = "(\\w)(\\w)\\1".r
 
     def checkForABBA(s: String): Boolean = {
         ABBA.findFirstIn(s) match {
@@ -43,7 +42,11 @@ object Day07 extends AoCApp {
         }
     }
 
-    part(1, input.count(supportsTLS))
+    override def solution: (Any, Any) = {
+        val input = asLines(Input2016.Day07)
+        val part1 = input.count(supportsTLS)
+        val part2 = input.count(supportsSSL)
 
-    part(2, input.count(supportsSSL))
+        (part1, part2)
+    }
 }

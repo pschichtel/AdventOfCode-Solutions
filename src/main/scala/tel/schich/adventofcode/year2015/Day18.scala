@@ -6,14 +6,6 @@ import scala.math._
 
 object Day18 extends AoCApp {
 
-    val input = Input2015.Day18.replaceAll("\\s", "")
-    val steps = 100
-
-    val states = input.toSeq.map {
-        case '#' => true
-        case '.' => false
-    }
-
     def step1rule(g: Grid, x: Int, y: Int, s: Boolean, n: Int): Boolean = {
         if (s && n == 2 || n == 3) true
         else if (s) false
@@ -76,10 +68,22 @@ object Day18 extends AoCApp {
         println(g.lines.map(_.map(if (_) '#' else '.').mkString).mkString("\n") + "\n")
     }
 
-    val afterNSteps1 = Grid(states, step1rule).animation.drop(steps).head
-    part(1, afterNSteps1.states.count(identity))
 
-    val afterNSteps2 = Grid(states, step2rule).animation.drop(steps).head
-    part(2,  afterNSteps2.states.count(identity))
+    override def solution: (Any, Any) = {
+        val input = Input2015.Day18.replaceAll("\\s", "")
+        val steps = 100
 
+        val states = input.toSeq.map {
+            case '#' => true
+            case '.' => false
+        }
+
+        val afterNSteps1 = Grid(states, step1rule).animation.drop(steps).head
+        val part1 = afterNSteps1.states.count(identity)
+
+        val afterNSteps2 = Grid(states, step2rule).animation.drop(steps).head
+        val part2 = afterNSteps2.states.count(identity)
+
+        (part1, part2)
+    }
 }

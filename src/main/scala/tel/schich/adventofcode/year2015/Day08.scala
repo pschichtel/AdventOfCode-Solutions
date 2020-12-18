@@ -6,8 +6,6 @@ import scala.annotation.tailrec
 
 object Day08 extends AoCApp {
 
-    val input = asLines(Input2015.Day08)
-
     def parse(s: String): String = parseChars(s.iterator)
 
     @tailrec
@@ -38,11 +36,6 @@ object Day08 extends AoCApp {
         strings.map { case (ext, int) => (ext.length, int.length) }
             .foldLeft((0, 0)) { case ((aext, aint), (bext, bint)) => (aext + bext, aint + bint) }
 
-    val parsedStrings = input.map(s => (s, parse(s)))
-    val (ext, int) = sizes(parsedStrings)
-
-    part(1, ext - int)
-
 
     def encode(s: String): String = {
 
@@ -54,9 +47,20 @@ object Day08 extends AoCApp {
 
     }
 
-    val encodedStrings = input.map(s => (s, encode(s)))
-    val (normal, encoded) = sizes(encodedStrings)
+    override def solution: (Any, Any) = {
 
-    part(2, encoded - normal)
+        val input = asLines(Input2015.Day08)
 
+        val parsedStrings = input.map(s => (s, parse(s)))
+        val (ext, int) = sizes(parsedStrings)
+
+        val part1 = ext - int
+
+        val encodedStrings = input.map(s => (s, encode(s)))
+        val (normal, encoded) = sizes(encodedStrings)
+
+        val part2 = encoded - normal
+
+        (part1, part2)
+    }
 }

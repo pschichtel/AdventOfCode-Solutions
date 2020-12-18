@@ -56,21 +56,6 @@ object Day11 extends AoCApp {
         val pos: (Int, Int) = (x, y)
     }
 
-    val program = parseProgram(Input2019.Day11)
-    val startState = initProgram(Day09.instructions, program, Nil)
-    val robot = Robot(0, 0, Up, startState)
-    val blackStartField = paintField(robot, Map.empty)
-
-    //printField(blackStartField)
-
-    part(1, blackStartField.size)
-
-    val whiteStartField = paintField(robot, Map((0, 0) -> White))
-
-    part(2, {
-        println()
-        printField(whiteStartField)
-    })
 
     def printField(field: Map[(Int, Int), Color]): String = {
         val (minX, maxX) = minMax(field.keys.map(_._1).iterator, Int.MaxValue, Int.MinValue)
@@ -119,4 +104,24 @@ object Day11 extends AoCApp {
         }
     }
 
+    override def solution: (Any, Any) = {
+        val program = parseProgram(Input2019.Day11)
+        val startState = initProgram(Day09.instructions, program, Nil)
+        val robot = Robot(0, 0, Up, startState)
+        val blackStartField = paintField(robot, Map.empty)
+
+        //printField(blackStartField)
+
+        val part1 = blackStartField.size
+
+        val whiteStartField = paintField(robot, Map((0, 0) -> White))
+
+        val part2 = {
+            println()
+            printField(whiteStartField)
+            // TODO ocr
+        }
+
+        (part1, part2)
+    }
 }

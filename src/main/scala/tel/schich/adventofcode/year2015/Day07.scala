@@ -4,9 +4,8 @@ import tel.schich.adventofcode.shared.AoCApp
 
 object Day07 extends AoCApp {
 
-    val input = asLines(Input2015.Day07).toList
-    val RelevantWire = "a"
-    val ReplaceWire = "b"
+    private val RelevantWire = "a"
+    private val ReplaceWire = "b"
 
     sealed trait Input
 
@@ -48,25 +47,16 @@ object Day07 extends AoCApp {
 
     def num(s: String): Boolean = s.forall(Character.isDigit)
 
-    def input(s: String): Input =
+    def icInput(s: String): Input =
         if (num(s)) Const(s.toInt)
         else Dyn(s)
 
-    val wire   = "(\\w+) -> (\\w+)".r
-    val and    = "(\\w+) AND (\\w+) -> (\\w+)".r
-    val or     = "(\\w+) OR (\\w+) -> (\\w+)".r
-    val not    = "NOT (\\w+) -> (\\w+)".r
-    val lshift = "(\\w+) LSHIFT (\\d+) -> (\\w+)".r
-    val rshift = "(\\w+) RSHIFT (\\d+) -> (\\w+)".r
-
-    val ICs: Seq[IC] = input.map {
-        case wire(i, o) => Wire(input(i), o)
-        case and(l, r, o) => And(input(l), input(r), o)
-        case or(l, r, o) => Or(input(l), input(r), o)
-        case not(i, o) => Not(input(i), o)
-        case lshift(i, by, o) => LShift(input(i), by.toInt, o)
-        case rshift(i, by, o) => RShift(input(i), by.toInt, o)
-    }
+    private val wire   = "(\\w+) -> (\\w+)".r
+    private val and    = "(\\w+) AND (\\w+) -> (\\w+)".r
+    private val or     = "(\\w+) OR (\\w+) -> (\\w+)".r
+    private val not    = "NOT (\\w+) -> (\\w+)".r
+    private val lshift = "(\\w+) LSHIFT (\\d+) -> (\\w+)".r
+    private val rshift = "(\\w+) RSHIFT (\\d+) -> (\\w+)".r
 
     type WireStates = Map[String, Int]
 
@@ -128,17 +118,27 @@ object Day07 extends AoCApp {
         states
     }
 
-    val relevantValue1 = evaluate(ICs)(RelevantWire)
+    override def solution: (Any, Any) = {
+        val input = asLines(Input2015.Day07).toList
 
-    part(1, relevantValue1)
+        val ICs: Seq[IC] = input.map {
+            case wire(i, o) => Wire(icInput(i), o)
+            case and(l, r, o) => And(icInput(l), icInput(r), o)
+            case or(l, r, o) => Or(icInput(l), icInput(r), o)
+            case not(i, o) => Not(icInput(i), o)
+            case lshift(i, by, o) => LShift(icInput(i), by.toInt, o)
+            case rshift(i, by, o) => RShift(icInput(i), by.toInt, o)
+        }
 
-    val newICs = ICs.map {
-        case Wire(_, ReplaceWire) => Wire(Const(relevantValue1), ReplaceWire)
-        case ic => ic
+        val relevantValue1 = evaluate(ICs)(RelevantWire)
+
+        val newICs = ICs.map {
+            case Wire(_, ReplaceWire) => Wire(Const(relevantValue1), ReplaceWire)
+            case ic => ic
+        }
+
+        val relevantValue2 = evaluate(newICs)(RelevantWire)
+
+        (relevantValue1, relevantValue2)
     }
-
-    val relevantValue2 = evaluate(newICs)(RelevantWire)
-
-    part(2, relevantValue2)
-
 }
