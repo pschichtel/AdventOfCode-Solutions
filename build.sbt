@@ -1,15 +1,15 @@
 name := "AdventOfCode"
 version := "1.0.0"
-scalaVersion := "3.0.0-M3"
+scalaVersion := "3.2.1"
 
 // enablePlugins(ScalaJSPlugin)
 // enablePlugins(ScalaNativePlugin)
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-sources in (Compile, doc) := Seq.empty
+Compile / doc / sources := Seq.empty
 
-publishArtifact in (Compile, packageDoc) := false
+Compile / packageDoc / publishArtifact := false
 
 // scalaJSUseMainModuleInitializer := true
 // mainClass in Compile := Some("tel.schich.adventofcode.year2020.RunAll")
@@ -18,7 +18,7 @@ publishArtifact in (Compile, packageDoc) := false
 // nativeGC := "immix"
 // nativeLTO := "thin"
 
-sourceGenerators in Compile += Def.task {
+Compile / sourceGenerators += Def.task {
     val baseDir = baseDirectory.value / "inputs" // or whatever
 
     val filesForYears = {
@@ -36,7 +36,7 @@ sourceGenerators in Compile += Def.task {
     }
 
 
-    val sourceDir = (sourceManaged in Compile).value
+    val sourceDir = (Compile / sourceManaged).value
 
     for ((year, inputs) <- filesForYears) yield {
         val sourceFile = sourceDir / s"Inputs$year.scala"
