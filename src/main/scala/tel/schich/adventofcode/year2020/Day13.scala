@@ -1,23 +1,24 @@
 package tel.schich.adventofcode.year2020
 
 import tel.schich.adventofcode.shared.AoCApp
-import tel.schich.adventofcode.shared.Parser._
+import tel.schich.adventofcode.shared.Parser.*
 
 import scala.annotation.tailrec
+import scala.math.Integral.Implicits.infixIntegralOps
 
 object Day13 extends AoCApp {
 
     def chineseRemainder[T](congruences: Seq[(T, T)])(implicit int: Integral[T]): T => T = {
-        val M = congruences.foldLeft(int.one) { case (product, (m, _)) => int.times(product, m) }
+        val M = congruences.foldLeft(int.one) { case (product, (m, _)) => product * m }
         val sum = congruences.foldLeft(int.zero) { case (sum, (m, a)) =>
             if (a == int.zero) sum
             else {
-                val Mm = int.quot(M, m)
+                val Mm = M / m
                 val b = modularMultiplicativeInverse(Mm, m)
-                int.plus(sum, int.times(a, int.times(b, Mm)))
+                sum + a * (b * Mm)
             }
         }
-        n => int.plus(int.times(M, n), int.rem(int.abs(sum), M))
+        n => M * n + int.abs(sum) % M
     }
 
     def extendedGcd[T](a: T, b: T)(implicit int: Integral[T]): ((T, T), T) = {
@@ -25,11 +26,11 @@ object Day13 extends AoCApp {
         def solve(prevR: T, r: T, prevS: T, s: T, prevT: T, t: T): ((T, T), T) = {
             if (r == int.zero) ((prevS, prevT), prevR)
             else {
-                val quotient = int.quot(prevR, r)
+                val quotient = prevR / r
                 solve(
-                    r, int.minus(prevR, int.times(quotient, r)),
-                    s, int.minus(prevS, int.times(quotient, s)),
-                    t, int.minus(prevT, int.times(quotient, t)),
+                    r, prevR - quotient * r,
+                    s, prevS - quotient * s,
+                    t, prevT - quotient * t,
                 )
             }
         }

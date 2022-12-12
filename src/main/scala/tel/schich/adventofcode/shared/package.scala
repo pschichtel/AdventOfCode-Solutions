@@ -200,6 +200,17 @@ package object shared {
 
         def parseWord: Parser[StringSlice] = parseAtLeastOnce(_.isLetter)
 
+        def parseLine[A](parser: Parser[A]): Parser[A] = {
+            parser.andThenIgnore(parseLineBreak.?)
+        }
+
+        def parseIndentedLine[A](parser: Parser[A], indention: String, intentionLevel: Int): Parser[A] = {
+            if (intentionLevel == 0) parseLine(parser)
+            else {
+                parseLine(parseRepeated(intentionLevel, parseString(indention)).ignoreAndThen(parser))
+            }
+        }
+
     }
 
 
