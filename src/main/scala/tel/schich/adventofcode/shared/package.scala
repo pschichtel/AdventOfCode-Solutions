@@ -211,6 +211,8 @@ package object shared {
             }
         }
 
+        def parseLines[A](parser: Parser[A]): Parser[Seq[A]] = parseAllSeparated(parser, parseLineBreak)
+
     }
 
 
